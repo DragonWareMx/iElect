@@ -13,6 +13,24 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+//Ruta layou
+/*Route::get('/lay', function () {
+    return view('layouts.layout');
+})->name('lay');
+*/
+
+//Ruta Login
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('login.index');
+})->name('index');
+
+//Ruta Recuperar contraseña
+Route::get('/recuperar_contrasena', function () {
+    return view('login.recuperar_contrasena');
+})->name('recuperar_contra');
+
+
+//Ruta Cuenta
+Route::get('/cuenta', function () {
+    return view('usuario.cuenta');
+})->name('cuenta');
