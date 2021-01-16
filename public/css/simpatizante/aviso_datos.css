@@ -1,0 +1,21 @@
+html {
+    height: 100%;
+}
+body {
+    min-height: 100%;
+    padding: 0;
+    margin: 0;
+    position: relative;
+}
+
+footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+@media screen and (max-width: 414px) {
+    footer {
+        position: relative;
+    }
+}

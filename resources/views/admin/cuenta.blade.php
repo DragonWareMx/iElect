@@ -5,15 +5,15 @@ Cuenta
 @endsection
 
 @section('imports')
+<!-- CSS Avatar -->
 <link rel="stylesheet" href="{{asset('css/usuario/cuenta.css')}}" />
 @endsection
 
 @section('body')
-
 <div class="uk-margin uk-margin-left uk-margin-right">
     <div class="uk-card uk-card-default uk-card-body">
         <h3 class="uk-card-title uk-text-bold">
-            <a class="uk-margin-right" href="{{route('ajustes')}}" uk-icon="arrow-left"></a>Cuenta
+            <a class="uk-margin-right" href="" uk-icon="arrow-left"></a>Cuenta
         </h3>
 
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
@@ -29,8 +29,21 @@ Cuenta
                 </div>
             </div>
             <div class="uk-width-auto uk-width-1-4@m uk-text-left">
-                <div class="uk-text-primary">Cambiar contraseña</div>
-
+                <div class="omrs-input-group uk-margin-bottom">
+                    <label class="omrs-input-underlined input-outlined">
+                        <input type="password" required />
+                        <span class="omrs-input-label">Nombre completo</span>
+                    </label>
+                </div>
+                <div class="omrs-input-group uk-margin">
+                    <label class="omrs-input-underlined input-outlined">
+                        <input type="password" required />
+                        <span class="omrs-input-label">Correo electrónico</span>
+                    </label>
+                </div>
+                <a uk-toggle="target: #chg_pass;">Cambiar contraseña</a>
+            </div>
+            <div id="chg_pass" class="uk-width-auto uk-width-1-4@m uk-text-left" hidden>
                 <div class="omrs-input-group uk-margin-bottom">
                     <label class="omrs-input-underlined input-outlined">
                         <input type="password" required />
@@ -46,7 +59,7 @@ Cuenta
                 <div class="omrs-input-group uk-margin">
                     <label class="omrs-input-underlined input-outlined">
                         <input type="password" required />
-                        <span class="omrs-input-label">Confirmar contraseña</span>
+                        <span class="omrs-input-label">Cambiar contraseña</span>
                     </label>
                 </div>
             </div>
@@ -62,5 +75,4 @@ Cuenta
         </p>
     </div>
 </div>
-
 @endsection
