@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Politic_Partie extends Model
+class Position extends Model
 {
     use HasFactory;
     public function vote(){
         return $this->hasMany('App\Vote');
     }
     public function campaign(){
-        return $this->belongsToMany('App\Campaign');
+        return $this->hasMany('App\Campaign');
     }
 }

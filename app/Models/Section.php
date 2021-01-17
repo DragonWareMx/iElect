@@ -18,4 +18,10 @@ class Section extends Model
     public function local_district(){
         return $this->belongsTo('App\Local_District');
     }
+    public function elector(){
+        return $this->hasMany('App\Elector');
+    }
+    public function campaign(){
+        return $this->belongsToMany('App\Campaign');
+    }
 }

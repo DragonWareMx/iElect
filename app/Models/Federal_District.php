@@ -11,4 +11,8 @@ class Federal_District extends Model
     public function section(){
         return $this->hasMany('App\Section');
     }
+    public function town(){
+        return $this->belongsToMany('App\Town');
+    }
+    
 }

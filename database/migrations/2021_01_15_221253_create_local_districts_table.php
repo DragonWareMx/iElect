@@ -16,8 +16,8 @@ class CreateLocalDistrictsTable extends Migration
         Schema::create('local_districts', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('numero', 4);
-            $table->text('cabecera');
+            $table->string('numero', 4);   //id del ine
+            $table->text('cabecera');       //nombre del municipio cabecera
         });
     }
 

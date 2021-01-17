@@ -20,5 +20,8 @@ class Vote extends Model
     public function section(){
         return $this->belongsTo('App\Section');
     }
-    //FALTA la de puestos
+    
+    public function position(){
+        return $this->belongsTo('App\Position');
+    }
 }

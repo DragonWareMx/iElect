@@ -17,8 +17,8 @@ class CreateFederalDistrictsTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string('numero',4);
-            $table->text('cabecera');
+            $table->string('numero',4);         //id del ine
+            $table->text('cabecera');           //nombre municipio cabecera
         });
     }
 

@@ -33,15 +33,22 @@ class CreateElectorsTable extends Migration
             $table->text('localidad')->nullable();
             $table->text('municipio')->nullable();
             $table->string('cp', 25)->nullable();
-            $table->unsignedBigInteger('seccion'); //hacerla foreign?
-            $table->text('clave_elector');
-            $table->text('foto_elector')->nullable();
-            $table->text('credencial_a');
-            $table->text('credencial_r');
-            $table->text('documento')->nullable();
-
-            $table->foreign('Job_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->unsignedBigInteger('Section_id');    //id de seccion a la que pertenece
+            $table->unsignedBigInteger('Campaign_id');   //id de campaña SE AGREGÓ
+            $table->unsignedBigInteger('User_id');         //brigadista que lo dio de alta SE AGREGÓ
+            $table->text('clave_elector');          //clave del ine
+            $table->text('foto_elector')->nullable(); //foto, no se va a ocupar casi nunca
+            $table->text('credencial_a'); //foto credencial ine enfrente
+            $table->text('credencial_r'); //foto credencial ine atrás
+            $table->text('documento')->nullable();  //documento de privacidad si aplica
+            $table->boolean('aprobado')->default(0); //Si ya fue aprovado por un agente o no, 
+                                                    //IMPORTANTE: sólo los aprobados se toman en cuenta en estadísticas
             
+
+            $table->foreign('Section_id')->references('id')->on('sections')->onDelete('cascade');
+            $table->foreign('Job_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->foreign('Campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreign('User_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

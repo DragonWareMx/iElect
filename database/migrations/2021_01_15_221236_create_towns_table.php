@@ -17,9 +17,10 @@ class CreateTownsTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string('numero',4);
-            $table->text('nombre');
-            $table->unsignedBigInteger('Federal_Entitie_id');
+            $table->string('numero',4);   //id del ine
+            $table->text('nombre');        //nombre del municipio
+            $table->unsignedBigInteger('Federal_Entitie_id');//id del estado al que pertenece
+            
             $table->foreign('Federal_Entitie_id')->references('id')->on('federal_entities')->onDelete('cascade');
         });
     }

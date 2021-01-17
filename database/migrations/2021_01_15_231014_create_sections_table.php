@@ -16,14 +16,15 @@ class CreateSectionsTable extends Migration
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->string('num_seccion', 6);
-            $table->int('casillas')->nullable();
-            $table->enum('prioridad', ['Alta','Media','Baja']);
-            $table->unsignedBigInteger('Federal_District_id');
-            $table->unsignedBigInteger('Local_District_id');
-            $table->unsignedBigInteger('hombres');
-            $table->unsignedBigInteger('mujeres');
-            $table->unsignedBigInteger('18');
+            $table->unsignedBigInteger('Federal_District_id');   //id del distrito federal al que pertenece la sección
+            $table->unsignedBigInteger('Local_District_id');    //id del distrito local al que pertenece la sección
+            $table->string('num_seccion', 6);                   //id de la sección en el INE
+            $table->unsignedInteger('casillas')->nullable();    //numero de casillas
+            $table->enum('prioridad', ['Alta','Media','Baja']); //prioridad de la sección según meta o cliente
+            
+            $table->unsignedBigInteger('hombres');               //cantidad total de hombres en la sección
+            $table->unsignedBigInteger('mujeres');              //cantidad total de mujeres en la sección
+            $table->unsignedBigInteger('18');                   //rangos de edades sin diferenciar hombres o mujeres
             $table->unsignedBigInteger('19');
             $table->unsignedBigInteger('20_24');
             $table->unsignedBigInteger('25_29');

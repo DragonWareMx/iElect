@@ -12,4 +12,11 @@ class Town extends Model
     public function federal_entitie(){
         return $this->belongsTo('App\Federal_Entitie');
     }
+    public function federal_district(){
+        return $this->belongsToMany('App\Federal_District');
+    }
+    public function local_district(){
+        return $this->belongsToMany('App\Local_District');
+    }
+
 }

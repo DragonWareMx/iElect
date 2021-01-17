@@ -17,7 +17,7 @@ class CreateFederalEntitiesTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->string ('nombre', 35);
+            $table->string ('nombre', 35); //nombre del estado
         });
     }
 
