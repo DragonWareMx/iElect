@@ -94,6 +94,11 @@ Route::get('/simpatizantes/solicitudes', function () {
 /***    ADMIN    ****/
 /********************/
 
+//Admin | Inicio
+Route::get('/admin/inicio', function () {
+    return view('admin.inicio');
+})->name('admin-inicio');
+
 //Admin | Cuenta
 Route::get('/admin/cuenta', function () {
     return view('admin.cuenta');
@@ -132,7 +137,12 @@ Route::get('/brigadistas/inicio', function () {
 /**  SIMPATIZANTE  **/
 /********************/
 
-//Simpatizante | Aviso de privasidad
+//Simpatizante | Aviso de privacidad
 Route::get('/simpatizante/aviso', function () {
     return view('simpatizante.aviso_datos');
-})->name('simpatizante_aviso');
+})->name('simpatizante-aviso');
+
+//Simpatizante | Solicitud de baja
+Route::get('/simpatizante/baja', function () {
+    return view('simpatizante.solicitud_baja');
+})->name('simpatizante-solicitud_baja');

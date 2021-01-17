@@ -204,6 +204,20 @@ Editar usuario
                 </tbody>
             </table>
         </div>
+
+        <p class="uk-position-medium uk-position-bottom-left">
+            <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
+                Eliminar
+            </button>
+        </p>
+        <p class="uk-text-right">
+            <button class="uk-button uk-button-default uk-modal-close" type="button">
+                Cancelar
+            </button>
+            <button class="uk-button uk-button-primary" type="button">
+                Enviar
+            </button>
+        </p>
     </div>
 </div>
 @endsection

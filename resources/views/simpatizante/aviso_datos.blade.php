@@ -14,7 +14,7 @@
 </head>
 
 <body>
-    <div>
+    <div class="content">
         <h1 class="uk-text-primary uk-padding-small">iElect</h1>
         <div class="uk-padding-small">
             <p>
@@ -37,28 +37,28 @@
             </p>
         </div>
     </div>
+    <footer class="footer uk-background-primary">
+        <div class="uk-padding uk-child-width-1-6@s uk-grid-match" uk-grid>
+            <div class="uk-text-left@m uk-text-center">
+                <h2 style="color: white; margin: 0 !important">iElect</h2>
+                <small style="color: white">Copyright ©2021 iElect</small>
+            </div>
+            <div class="uk-text-left@m uk-text-center">
+                <a style="color: white">Aviso de privacidad</a>
+            </div>
+            <div class="uk-text-left@m uk-text-center">
+                <a style="color: white">Politicas y condiciones</a>
+            </div>
+            <div class="uk-text-center uk-hidden@m">
+                <small style="color: white"> Desarrollado por DragonWare. </small>
+            </div>
+            <div class="uk-position-small uk-position-bottom-right uk-visible@s">
+                <small class="uk-align-right@m uk-text-center" style="color: white">
+                    Desarrollado por DragonWare.
+                </small>
+            </div>
+        </div>
+    </footer>
 </body>
-<footer class="footer uk-background-primary">
-    <div class="uk-padding uk-child-width-1-6@m uk-grid-match" uk-grid>
-        <div class="uk-text-left@m uk-text-center">
-            <h2 style="color: white; margin: 0 !important">iElect</h2>
-            <small style="color: white">Copyright ©2021 iElect</small>
-        </div>
-        <div class="uk-text-left@m uk-text-center">
-            <a style="color: white">Aviso de privacidad</a>
-        </div>
-        <div class="uk-text-left@m uk-text-center">
-            <a style="color: white">Politicas y condiciones</a>
-        </div>
-        <div class="uk-text-center uk-hidden@m">
-            <small style="color: white"> Desarrollado por DragonWare. </small>
-        </div>
-        <div class="uk-position-small uk-position-bottom-right uk-visible@m">
-            <small class="uk-align-right@m uk-text-center" style="color: white">
-                Desarrollado por DragonWare.
-            </small>
-        </div>
-    </div>
-</footer>
 
 </html>
