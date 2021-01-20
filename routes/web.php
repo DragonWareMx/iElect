@@ -41,7 +41,11 @@ Route::get('/inicio', function () {
     return view('usuario.home');
 })->name('home');
 
-/******* AJUSTES *********/
+//Ruta Mapa Seccional
+Route::get('/mapa_seccional', function () {
+    return view('usuario.mapa_seccional');
+})->name('mapa_seccional');
+
 //Ruta Ajustes
 Route::get('/ajustes', function () {
     return view('usuario.ajustes');
@@ -89,10 +93,20 @@ Route::get('/simpatizantes/solicitudes', function () {
     return view('usuario.simpatizantes_eliminar');
 })->name('simpatizantes_eliminar');
 
+/****** HISTORICO ******/
+//Historico
+Route::get('/historico', function () {
+    return view('usuario.historico');
+})->name('historico');
+
 
 /********************/
 /***    ADMIN    ****/
 /********************/
+//Admin | Inicio
+Route::get('/admin/404', function () {
+    return view('admin.404');
+})->name('admin-404');
 
 //Admin | Inicio
 Route::get('/admin/inicio', function () {

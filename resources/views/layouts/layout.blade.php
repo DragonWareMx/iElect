@@ -49,7 +49,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{route('mapa_seccional')}}">
                         <span class="uk-margin-small-right" uk-icon="album"></span>Mapa
                         Seccional
                     </a>
