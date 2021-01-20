@@ -1,0 +1,11 @@
+@media screen and (max-width: 1199px) {
+    .elec_resp {
+        top: auto !important;
+        left: auto !important;
+        transform: none !important;
+        width: auto !important;
+        max-width: none !important;
+        box-sizing: unset !important;
+        position: relative !important;
+    }
+}
