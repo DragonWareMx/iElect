@@ -104,6 +104,7 @@ Mapa seccional
             <div class="uk-width-expand@m info">
                 <!--MAPA SECCIONAL-->
                 <h1>MAPA</h1>
+                <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1t4YBmOu5753H36_Y-4rr0KiZyUamRLxH" width="640" height="480"></iframe>
             </div>
             <div class="uk-width-expand@m info" hidden>
                 <!--GRÁFICAS-->
