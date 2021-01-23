@@ -9,9 +9,9 @@ class Position extends Model
 {
     use HasFactory;
     public function vote(){
-        return $this->hasMany('App\Vote');
+        return $this->hasMany('App\Models\Vote');
     }
     public function campaign(){
-        return $this->hasMany('App\Campaign');
+        return $this->hasMany('App\Models\Campaign');
     }
 }

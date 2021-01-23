@@ -10,6 +10,6 @@ class Job extends Model
     use HasFactory;
     public function elector()
     {
-        return $this->hasMany('App\Elector');
+        return $this->hasMany('App\Models\Elector');
     }
 }

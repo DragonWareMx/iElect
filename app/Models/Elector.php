@@ -9,15 +9,15 @@ class Elector extends Model
 {
     use HasFactory;
     public function job(){
-        return $this->belongsTo('App\Job');
+        return $this->belongsTo('App\Models\Job');
     }
     public function section(){
-        return $this->belongsTo('App\Section');
+        return $this->belongsTo('App\Models\Section');
     }
     public function campaign(){
-        return $this->belongsTo('App\Campaign');
+        return $this->belongsTo('App\Models\Campaign');
     }
     public function user(){
-        return $this->belongsTo('App\User');
+        return $this->belongsTo('App\Models\User');
     }
 }

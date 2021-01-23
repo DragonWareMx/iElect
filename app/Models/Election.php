@@ -9,6 +9,6 @@ class Election extends Model
 {
     use HasFactory;
     public function vote(){
-        return $this->hasMany('App\Vote');
+        return $this->hasMany('App\Models\Vote');
     }
 }

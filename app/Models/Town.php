@@ -10,13 +10,13 @@ class Town extends Model
     use HasFactory;
     
     public function federal_entitie(){
-        return $this->belongsTo('App\Federal_Entitie');
+        return $this->belongsTo('App\Models\FederalEntitie');
     }
     public function federal_district(){
-        return $this->belongsToMany('App\Federal_District');
+        return $this->belongsToMany('App\Models\FederalDistrict');
     }
     public function local_district(){
-        return $this->belongsToMany('App\Local_District');
+        return $this->belongsToMany('App\Models\LocalDistrict');
     }
 
 }

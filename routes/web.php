@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,9 +43,9 @@ Route::get('/inicio', function () {
 })->name('home');
 
 //Ruta Mapa Seccional
-Route::get('/mapa_seccional', function () {
-    return view('usuario.mapa_seccional');
-})->name('mapa_seccional');
+Route::get('/mapa_seccional','mapaSeccionalController@index' )->name('mapa_seccional');
+//Ruta Obten sección seleccionada
+Route::get('/seccion_mapa/{id}','mapaSeccionalController@seccion')->name('seccion_mapa');
 
 //Ruta Ajustes
 Route::get('/ajustes', function () {

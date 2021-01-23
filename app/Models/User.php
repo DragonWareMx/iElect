@@ -42,9 +42,9 @@ class User extends Authenticatable
     ];
 
     public function campaign(){
-        return $this->belongsToMany('App\Campaign');
+        return $this->belongsToMany('App\Models\Campaign');
     }
     public function elector(){
-        return $this->hasMany('App\Elector');
+        return $this->hasMany('App\Models\Elector');
     }
 }

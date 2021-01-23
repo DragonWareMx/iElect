@@ -6,6 +6,10 @@ Mapa seccional
 
 @section('imports')
 @extends('subviews.chartjs')
+<script
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAsRsMlBifyC8uKaJMAskmREIdfLqBYyA&callback=initMap&libraries=&v=weekly"
+defer></script>
+
 @endsection
 
 @section('body')
@@ -14,20 +18,20 @@ Mapa seccional
     <div class="uk-card uk-card-default uk-margin-top uk-padding-small">
         <div class="uk-flex uk-flex-middle">
             <h3 class="uk-text-bold uk-margin-remove">Mapa seccional</h3>
-            <a href="#" class="uk-margin-left">
+            <a href="#" class="uk-margin-left" onclick="opciones('federal')">
                 <img class="uk-margin-small-right" src="{{asset('img/icons/mexico.png')}}"
                     style="max-height: 18px; max-width: 26px; width: 100%;" />
                 Distritos federales
             </a>
-            <a href="#" class="uk-margin-left">
+            <a href="#" class="uk-margin-left" onclick="opciones('local')">
                 <img class="uk-margin-small-right" src="{{asset('img/icons/mich.png')}}"
                     style="max-height: 18px; max-width: 26px; width: 100%;" />
                 Distritos locales
             </a>
-            <a href="#" class="uk-margin-left">
+            <a href="#" class="uk-margin-left" onclick="opciones('municipio')">
                 <img class="uk-margin-small-right" src="{{asset('img/icons/section.png')}}"
                     style="max-height: 24px; max-width: 24px; width: 100%;" />
-                Secciones
+                Municipios
             </a>
         </div>
 
@@ -37,74 +41,112 @@ Mapa seccional
                 <div class="uk-margin-bottom">
                     <div class="uk-form-controls">
                         <select class="uk-select" id="form-stacked-select">
-                            <option>Michoacán de Ocampo - 16</option>
-                            <option>Option 02</option>
+                        @foreach ($estados as $estado)
+                            <option value="{{$estado->id}}">{{$estado->nombre}}</option>    
+                        @endforeach
                         </select>
                     </div>
                 </div>
-                <h6 class="uk-margin-remove uk-text-bold">DISTRITO FEDERAL</h6>
-                <div class="uk-margin-bottom">
-                    <div class="uk-form-controls">
-                        <select class="uk-select" id="form-stacked-select">
-                            <option>12</option>
-                            <option>Option 02</option>
-                        </select>
+                <div id="federal" class="uk-animation-slide-top-medium" style="display: none">
+                    <h6 class="uk-margin-remove uk-text-bold">DISTRITO FEDERAL</h6>
+                    <div class="uk-margin-bottom">
+                        <div class="uk-form-controls">
+                            <select id="selectDF" class="uk-select" id="form-stacked-select" onchange="drawSections(this.value, 'federal')">
+                                <option value="" selected="selected">Selecciona un distrito</option>
+                                @foreach ($dFederales as $distrito)
+                                    <option value="{{$distrito->id}}">{{$distrito->id}}-{{$distrito->cabecera}}</option>    
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
+                <div id="local" style="display: none" class="uk-animation-slide-top-medium">
                 <h6 class="uk-margin-remove uk-text-bold">DISTRITO LOCAL</h6>
-                <div class="uk-margin-bottom">
-                    <div class="uk-form-controls">
-                        <select class="uk-select" id="form-stacked-select">
-                            <option>17</option>
-                            <option>Option 02</option>
-                        </select>
+                    <div class="uk-margin-bottom">
+                        <div class="uk-form-controls">
+                            <select class="uk-select" id="form-stacked-select">
+                                <option value="" selected="selected" onchange="drawSections(this.value, 'local')">Selecciona un distrito</option>
+                            @foreach ($dLocales as $distrito)
+                                <option value="{{$distrito->id}}">{{$distrito->id}}-{{$distrito->cabecera}}</option>    
+                            @endforeach
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div id="municipio" style="display: none" class="uk-animation-slide-top-medium">
+                    <h6 class="uk-margin-remove uk-text-bold">MUNICIPIO</h6>
+                    <div class="uk-margin-bottom">
+                        <div class="uk-form-controls">
+                            <select class="uk-select" id="form-stacked-select">
+                                <option value="" selected="selected" onchange="drawSections(this.value, 'municipio')">Selecciona un municipio</option>
+                                @foreach ($municipios as $municipio)
+                                    <option value="{{$municipio->id}}">{{$municipio->nombre}}</option>    
+                                @endforeach
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <h6 class="uk-margin-remove uk-text-bold">SECCIÓN</h6>
                 <div class="uk-margin-bottom">
                     <div class="uk-form-controls">
                         <select class="uk-select" id="form-stacked-select">
-                            <option>1278</option>
-                            <option>Option 02</option>
+                            <option value="" selected="selected">Secciones</option>
+                            @foreach ($secciones as $seccion)
+                                <option value="{{$seccion->id}}">{{$seccion->id}}</option>    
+                            @endforeach
                         </select>
                     </div>
                 </div>
                 <hr />
-                <h5 class="uk-margin-remove uk-text-bold">LISTADO NOMINAL</h5>
-                <p class="uk-margin-small uk-margin-remove-bottom">Total: 760</p>
-                <div class="uk-flex-inline">
-                    <p class="uk-margin-small-right">Prioridad: </p>
-                    <p class="uk-text-danger uk-margin-remove">Alta</p>
-                </div>
-
-                <!-- GRAFICA SEXO -->
-                <h5 class="uk-text-bold uk-margin-remove" style="padding-top: 0">
-                    Sexo
-                </h5>
-                <div class="uk-flex uk-flex-middle">
-                    <div>
-                        <canvas id="simpChart" width="auto" height="200"></canvas>
+                <form action="/seccion_mapa" id="form-ajax">
+                    <div class="uk-flex">
+                        <p class="uk-margin-small-right">Meta 2021: </p>
+                        <p class="uk-text-danger uk-margin-remove">234</p>
                     </div>
-                    <div class="uk-flex-none">
+                    <div class="uk-flex">
+                        <p class="uk-margin-small-right">Avance: </p>
+                        <p class="uk-text-danger uk-margin-remove">100</p>
+                    </div>
+                    <div class="uk-flex">
+                        <p class="uk-margin-small-right">Prioridad: </p>
+                        <p class="uk-text-danger uk-margin-remove">Alta</p>
+                    </div>
+                    <!-- GRAFICA SEXO -->
+                    <h5 class="uk-margin-remove uk-text-bold">LISTADO NOMINAL</h5>
+                    <p id="totalLN" class="uk-margin-small uk-margin-remove-bottom">Total:  </p>
+                    <h5 class="uk-text-bold uk-margin-remove" style="padding-top: 0">
+                        Sexo
+                    </h5>
+                    <div class="uk-flex uk-flex-middle">
                         <div>
-                            <span class="uk-badge" style="background-color: #9b51e0"></span>
-                            Hombres 47%
+                            <canvas id="simpChart" width="auto" height="200"></canvas>
                         </div>
-                        <div>
-                            <span class="uk-badge" style="background-color: #fb8832"></span>
-                            Mujeres 53%
+                        <div class="uk-flex-none">
+                            <div>
+                                <span class="uk-badge" style="background-color: #9b51e0"></span>
+                                Hombres 47%
+                            </div>
+                            <div>
+                                <span class="uk-badge" style="background-color: #fb8832"></span>
+                                Mujeres 53%
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="uk-text-right">
-                    <a class="uk-text-small info" uk-toggle="target: .info">Más información <span
-                            uk-icon="icon: chevron-right; ratio: 0.8"></span></a>
-                </div>
+                    <div class="uk-text-right">
+                        <a class="uk-text-small info" uk-toggle="target: .info">Más información <span
+                                uk-icon="icon: chevron-right; ratio: 0.8"></span></a>
+                    </div>
+                </form>    
             </div>
             <div class="uk-width-expand@m info">
                 <!--MAPA SECCIONAL-->
-                <h1>MAPA</h1>
-                <iframe src="https://www.google.com/maps/d/u/0/embed?mid=1t4YBmOu5753H36_Y-4rr0KiZyUamRLxH" width="640" height="480"></iframe>
+                <h1 id="section">MAPA</h1>
+                <div id="mapa" style="height: 100%" style=""> 
+                </div>
+                
+                
+                {{-- Aquí cargamos el mapa --}}
+                 
             </div>
             <div class="uk-width-expand@m info" hidden>
                 <!--GRÁFICAS-->
@@ -163,6 +205,116 @@ Mapa seccional
         </div>
     </div>
 </div>
+<script>
+    let map;
+
+function initMap() {
+    map = new google.maps.Map(document.getElementById("mapa"), {
+        center:
+        { lat: 19.1411089, lng: -104.1448514 },
+        zoom: 8,
+    });
+ 
+    map.data.loadGeoJson('js/MICHOACAN_SECCION.geojson');
+  
+    map.data.setStyle({
+        strokeWeight: 0,
+        clickable: true,
+        visible: true,
+    });
+
+
+    map.data.addListener('click', function(event) {
+        var nombre = event.feature.getProperty('Name');
+        var description = event.feature.getProperty('description');
+        
+        httpRequest = false;
+        if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
+            httpRequest = new XMLHttpRequest();
+            
+        } else {
+        // Internet explorer siempre llevando la contra.
+            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        if (httpRequest == false) return false; // no se puedo crear el objeto
+        
+        var ide = nombre; // obtener el id de la sección
+        var url = document.getElementById('form-ajax').action;
+        httpRequest.open('GET', url + '/' + ide, true);
+        
+        
+        httpRequest.onreadystatechange = function() {
+            if (httpRequest.readyState == 4) {
+                // la peticion la recibio el servidor
+                if (httpRequest.status == 200) {
+                    // convertimos la respuesta del servidor a un objeto JSON
+                    respuesta = JSON.parse(httpRequest.responseText);
+                    // obtenemos subcategorias
+                    total = respuesta.seccion.hombres + respuesta.seccion.mujeres;
+                    document.getElementById("totalLN").innerHTML += total;
+                    
+                } else {
+                    alert("Error"); //poner el error correcto 
+                    // error 404, 500 etc.
+                }       
+            }
+        }
+        httpRequest.send();
+        
+        // coordinates = event.feature.getGeometry();
+        // var Latlng = new google.maps.LatLng(coordinates[[0]]);
+
+        // var infoWindow = new google.maps.InfoWindow({
+        //     content: description,
+        //     position: Latlng,
+        // });
+                
+        // infoWindow.open(map);
+    });
+    
+    map.data.addListener('mouseover', function(event) {
+        var nombre = event.feature.getProperty('Name');
+        document.getElementById("section").innerHTML = "Sección "+nombre;
+
+        map.data.revertStyle();
+        map.data.overrideStyle(event.feature, {fillColor: 'red'});
+    });
+
+}
+
+function opciones(tipo){
+    switch(tipo){
+        case "federal":
+            document.getElementById("federal").style.display ='block';
+            document.getElementById("local").style.display ='none';
+            document.getElementById("municipio").style.display ='none';
+        break;
+        case "local":
+            document.getElementById("local").style.display ='block';
+            document.getElementById("federal").style.display ='none';
+            document.getElementById("municipio").style.display ='none';
+        break;
+        case "municipio":
+            document.getElementById("municipio").style.display ='block';
+            document.getElementById("local").style.display ='none';
+            document.getElementById("federal").style.display ='none';
+        break;
+    }    
+}
+
+function drawSections(ident, caso){
+    switch (caso){
+        case "federal": 
+        map.data.forEach((feature) => {
+            if(feature.getProperty('DISTRITO')==ident){
+                map.data.overrideStyle(feature, {visible: true});
+            }    
+        });
+        break;
+    } 
+}
+
+</script>
 @endsection
 
 @section('scripts')
@@ -246,5 +398,6 @@ options: {
 maintainAspectRatio: false,
 },
 });
+
 
 @endsection

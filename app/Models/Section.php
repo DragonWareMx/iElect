@@ -9,19 +9,19 @@ class Section extends Model
 {
     use HasFactory;
     public function vote(){
-        return $this->hasMany('App\Vote');
+        return $this->hasMany('App\Models\Vote');
     }    
     public function federal_district(){
-        return $this->belongsTo('App\Federal_District');
+        return $this->belongsTo('App\Models\FederalDistrict');
     }
     
     public function local_district(){
-        return $this->belongsTo('App\Local_District');
+        return $this->belongsTo('App\Models\LocalDistrict');
     }
     public function elector(){
-        return $this->hasMany('App\Elector');
+        return $this->hasMany('App\Models\Elector');
     }
     public function campaign(){
-        return $this->belongsToMany('App\Campaign');
+        return $this->belongsToMany('App\Models\Campaign');
     }
 }

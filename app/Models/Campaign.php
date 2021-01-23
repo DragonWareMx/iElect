@@ -10,19 +10,19 @@ class Campaign extends Model
     use HasFactory;
 
     public function position(){
-        return $this->belongsTo('App\Position');
+        return $this->belongsTo('App\Models\Position');
     }
     public function privacy_document(){
-        return $this->hasMany('App\Privacy_Document');
+        return $this->hasMany('App\Models\PrivacyDocument');
     }
     public function user(){
-        return $this->belongsToMany('App\User');
+        return $this->belongsToMany('App\Models\User');
     }
     public function politic_partie(){
-        return $this->belongsToMany('App\Politic_Partie');
+        return $this->belongsToMany('App\Models\PoliticPartie');
     }
     public function section(){
-        return $this->belongsToMany('App\Section');
+        return $this->belongsToMany('App\Models\Section');
     }
 
 
