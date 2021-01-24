@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Log In</title>
+    <title>Iniciar sesión</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     @include('subviews.imports')
@@ -36,9 +36,10 @@
                                 </label>
                             </div>
                             @error('email')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                            <div class="uk-alert-danger" uk-alert>
+                                <a class="uk-alert-close" uk-close></a>
+                                <p>{{$message}}</p>
+                            </div>
                             @enderror
                         </div>
                         <!--Input contraseña-->
@@ -52,9 +53,10 @@
                                 </label>
                             </div>
                             @error('password')
-                            <span class="invalid-feedback" role="alert">
-                                <strong>{{ $message }}</strong>
-                            </span>
+                            <div class="uk-alert-danger" uk-alert>
+                                <a class="uk-alert-close" uk-close></a>
+                                <p>{{$message}}</p>
+                            </div>
                             @enderror
                         </div>
                         <!--Div grid-->
