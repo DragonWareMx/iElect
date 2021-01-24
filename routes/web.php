@@ -20,27 +20,28 @@ use Illuminate\Support\Facades\Request;
 })->name('lay');
 */
 
-/****** LOGIN ******/
-//Ruta Login
+//Ruta principal
 Route::get('/', function () {
-    return view('login.index');
+    return redirect()->route('home');
 })->name('index');
 
-//Ruta Recuperar contraseña
-Route::get('/recuperar_contrasena', function () {
-    return view('login.recuperar_contrasena');
-})->name('recuperar_contra');
+/****** LOGIN ******/
 
-//Ruta Recuperar contraseña
-Route::get('/registro_brigadista', function () {
-    return view('login.registro_brig');
-})->name('registro_brig');
+// //Ruta Recuperar contraseña
+// Route::get('/recuperar_contrasena', function () {
+//     return view('login.recuperar_contrasena');
+// })->name('recuperar_contra');
+
+// //Ruta Recuperar contraseña
+// Route::get('/registro_brigadista', function () {
+//     return view('login.registro_brig');
+// })->name('registro_brig');
 
 
 //Home
 Route::get('/inicio', function () {
     return view('usuario.home');
-})->name('home');
+})->name('home')->middleware('auth');
 
 //Ruta Mapa Seccional
 Route::get('/mapa_seccional', 'mapaSeccionalController@index')->name('mapa_seccional');
@@ -165,5 +166,3 @@ Route::get('/simpatizante/baja', function () {
 })->name('simpatizante-solicitud_baja');
 
 Auth::routes(['register' => false]);
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -30,6 +30,10 @@
                             Nombre del partido NDP
                         </p>
                     </div>
+                    <form action="{{ route('logout') }}" method="post">
+                        @csrf
+                        <button>logout</button>
+                    </form>
                 </div>
             </a>
         </div>
