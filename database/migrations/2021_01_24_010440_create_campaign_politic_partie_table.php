@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateLocalDTownTable extends Migration
+class CreateCampaignPoliticPartieTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,12 @@ class CreateLocalDTownTable extends Migration
      */
     public function up()
     {
-        Schema::create('local_d_town', function (Blueprint $table) {
+        Schema::create('campaign_politic_partie', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('Local_District_id',)->references('id')->on('local_districts')->onDelete('cascade');
-            $table->foreignId('town_id',)->references('id')->on('towns')->onDelete('cascade');
+
+            $table->foreignId('Campaign_id',)->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreignId('Politic_Partie_id',)->references('id')->on('politic_parties')->onDelete('cascade');
         });
     }
 
@@ -28,6 +29,6 @@ class CreateLocalDTownTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('local_d_town');
+        Schema::dropIfExists('campaign_politic_partie');
     }
 }

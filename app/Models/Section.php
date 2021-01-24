@@ -14,6 +14,9 @@ class Section extends Model
     public function federal_district(){
         return $this->belongsTo('App\Models\FederalDistrict');
     }
+    public function town(){
+        return $this->belongsTo('App\Models\Town');
+    }
     
     public function local_district(){
         return $this->belongsTo('App\Models\LocalDistrict');

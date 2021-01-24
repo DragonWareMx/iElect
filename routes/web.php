@@ -44,9 +44,11 @@ Route::get('/inicio', function () {
 
 //Ruta Mapa Seccional
 Route::get('/mapa_seccional','mapaSeccionalController@index' )->name('mapa_seccional');
-//Ruta Obten sección seleccionada
+//Ruta Obten sección seleccionada o secciones según el caso
 Route::get('/seccion_mapa/{id}','mapaSeccionalController@seccion')->name('seccion_mapa');
-
+Route::get('/dF_mapa/{id}','mapaSeccionalController@secDF')->name('dF_mapa');
+Route::get('/dL_mapa/{id}','mapaSeccionalController@secDL')->name('dL_mapa');
+Route::get('/mN_mapa/{id}','mapaSeccionalController@secM')->name('mN_mapa');
 //Ruta Ajustes
 Route::get('/ajustes', function () {
     return view('usuario.ajustes');

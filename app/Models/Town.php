@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Town extends Model
 {
     use HasFactory;
-    
+    public function section(){
+        return $this->hasMany('App\Models\Section');
+    }
     public function federal_entitie(){
         return $this->belongsTo('App\Models\FederalEntitie');
     }

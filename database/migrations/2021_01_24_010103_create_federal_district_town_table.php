@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateFederalDistrictsTownsTable extends Migration
+class CreateFederalDistrictTownTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,9 @@ class CreateFederalDistrictsTownsTable extends Migration
      */
     public function up()
     {
-        Schema::create('federal_districts_towns', function (Blueprint $table) {
+        Schema::create('federal_district_town', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-
             $table->foreignId('Federal_District_id',)->references('id')->on('federal_districts')->onDelete('cascade');
             $table->foreignId('town_id',)->references('id')->on('towns')->onDelete('cascade');
         });
@@ -29,6 +28,6 @@ class CreateFederalDistrictsTownsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('federal_districts_towns');
+        Schema::dropIfExists('federal_district_town');
     }
 }
