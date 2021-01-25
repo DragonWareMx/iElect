@@ -160,17 +160,17 @@ defer></script>
                 <div class="uk-margin-top uk-text-center elec_resp" style="top: -50px; position: relative;">
                     <div class=" uk-flex-inline uk-flex-middle">
                         <a href="" uk-icon="chevron-left"></a>
-                        <p class="uk-margin-remove uk-text-bold">Elecciones 2018</p>
+                        <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
                         <a href="" uk-icon="chevron-right"></a>
                     </div>
                     <p class="uk-margin-remove">Gobernador estatal de Michoacán</p>
                 </div>
                 <div class="uk-margin-top" uk-grid>
                     <!-- Grafica de barras -->
-                    <div class="uk-width-1-2@m">
+                    <div id="div_barHistoric" class="uk-width-1-2@m">
                         <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
                         <canvas id="barHistoric" width="auto" height="200" style="max-height: 200px"></canvas>
-                        <p class="uk-text-center uk-text-small uk-margin-remove">Rango de edades</p>
+                        <p id="before_me2" class="uk-text-center uk-text-small uk-margin-remove">Partidos políticos</p>
                     </div>
 
                     <div class="uk-width-expand@m">
@@ -250,6 +250,15 @@ function initMap() {
             canvas.style.maxHeight='250px';
             before_me =document.getElementById("before_me");
             document.getElementById('div_graphics').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
+
+            document.getElementById("barHistoric").remove();
+            var canvas = document.createElement("canvas");
+            canvas.id = "barHistoric"; 
+            canvas.style.height='200';
+            canvas.style.width='auto';
+            canvas.style.maxHeight='200px';
+            before_me =document.getElementById("before_me2");
+            document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
 
             var nombre = event.feature.getProperty('Name');
             document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
@@ -350,7 +359,25 @@ function initMap() {
                         maintainAspectRatio: false,
                         },
                         });
-                        
+                        //Grafica de barras
+                        Chart.defaults.global.legend.display = false;
+                        var ctx = document.getElementById("barHistoric").getContext("2d");
+                        var barHistoric = new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                        labels: respuesta.partidos,
+                        datasets: [
+                        {
+                        label: "Votos",
+                        data: respuesta.num,
+                        backgroundColor: respuesta.colores,
+                        },
+                        ],
+                        },
+                        options: {
+                        maintainAspectRatio: false,
+                        },
+                        });
                     } else {
                         alert("Error"); //poner el error correcto 
                         // error 404, 500 etc.
@@ -572,32 +599,6 @@ function drawSections(vars, caso){
 
 @section('scripts')
 
-//Grafica de barras
-Chart.defaults.global.legend.display = false;
-var ctx = document.getElementById("barHistoric").getContext("2d");
-var barHistoric = new Chart(ctx, {
-type: "bar",
-data: {
-labels: [
-"PRI",
-"PAN",
-"PRD",
-"PT",
-"PES",
-"NDP",
-],
-datasets: [
-{
-label: "data-1",
-data: [200, 153, 60, 180, 130, 175],
-backgroundColor: ["#029336", "#06338E", "#FFCB01", "#DA251D", "#5A2A7C"],
-},
-],
-},
-options: {
-maintainAspectRatio: false,
-},
-});
 
 
 @endsection
