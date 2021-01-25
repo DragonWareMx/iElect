@@ -1,7 +1,9 @@
 <?php
 
+//use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,23 +22,23 @@ use Illuminate\Support\Facades\Request;
 })->name('lay');
 */
 
+//esta ruta es de ejemplo para poner el gate pa checar el rol vaya :v
+// Route::get('/test', function () {
+//     Gate::authorize('haveaccess', 'admin.perm');
+//     return 'hola we';
+// })->name('lay')->middleware('auth');
+
 //Ruta principal
 Route::get('/', function () {
     return redirect()->route('home');
 })->name('index');
 
 /****** LOGIN ******/
-
-// //Ruta Recuperar contraseña
-// Route::get('/recuperar_contrasena', function () {
-//     return view('login.recuperar_contrasena');
-// })->name('recuperar_contra');
-
-// //Ruta Recuperar contraseña
-// Route::get('/registro_brigadista', function () {
-//     return view('login.registro_brig');
-// })->name('registro_brig');
-
+Auth::routes(['register' => false]);
+//Ruta registro brigadista
+Route::get('/registro/brigadista', function () {
+    return view('login.registro_brig');
+})->name('registro_brig');
 
 //Home
 Route::get('/inicio', function () {
@@ -164,5 +166,3 @@ Route::get('/simpatizante/aviso', function () {
 Route::get('/simpatizante/baja', function () {
     return view('simpatizante.solicitud_baja');
 })->name('simpatizante-solicitud_baja');
-
-Auth::routes(['register' => false]);

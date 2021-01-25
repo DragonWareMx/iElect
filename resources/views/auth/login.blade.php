@@ -76,7 +76,8 @@
                                     Iniciar sesión
                                 </button>
                             </div>
-                            <a class="uk-link-heading uk-text-primary uk-text-left@m uk-text-center" href="#">
+                            <a class="uk-link-heading uk-text-primary uk-text-left@m uk-text-center"
+                                href="{{ route('registro_brig') }}">
                                 Registrarme como brigadista
                             </a>
                             <small class="uk-text-muted uk-text-center uk-hidden@m">Copyright ©2021 iElect</small>
