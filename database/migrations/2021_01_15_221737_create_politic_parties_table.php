@@ -20,6 +20,7 @@ class CreatePoliticPartiesTable extends Migration
             $table->string('name',45); //nombre del partido
             $table->string('siglas',10); 
             $table->string('logo',250); //url de la imagen del logo
+            $table->string('color',250); //codigo del color para gráficas
         });
     }
 

@@ -16,7 +16,7 @@ class CreateLocalDistrictTownTable extends Migration
         Schema::create('local_district_town', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('Local_District_id',)->references('id')->on('local_districts')->onDelete('cascade');
+            $table->foreignId('local_district_id',)->references('id')->on('local_districts')->onDelete('cascade');
             $table->foreignId('town_id',)->references('id')->on('towns')->onDelete('cascade');
         });
     }

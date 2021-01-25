@@ -17,8 +17,8 @@ class CreateCampaignPoliticPartieTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->foreignId('Campaign_id',)->references('id')->on('campaigns')->onDelete('cascade');
-            $table->foreignId('Politic_Partie_id',)->references('id')->on('politic_parties')->onDelete('cascade');
+            $table->foreignId('campaign_id',)->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreignId('politic_partie_id',)->references('id')->on('politic_parties')->onDelete('cascade');
         });
     }
 

@@ -16,7 +16,7 @@ class CreateFederalDistrictTownTable extends Migration
         Schema::create('federal_district_town', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->foreignId('Federal_District_id',)->references('id')->on('federal_districts')->onDelete('cascade');
+            $table->foreignId('federal_district_id',)->references('id')->on('federal_districts')->onDelete('cascade');
             $table->foreignId('town_id',)->references('id')->on('towns')->onDelete('cascade');
         });
     }

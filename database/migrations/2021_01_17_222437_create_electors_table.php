@@ -20,7 +20,7 @@ class CreateElectorsTable extends Migration
             $table->text('nombre');
             $table->text('apellido_p');
             $table->text('apellido_m');
-            $table->unsignedBigInteger('Job_id');
+            $table->unsignedBigInteger('job_id');
             $table->enum('edo_civil', ['soltero','casado','union libre','divorciado', 'viudo'])->nullable();
             $table->date('fecha_nac'); //falaba en diseño bd
             $table->string('telefono', 25);
@@ -33,9 +33,9 @@ class CreateElectorsTable extends Migration
             $table->text('localidad')->nullable();
             $table->text('municipio')->nullable();
             $table->string('cp', 25)->nullable();
-            $table->unsignedBigInteger('Section_id');    //id de seccion a la que pertenece
-            $table->unsignedBigInteger('Campaign_id');   //id de campaña SE AGREGÓ
-            $table->unsignedBigInteger('User_id');         //brigadista que lo dio de alta SE AGREGÓ
+            $table->unsignedBigInteger('section_id');    //id de seccion a la que pertenece
+            $table->unsignedBigInteger('campaign_id');   //id de campaña SE AGREGÓ
+            $table->unsignedBigInteger('user_id');         //brigadista que lo dio de alta SE AGREGÓ
             $table->text('clave_elector');          //clave del ine
             $table->text('foto_elector')->nullable(); //foto, no se va a ocupar casi nunca
             $table->text('credencial_a'); //foto credencial ine enfrente
@@ -45,10 +45,10 @@ class CreateElectorsTable extends Migration
                                                     //IMPORTANTE: sólo los aprobados se toman en cuenta en estadísticas
             
 
-            $table->foreign('Section_id')->references('id')->on('sections')->onDelete('cascade');
-            $table->foreign('Job_id')->references('id')->on('jobs')->onDelete('cascade');
-            $table->foreign('Campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
-            $table->foreign('User_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('section_id')->references('id')->on('sections')->onDelete('cascade');
+            $table->foreign('job_id')->references('id')->on('jobs')->onDelete('cascade');
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
