@@ -54,7 +54,7 @@ defer></script>
                             <select id="selectDF" class="uk-select" id="form-stacked-select-df" onchange="drawSections(this.value, 'federal')">
                                 <option value="" selected="selected">Selecciona un distrito</option>
                                 @foreach ($dFederales as $distrito)
-                                    <option value="{{$distrito->id}}">{{$distrito->id}}-{{$distrito->cabecera}}</option>    
+                                    <option value="{{$distrito->id}}&{{$distrito->coordenadas}}" >{{$distrito->id}}-{{$distrito->cabecera}}</option>    
                                 @endforeach
                             </select>
                         </div>
@@ -67,7 +67,7 @@ defer></script>
                             <select class="uk-select" id="form-stacked-select-dl" onchange="drawSections(this.value, 'local')">
                                 <option value="" selected="selected" >Selecciona un distrito</option>
                             @foreach ($dLocales as $distrito)
-                                <option value="{{$distrito->id}}">{{$distrito->id}}-{{$distrito->cabecera}}</option>    
+                                <option value="{{$distrito->id}}&{{$distrito->coordenadas}}">{{$distrito->id}}-{{$distrito->cabecera}}</option>    
                             @endforeach
                             </select>
                         </div>
@@ -80,7 +80,7 @@ defer></script>
                             <select class="uk-select" id="form-stacked-select-mp" onchange="drawSections(this.value, 'municipio')">
                                 <option value="" selected="selected" >Selecciona un municipio</option>
                                 @foreach ($municipios as $municipio)
-                                    <option value="{{$municipio->id}}">{{$municipio->nombre}}</option>    
+                                    <option value="{{$municipio->id}}&{{$municipio->local_district[0]->coordenadas}}">{{$municipio->nombre}}</option>    
                                 @endforeach
                             </select>
                         </div>
@@ -118,7 +118,7 @@ defer></script>
                         Sexo
                     </h5>
                     <div class="uk-flex uk-flex-middle">
-                        <div>
+                        <div id="div_pie">
                             <canvas id="simpChart" width="auto" height="200"></canvas>
                         </div>
                         <div id="porcentajes" class="uk-flex uk-flex-middle" style="display: none">
@@ -149,28 +149,28 @@ defer></script>
                 {{-- Aquí cargamos el mapa --}}
                  
             </div>
-            <div class="uk-width-expand@m info" hidden>
+            <div id="div_graphics" class="uk-width-expand@m info" hidden>
                 <!--GRÁFICAS-->
                 <h2 id="seccionName"></h2>
                 <p class="uk-text-bold">Edad</p>
                 <canvas id="barChart" width="auto" height="200" style="max-height: 250px"></canvas>
-                <p class="uk-text-center uk-text-small uk-margin-remove">Rango de edades</p>
+                <p id="before_me" class="uk-text-center uk-text-small uk-margin-remove">Rango de edades</p>
                 <hr />
                 <p class="uk-text-bold">Información histórica</p>
                 <div class="uk-margin-top uk-text-center elec_resp" style="top: -50px; position: relative;">
                     <div class=" uk-flex-inline uk-flex-middle">
                         <a href="" uk-icon="chevron-left"></a>
-                        <p class="uk-margin-remove uk-text-bold">Elecciones 2018</p>
+                        <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
                         <a href="" uk-icon="chevron-right"></a>
                     </div>
                     <p class="uk-margin-remove">Gobernador estatal de Michoacán</p>
                 </div>
                 <div class="uk-margin-top" uk-grid>
                     <!-- Grafica de barras -->
-                    <div class="uk-width-1-2@m">
+                    <div id="div_barHistoric" class="uk-width-1-2@m">
                         <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
                         <canvas id="barHistoric" width="auto" height="200" style="max-height: 200px"></canvas>
-                        <p class="uk-text-center uk-text-small uk-margin-remove">Rango de edades</p>
+                        <p id="before_me2" class="uk-text-center uk-text-small uk-margin-remove">Partidos políticos</p>
                     </div>
 
                     <div class="uk-width-expand@m">
@@ -213,13 +213,13 @@ defer></script>
     let control; //guarda el tipo de distrito o muni de las secciones visibles
     let idControl; //guarda el id del distrito o muni de las secciones visibles
     let click=false;
-    var simpCanvas = document.getElementById("simpChart");
+    
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("mapa"), {
         center:
         { lat: 19.7036519, lng: -101.2411436 },
-        zoom: 10,
+        zoom: 9,
     });
  
     map.data.loadGeoJson('js/MICHOACAN_SECCION.geojson');
@@ -232,10 +232,34 @@ function initMap() {
     map.data.addListener('click', function(event) {
         document.getElementById('porcentajes').style.display = 'block';
         document.getElementById('moreInfo').style.display = 'block';
-        
-        
+
         if(!click){
-            
+            document.getElementById("simpChart").remove();
+            var canvas = document.createElement("canvas");
+            canvas.id = "simpChart"; 
+            canvas.style.height='200';
+            canvas.style.width='auto';
+            canvas.style.maxHeight='250px';
+            document.getElementById('div_pie').appendChild(canvas);//creo y elimino elementos html de los canvas para que no se superpongan al actualizar
+
+            document.getElementById("barChart").remove();
+            var canvas = document.createElement("canvas");
+            canvas.id = "barChart"; 
+            canvas.style.height='200';
+            canvas.style.width='auto';
+            canvas.style.maxHeight='250px';
+            before_me =document.getElementById("before_me");
+            document.getElementById('div_graphics').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
+
+            document.getElementById("barHistoric").remove();
+            var canvas = document.createElement("canvas");
+            canvas.id = "barHistoric"; 
+            canvas.style.height='200';
+            canvas.style.width='auto';
+            canvas.style.maxHeight='200px';
+            before_me =document.getElementById("before_me2");
+            document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
+
             var nombre = event.feature.getProperty('Name');
             document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
             map.data.setStyle(function(feature) {
@@ -266,6 +290,7 @@ function initMap() {
             
             
             httpRequest.onreadystatechange = function() {
+                       
                 if (httpRequest.readyState == 4) {
                     // la peticion la recibio el servidor
                     if (httpRequest.status == 200) {
@@ -275,12 +300,12 @@ function initMap() {
                         total =  selectedSc.hombres + selectedSc.mujeres;
                         
                         //Grafica de pastel 
-
+                        var simpCanvas = document.getElementById("simpChart");
                         Chart.defaults.global.defaultFontFamily = "Lato";
                         Chart.defaults.global.defaultFontSize = 18;
                         Chart.defaults.global.legend.display = false;
 
-                        var simpData = {
+                        simpData = {
                         labels: ["Hombres", "Mujeres"],
                         datasets: [
                         {
@@ -290,7 +315,7 @@ function initMap() {
                         ],
                         };
 
-                        var pieChart = new Chart(simpCanvas, {
+                        let pieChart = new Chart(simpCanvas, {
                         type: "pie",
                         data: simpData,
                         });
@@ -334,13 +359,32 @@ function initMap() {
                         maintainAspectRatio: false,
                         },
                         });
+                        //Grafica de barras
+                        Chart.defaults.global.legend.display = false;
+                        var ctx = document.getElementById("barHistoric").getContext("2d");
+                        var barHistoric = new Chart(ctx, {
+                        type: "bar",
+                        data: {
+                        labels: respuesta.partidos,
+                        datasets: [
+                        {
+                        label: "Votos",
+                        data: respuesta.num,
+                        backgroundColor: respuesta.colores,
+                        },
+                        ],
+                        },
+                        options: {
+                        maintainAspectRatio: false,
+                        },
+                        });
                     } else {
                         alert("Error"); //poner el error correcto 
                         // error 404, 500 etc.
-                    }       
+                    }   
                 }
             }
-            httpRequest.send();
+            httpRequest.send();   
             click=true;
         }
         else{
@@ -396,9 +440,16 @@ function opciones(tipo){
     }    
 }
 
-function drawSections(ident, caso){
+function drawSections(vars, caso){
+    paquete =vars.split('&');
+    ident =paquete[0];
+    coord =paquete[1].split(',');
+    mylat =parseFloat(coord[0]);
+    mylng =parseFloat(coord[1]);
     idControl=ident;
     click=false;
+    map.setCenter({ lat: mylat, lng: mylng });
+
     switch (caso){
         case "federal":
         control='DISTRITO'; 
@@ -548,32 +599,6 @@ function drawSections(ident, caso){
 
 @section('scripts')
 
-//Grafica de barras
-Chart.defaults.global.legend.display = false;
-var ctx = document.getElementById("barHistoric").getContext("2d");
-var barHistoric = new Chart(ctx, {
-type: "bar",
-data: {
-labels: [
-"PRI",
-"PAN",
-"PRD",
-"PT",
-"PES",
-"NDP",
-],
-datasets: [
-{
-label: "data-1",
-data: [200, 153, 60, 180, 130, 175],
-backgroundColor: ["#029336", "#06338E", "#FFCB01", "#DA251D", "#5A2A7C"],
-},
-],
-},
-options: {
-maintainAspectRatio: false,
-},
-});
 
 
 @endsection

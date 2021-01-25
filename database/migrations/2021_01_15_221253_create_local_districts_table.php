@@ -18,6 +18,7 @@ class CreateLocalDistrictsTable extends Migration
             $table->timestamps();
             $table->string('numero', 4);   //id del ine
             $table->text('cabecera');       //nombre del municipio cabecera
+            $table->string('coordenadas');      //coordenadas para ubicar el mapa
         });
     }
 

@@ -19,6 +19,7 @@ class CreateFederalDistrictsTable extends Migration
 
             $table->string('numero',4);         //id del ine
             $table->text('cabecera');           //nombre municipio cabecera
+            $table->string('coordenadas');      //coordenadas para ubicar el mapa
         });
     }
 

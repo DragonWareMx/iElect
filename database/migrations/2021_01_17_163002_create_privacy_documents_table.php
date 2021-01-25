@@ -18,9 +18,9 @@ class CreatePrivacyDocumentsTable extends Migration
             $table->timestamps();
             
             $table->text('path');  //url del docu
-            $table->unsignedBigInteger('Campaign_id'); //campaña a la que pertenece
+            $table->unsignedBigInteger('campaign_id'); //campaña a la que pertenece
             
-            $table->foreign('Campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
         });
     }
 
