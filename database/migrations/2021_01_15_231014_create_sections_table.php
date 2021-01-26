@@ -16,9 +16,9 @@ class CreateSectionsTable extends Migration
         Schema::create('sections', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
-            $table->unsignedBigInteger('Town_id');
-            $table->unsignedBigInteger('Federal_District_id');   //id del distrito federal al que pertenece la sección
-            $table->unsignedBigInteger('Local_District_id');    //id del distrito local al que pertenece la sección
+            $table->unsignedBigInteger('town_id');
+            $table->unsignedBigInteger('federal_district_id');   //id del distrito federal al que pertenece la sección
+            $table->unsignedBigInteger('local_district_id');    //id del distrito local al que pertenece la sección
             $table->string('num_seccion', 6);                   //id de la sección en el INE
             $table->unsignedInteger('casillas')->nullable();    //numero de casillas
             $table->enum('prioridad', ['Alta','Media','Baja']); //prioridad de la sección según meta o cliente
@@ -38,9 +38,9 @@ class CreateSectionsTable extends Migration
             $table->unsignedBigInteger('60_64');    
             $table->unsignedBigInteger('65_mas');
             
-            $table->foreign('Town_id')->references('id')->on('towns')->onDelete('cascade');
-            $table->foreign('Federal_District_id')->references('id')->on('federal_districts')->onDelete('cascade');
-            $table->foreign('Local_District_id')->references('id')->on('local_districts')->onDelete('cascade');
+            $table->foreign('town_id')->references('id')->on('towns')->onDelete('cascade');
+            $table->foreign('federal_district_id')->references('id')->on('federal_districts')->onDelete('cascade');
+            $table->foreign('local_district_id')->references('id')->on('local_districts')->onDelete('cascade');
         });
     }
 

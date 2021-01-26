@@ -17,7 +17,7 @@ class CreateCampaignUserTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->foreignId('Campaign_id',)->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreignId('campaign_id',)->references('id')->on('campaigns')->onDelete('cascade');
             $table->foreignId('user_id',)->references('id')->on('users')->onDelete('cascade');
         });
     }

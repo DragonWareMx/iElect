@@ -17,8 +17,8 @@ class CreateCampaignSectionTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->foreignId('Campaign_id',)->references('id')->on('campaigns')->onDelete('cascade');
-            $table->foreignId('Section_id',)->references('id')->on('sections')->onDelete('cascade');
+            $table->foreignId('campaign_id',)->references('id')->on('campaigns')->onDelete('cascade');
+            $table->foreignId('section_id',)->references('id')->on('sections')->onDelete('cascade');
         });
     }
 
