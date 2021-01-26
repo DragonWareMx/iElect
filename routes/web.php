@@ -40,6 +40,8 @@ Route::get('/registro/brigadista', function () {
     return view('login.registro_brig');
 })->name('registro_brig');
 
+Route::post('/registro/brigadista', 'OrderController@brigadista')->name('registro.brig');
+
 //Home
 Route::get('/inicio', function () {
     return view('usuario.home');

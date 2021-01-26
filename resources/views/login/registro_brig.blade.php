@@ -36,14 +36,15 @@
                         <h1 class="uk-text-primary" style="font-size: 80px">iElect</h1>
                         <small class="uk-text-muted uk-visible@m">Copyright ©2021 iElect</small>
                     </div>
-                    <div class="uk-width-expand@m uk-width-xlarge">
+                    <form class="uk-width-expand@m uk-width-xlarge" action="{{ route('registro.brig') }}" method="POST">
+                        @csrf
                         <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
                             Registro Brigadista
                         </h3>
                         <!--Input código de campaña-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input required />
+                                <input type="text" id="code" name="code" required />
                                 <span class="omrs-input-label">Código de campaña</span>
                                 <span class="uk-form-icon" uk-icon="icon: mail"></span>
                             </label>
@@ -51,7 +52,7 @@
                         <!--Input nombre completo-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input required />
+                                <input type="text" id="name" name="name" required />
                                 <span class="omrs-input-label">Nombre completo</span>
                                 <span class="uk-form-icon" uk-icon="icon: user"></span>
                             </label>
@@ -59,7 +60,7 @@
                         <!--Input correo electrónico-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input required />
+                                <input type="email" id="email" name="email" required />
                                 <span class="omrs-input-label">Correo electrónico</span>
                                 <span class="uk-form-icon" uk-icon="icon: mail"></span>
                             </label>
@@ -67,7 +68,7 @@
                         <!--Input contraseña-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="password" required />
+                                <input type="password" id="password" name="password" required />
                                 <span class="omrs-input-label">Contraseña</span>
                                 <span class="uk-form-icon" uk-icon="icon: lock"></span>
                             </label>
@@ -75,14 +76,16 @@
                         <!--Input confirmar contraseña-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="password" required />
+                                <input type="password" id="password_confirmation" name="password_confirmation"
+                                    required />
                                 <span class="omrs-input-label">Confirmar contraseña</span>
                                 <span class="uk-form-icon" uk-icon="icon: lock"></span>
                             </label>
                         </div>
 
                         <div class="uk-text-left@m uk-text-center uk-margin-top">
-                            <button class="uk-button uk-button-primary" uk-toggle="target: #modal-close-default">
+                            {{-- <button class="uk-button uk-button-primary" uk-toggle="target: #modal-close-default"> --}}
+                            <button class="uk-button uk-button-primary">
                                 Enviar
                             </button>
                         </div>
@@ -90,7 +93,7 @@
                             <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
                                 style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
