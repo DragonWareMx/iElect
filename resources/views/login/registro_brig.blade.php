@@ -11,6 +11,15 @@
 </head>
 
 <body>
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
     <!-- This is the modal with the default close button -->
     <div id="modal-close-default" uk-modal>
         <div class="uk-modal-dialog uk-modal-body">
@@ -44,7 +53,7 @@
                         <!--Input código de campaña-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="text" id="code" name="code" required />
+                                <input type="text" id="codigo" name="codigo" required autocomplete="off" />
                                 <span class="omrs-input-label">Código de campaña</span>
                                 <span class="uk-form-icon" uk-icon="icon: mail"></span>
                             </label>
@@ -52,7 +61,7 @@
                         <!--Input nombre completo-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="text" id="name" name="name" required />
+                                <input type="text" id="nombre" name="nombre" required />
                                 <span class="omrs-input-label">Nombre completo</span>
                                 <span class="uk-form-icon" uk-icon="icon: user"></span>
                             </label>
