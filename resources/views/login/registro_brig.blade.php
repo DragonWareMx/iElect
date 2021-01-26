@@ -11,15 +11,15 @@
 </head>
 
 <body>
-    @if ($errors->any())
+    {{-- @if ($errors->any())
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
             <li>{{ $error }}</li>
-            @endforeach
-        </ul>
+    @endforeach
+    </ul>
     </div>
-    @endif
+    @endif --}}
     <!-- This is the modal with the default close button -->
     <div id="modal-close-default" uk-modal>
         <div class="uk-modal-dialog uk-modal-body">
@@ -28,7 +28,7 @@
             <h3 class="uk-text-center">
                 Solicitud de registro enviada correctamente
             </h3>
-            <p>
+            <p class="uk-text-justify">
                 Su solicitud fue enviada exitosamente, y será recibida por el
                 coordinador de la campaña, usted será notificado mediante el correo
                 electrónico proporcionado para que pueda ingresar al sistema como
@@ -51,6 +51,11 @@
                         <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
                             Registro Brigadista
                         </h3>
+                        <div class="uk-alert-danger" uk-alert id="errors" style="display: none">
+                            <a class="uk-alert-close" uk-close></a>
+                            <ul id="errors-list">
+                            </ul>
+                        </div>
                         <!--Input código de campaña-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
@@ -62,7 +67,7 @@
                         <!--Input nombre completo-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="text" id="nombre" name="nombre" required />
+                                <input type="text" id="nombre" name="nombre" required autocomplete="off" />
                                 <span class="omrs-input-label">Nombre completo</span>
                                 <span class="uk-form-icon" uk-icon="icon: user"></span>
                             </label>
@@ -70,7 +75,7 @@
                         <!--Input correo electrónico-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="email" id="email" name="email" required />
+                                <input type="email" id="email" name="email" required autocomplete="off" />
                                 <span class="omrs-input-label">Correo electrónico</span>
                                 <span class="uk-form-icon" uk-icon="icon: mail"></span>
                             </label>
@@ -78,7 +83,7 @@
                         <!--Input contraseña-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="password" id="password" name="password" required />
+                                <input type="password" id="password" name="password" required autocomplete="off" />
                                 <span class="omrs-input-label">Contraseña</span>
                                 <span class="uk-form-icon" uk-icon="icon: lock"></span>
                             </label>
@@ -86,8 +91,8 @@
                         <!--Input confirmar contraseña-->
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="password" id="password_confirmation" name="password_confirmation"
-                                    required />
+                                <input type="password" id="password_confirmation" name="password_confirmation" required
+                                    onkeyup="validatePassword()" />
                                 <span class="omrs-input-label">Confirmar contraseña</span>
                                 <span class="uk-form-icon" uk-icon="icon: lock"></span>
                             </label>
@@ -108,6 +113,21 @@
             </div>
         </div>
     </div>
+
+    <script>
+        var password = document.getElementById("password")
+        , confirm_password = document.getElementById("password_confirmation");
+
+        function validatePassword(){
+            if(password.value != confirm_password.value) {
+                confirm_password.setCustomValidity("Las contraseñas no coinciden");
+                confirm_password.reportValidity();
+            } else {
+                confirm_password.setCustomValidity('');
+                confirm_password.reportValidity();
+            }
+        }
+    </script>
 
     <script>
         $(document).ready(function(){
@@ -142,7 +162,7 @@
                         * */
                         $('#errors').css('display', 'none');
 
-                        alert('si jaló');
+                        UIkit.modal('#modal-close-default').show();
                     },
                     error: function(data){
                         /*
@@ -150,23 +170,24 @@
                         * */
                         btnEnviar.removeAttr("disabled");
                         $('#errors').css('display', 'block');
-                        var errors = JSON.parse(data.responseText);
-                        var errorsContainer = $('#errors');
+                        var errors = data.responseJSON.errors;
+                        var errorsContainer = $('#errors-list');
                         errorsContainer.innerHTML = '';
                         var errorsList = '';
-                        // for (var i = 0; i < errors.length; i++) {
-                        //     //if(errors[i].redirect)
-                        //         //window.location.href = window.location.origin + '/logout'
-                        //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].msg +'</p></div>';
-                        // }
-                        alert('falló');
+                        for(var key in errors){
+                            var obj=errors[key];
+                            for(var yek in obj){
+                                var error=obj[yek];
+                                errorsList += '<li>'+ error +'</li>';
+                            }
+                        }
                         errorsContainer.html(errorsList);
                     }
                 });
                 // Nos permite cancelar el envio del formulario
                 return false;
             });
-        })
+        });
     </script>
 </body>
 

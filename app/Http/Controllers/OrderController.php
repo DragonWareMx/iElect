@@ -17,7 +17,7 @@ class OrderController extends Controller
         $request->validate(
             [
                 'nombre' => 'required|max:255',
-                'email' => 'required|email',
+                'email' => 'required|email|unique:users,email|unique:orders,email',
                 'password' => 'required|min:8|confirmed',
                 'codigo' => new Codigo
             ]
@@ -36,7 +36,7 @@ class OrderController extends Controller
             return response()->json(200);
         } catch (\Exception $ex) {
             DB::rollback();
-            return response()->json(['error' => $ex->getMessage()], 500);
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         }
     }
 }
