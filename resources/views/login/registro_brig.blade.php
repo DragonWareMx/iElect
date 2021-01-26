@@ -45,7 +45,8 @@
                         <h1 class="uk-text-primary" style="font-size: 80px">iElect</h1>
                         <small class="uk-text-muted uk-visible@m">Copyright ©2021 iElect</small>
                     </div>
-                    <form class="uk-width-expand@m uk-width-xlarge" action="{{ route('registro.brig') }}" method="POST">
+                    <form class="uk-width-expand@m uk-width-xlarge" action="{{ route('registro.brig') }}" method="POST"
+                        id="form-brigadista">
                         @csrf
                         <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
                             Registro Brigadista
@@ -94,7 +95,7 @@
 
                         <div class="uk-text-left@m uk-text-center uk-margin-top">
                             {{-- <button class="uk-button uk-button-primary" uk-toggle="target: #modal-close-default"> --}}
-                            <button class="uk-button uk-button-primary">
+                            <button class="uk-button uk-button-primary" id="btnEnviar">
                                 Enviar
                             </button>
                         </div>
@@ -107,6 +108,66 @@
             </div>
         </div>
     </div>
+
+    <script>
+        $(document).ready(function(){
+            //ajax del form de eliminar
+            $("#form-brigadista").bind("submit",function(){
+                // Capturamnos el boton de envío
+                var btnEnviar = $("#btnEnviar");
+
+                $.ajax({
+                    type: $(this).attr("method"),
+                    url: $(this).attr("action"),
+                    data: $(this).serialize(),
+                    beforeSend: function(data){
+                        /*
+                        * Esta función se ejecuta durante el envió de la petición al
+                        * servidor.
+                        * */
+                        // btnEnviar.text("Enviando"); Para button
+                        btnEnviar.val("Enviando"); // Para input de tipo button
+                        btnEnviar.attr("disabled","disabled");
+                    },
+                    complete:function(data){
+                        /*
+                        * Se ejecuta al termino de la petición
+                        * */
+                        btnEnviar.val("Enviar formulario");
+                    },
+                    success: function(data){
+                        /*
+                        * Se ejecuta cuando termina la petición y esta ha sido
+                        * correcta
+                        * */
+                        $('#errors').css('display', 'none');
+
+                        alert('si jaló');
+                    },
+                    error: function(data){
+                        /*
+                        * Se ejecuta si la peticón ha sido erronea
+                        * */
+                        btnEnviar.removeAttr("disabled");
+                        $('#errors').css('display', 'block');
+                        var errors = JSON.parse(data.responseText);
+                        var errorsContainer = $('#errors');
+                        errorsContainer.innerHTML = '';
+                        var errorsList = '';
+                        // for (var i = 0; i < errors.length; i++) {
+                        //     //if(errors[i].redirect)
+                        //         //window.location.href = window.location.origin + '/logout'
+                        //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].msg +'</p></div>';
+                        // }
+                        alert('falló');
+                        errorsContainer.html(errorsList);
+                    }
+                });
+                // Nos permite cancelar el envio del formulario
+                return false;
+            });
+        })
+    </script>
 </body>
 
 </html>
