@@ -393,188 +393,192 @@ Seccion
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Card Datos de la sección -->
-    <div class="uk-card uk-card-default uk-padding">
-        <a class="uk-position-right uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog"></a>
-        <div uk-grid>
-            <div class="uk-width-auto uk-width-1-4@m uk-text-left">
-                <div class="uk-text-bold">Entidad federativa</div>
-                <div>Michoacán - 16</div>
-                <br />
-                <div class="uk-text-bold">Distrito federal</div>
-                <div>Distrito federal 11</div>
-                <br />
-                <div class="uk-text-bold">Distrito local</div>
-                <div>Distrito local 1</div>
-                <br />
-                <div class="uk-text-bold">Cabecera distrito local</div>
-                <div>Cabecera 1</div>
-                <br />
-                <div class="uk-text-bold">Municipio</div>
-                <div>Morelia</div>
-            </div>
-            <div class="uk-width-auto uk-width-1-2@m uk-text-left">
-                <div class="uk-text-bold">Prioridad</div>
-                <div class="uk-text-danger">Alta</div>
-                <br />
-                <div class="uk-text-bold">Estatus</div>
-                <div style="display: flex">
-                    <progress class="uk-progress uk-margin-right" value="50" max="100"
-                        style="margin-bottom: 0"></progress>
-                    <div>50%</div>
-                    <div class="uk-margin-left uk-hidden@m">
-                        n simpatizantes faltantes para alcanzar la meta
+            <hr />
+
+            <!-- Card Datos de la sección -->
+            <div class="uk-padding-small">
+                <a class="uk-position-right uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog"></a>
+                <div uk-grid>
+                    <div class="uk-width-auto uk-width-1-4@m uk-text-left">
+                        <div class="uk-text-bold">Entidad federativa</div>
+                        <div>Michoacán - 16</div>
+                        <br />
+                        <div class="uk-text-bold">Distrito federal</div>
+                        <div>Distrito federal 11</div>
+                        <br />
+                        <div class="uk-text-bold">Distrito local</div>
+                        <div>Distrito local 1</div>
+                        <br />
+                        <div class="uk-text-bold">Cabecera distrito local</div>
+                        <div>Cabecera 1</div>
+                        <br />
+                        <div class="uk-text-bold">Municipio</div>
+                        <div>Morelia</div>
                     </div>
-                    <div class="uk-margin-left uk-text-nowrap uk-visible@m">
-                        n simpatizantes faltantes para alcanzar la meta
+                    <div class="uk-width-auto uk-width-1-2@m uk-text-left">
+                        <div class="uk-text-bold">Prioridad</div>
+                        <div class="uk-text-danger">Alta</div>
+                        <br />
+                        <div class="uk-text-bold">Estatus</div>
+                        <div style="display: flex">
+                            <progress class="uk-progress uk-margin-right" value="50" max="100"
+                                style="margin-bottom: 0"></progress>
+                            <div>50%</div>
+                            <div class="uk-margin-left uk-hidden@m">
+                                n simpatizantes faltantes para alcanzar la meta
+                            </div>
+                            <div class="uk-margin-left uk-text-nowrap uk-visible@m">
+                                n simpatizantes faltantes para alcanzar la meta
+                            </div>
+                        </div>
+                        <br />
+                        <div class="uk-text-bold"># Simpatizantes</div>
+                        <div>257 simpatizantes</div>
+                        <br />
+                        <div class="uk-text-bold">Meta final</div>
+                        <div>485 simpatizantes</div>
+                        <br />
+                        <div class="uk-text-bold">Ganador elecciones 2018</div>
+                        <div class="uk-text-middle">
+                            <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="50" height="50"
+                                alt="Border circle" />
+                            <span class="uk-text-middle">Nombre del partido NDP</span>
+                        </div>
                     </div>
                 </div>
-                <br />
-                <div class="uk-text-bold"># Simpatizantes</div>
-                <div>257 simpatizantes</div>
-                <br />
-                <div class="uk-text-bold">Meta final</div>
-                <div>485 simpatizantes</div>
-                <br />
-                <div class="uk-text-bold">Ganador elecciones 2018</div>
-                <div class="uk-text-middle">
-                    <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="50" height="50"
-                        alt="Border circle" />
-                    <span class="uk-text-middle">Nombre del partido NDP</span>
+            </div>
+
+            <hr />
+
+            <!-- Card de SIMPATIZANTES -->
+            <div class="uk-padding-small">
+                <div class="uk-card-title">
+                    <h5 class="uk-text-bold">Información por sección</h5>
+                </div>
+                <!-- Tabla -->
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-small uk-table-divider">
+                        <thead class="uk-background-muted">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Sexo</th>
+                                <th>Edad</th>
+                                <th>Ocupación</th>
+                                <th>Sección electoral</th>
+                                <th>Clave de elecetor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr onclick="myFunction(this)">
+                                <td>#1</td>
+                                <td>José Agustín Aguilar Solórzano</td>
+                                <td>Masculino</td>
+                                <td>32</td>
+                                <td>Escritor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#2</td>
+                                <td>Leonardo Daniel López López</td>
+                                <td>Masculino</td>
+                                <td>21</td>
+                                <td>Profesor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#3</td>
+                                <td>Fernando Adrián García Sánchez</td>
+                                <td>Masculino</td>
+                                <td>18</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#4</td>
+                                <td>Oscar André Huerta García</td>
+                                <td>Masculino</td>
+                                <td>57</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#5</td>
+                                <td>Dulce Gabriela Marín Rendón</td>
+                                <td>Femenino</td>
+                                <td>47</td>
+                                <td>Contratista</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#1</td>
+                                <td>José Agustín Aguilar Solórzano</td>
+                                <td>Masculino</td>
+                                <td>32</td>
+                                <td>Escritor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#2</td>
+                                <td>Leonardo Daniel López López</td>
+                                <td>Masculino</td>
+                                <td>21</td>
+                                <td>Profesor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#3</td>
+                                <td>Fernando Adrián García Sánchez</td>
+                                <td>Masculino</td>
+                                <td>18</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#4</td>
+                                <td>Oscar André Huerta García</td>
+                                <td>Masculino</td>
+                                <td>57</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#5</td>
+                                <td>Dulce Gabriela Marín Rendón</td>
+                                <td>Femenino</td>
+                                <td>47</td>
+                                <td>Contratista</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul class="uk-pagination uk-flex-center" uk-margin>
+                        <li>
+                            <a href="#"><span uk-pagination-previous></span></a>
+                        </li>
+                        <li><a href="#">1</a></li>
+                        <li class="uk-disabled"><span>...</span></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">6</a></li>
+                        <li class="uk-active"><span>7</span></li>
+                        <li><a href="#">8</a></li>
+                        <li>
+                            <a href="#"><span uk-pagination-next></span></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Card de SIMPATIZANTES -->
-    <div class="uk-card uk-card-default uk-padding-small">
-        <div class="uk-card-title">
-            <h5 class="uk-text-bold">Información por sección</h5>
-        </div>
-        <!-- Tabla -->
-        <div class="uk-overflow-auto">
-            <table class="uk-table uk-table-small uk-table-divider">
-                <thead class="uk-background-muted">
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Sexo</th>
-                        <th>Edad</th>
-                        <th>Ocupación</th>
-                        <th>Sección electoral</th>
-                        <th>Clave de elecetor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr onclick="myFunction(this)">
-                        <td>#1</td>
-                        <td>José Agustín Aguilar Solórzano</td>
-                        <td>Masculino</td>
-                        <td>32</td>
-                        <td>Escritor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#2</td>
-                        <td>Leonardo Daniel López López</td>
-                        <td>Masculino</td>
-                        <td>21</td>
-                        <td>Profesor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#3</td>
-                        <td>Fernando Adrián García Sánchez</td>
-                        <td>Masculino</td>
-                        <td>18</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#4</td>
-                        <td>Oscar André Huerta García</td>
-                        <td>Masculino</td>
-                        <td>57</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#5</td>
-                        <td>Dulce Gabriela Marín Rendón</td>
-                        <td>Femenino</td>
-                        <td>47</td>
-                        <td>Contratista</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#1</td>
-                        <td>José Agustín Aguilar Solórzano</td>
-                        <td>Masculino</td>
-                        <td>32</td>
-                        <td>Escritor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#2</td>
-                        <td>Leonardo Daniel López López</td>
-                        <td>Masculino</td>
-                        <td>21</td>
-                        <td>Profesor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#3</td>
-                        <td>Fernando Adrián García Sánchez</td>
-                        <td>Masculino</td>
-                        <td>18</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#4</td>
-                        <td>Oscar André Huerta García</td>
-                        <td>Masculino</td>
-                        <td>57</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#5</td>
-                        <td>Dulce Gabriela Marín Rendón</td>
-                        <td>Femenino</td>
-                        <td>47</td>
-                        <td>Contratista</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul class="uk-pagination uk-flex-center" uk-margin>
-                <li>
-                    <a href="#"><span uk-pagination-previous></span></a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li class="uk-disabled"><span>...</span></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li class="uk-active"><span>7</span></li>
-                <li><a href="#">8</a></li>
-                <li>
-                    <a href="#"><span uk-pagination-next></span></a>
-                </li>
-            </ul>
         </div>
     </div>
 </div>

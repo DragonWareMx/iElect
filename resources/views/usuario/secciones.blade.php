@@ -35,7 +35,7 @@ Secciones
             </div>
 
             <!-- Graficas -->
-            <div uk-grid class="uk-padding-small">
+            <div uk-grid class="uk-padding-small" style="margin-top: 0">
                 <div class="uk-width-1-4@m">
                     <h5 class="uk-text-bold uk-padding-small" style="padding-top: 0">
                         Sexo
@@ -57,181 +57,85 @@ Secciones
                     </div>
                 </div>
                 <!-- Grafica de barras -->
-                <div class="uk-width-expand@m">
+                <div class="uk-width-1-2@m">
                     <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
                     <canvas id="barChart" width="auto" height="200"></canvas>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Card de SIMPATIZANTES -->
-    <div class="uk-card uk-card-default uk-padding-small">
-        <div class="uk-card-title">
-            <h5 class="uk-text-bold">Información por sección, listado nominal</h5>
-        </div>
-        <!-- Tabla -->
-        <div class="uk-overflow-auto">
-            <table class="uk-table uk-table-small uk-table-divider">
-                <thead class="uk-background-muted">
-                    <tr>
-                        <th>Número de Sección</th>
-                        <th>Distrito federal</th>
-                        <th>Distrito local</th>
-                        <th>Municipio</th>
-                        <th>Estatus</th>
-                        <th># Simpatizantes</th>
-                        <th>Meta final</th>
-                        <th>Prioridad</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                    <tr>
-                        <td>#3530</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">100%</div>
-                        </td>
-                        <td>325</td>
-                        <td>325</td>
-                        <td>Media</td>
-                    </tr>
-                    <tr>
-                        <td>#4540</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">23%</div>
-                        </td>
-                        <td>178</td>
-                        <td>578</td>
-                        <td>Baja</td>
-                    </tr>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                    <tr>
-                        <td>#3530</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">100%</div>
-                        </td>
-                        <td>325</td>
-                        <td>325</td>
-                        <td>Media</td>
-                    </tr>
-                    <tr>
-                        <td>#4540</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">23%</div>
-                        </td>
-                        <td>178</td>
-                        <td>578</td>
-                        <td>Baja</td>
-                    </tr>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                    <tr>
-                        <td>#3530</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">100%</div>
-                        </td>
-                        <td>325</td>
-                        <td>325</td>
-                        <td>Media</td>
-                    </tr>
-                    <tr>
-                        <td>#4540</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">23%</div>
-                        </td>
-                        <td>178</td>
-                        <td>578</td>
-                        <td>Baja</td>
-                    </tr>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul class="uk-pagination uk-flex-center" uk-margin>
-                <li>
-                    <a href="#"><span uk-pagination-previous></span></a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li class="uk-disabled"><span>...</span></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li class="uk-active"><span>7</span></li>
-                <li><a href="#">8</a></li>
-                <li>
-                    <a href="#"><span uk-pagination-next></span></a>
-                </li>
-            </ul>
+            <hr />
+
+            <div class="uk-padding-small">
+                <div class="uk-card-title">
+                    <h5 class="uk-text-bold">Información por sección, listado nominal</h5>
+                </div>
+                <!-- Tabla -->
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-small uk-table-divider">
+                        <thead class="uk-background-muted">
+                            <tr>
+                                <th>Número de Sección</th>
+                                <th>Distrito federal</th>
+                                <th>Distrito local</th>
+                                <th>Municipio</th>
+                                <th>Estatus</th>
+                                <th># Simpatizantes</th>
+                                <th>Meta final</th>
+                                <th>Prioridad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach ($datos as $seccion)
+                            {{ dd($seccion->town()->nombre) }}
+                            <tr>
+                                <td>{{ $seccion->num_seccion }}</td>
+                                <td>{{ $seccion->federal_district_id }}</td>
+                                <td>{{ $seccion->local_district_id }}</td>
+                                <td>{{ $seccion->federal_district_id }}</td>
+                                <td>
+                                    <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
+                                    <div class="uk-align-right">52%</div>
+                                </td>
+                                <td>257</td>
+                                <td>458</td>
+                                <td>Alta</td>
+                            </tr>
+                            @endforeach
+
+                            <tr>
+                                <td>#2458</td>
+                                <td>1</td>
+                                <td>1</td>
+                                <td>Michoacán</td>
+                                <td>
+                                    <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
+                                    <div class="uk-align-right">52%</div>
+                                </td>
+                                <td>257</td>
+                                <td>458</td>
+                                <td>Alta</td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                    <ul class="uk-pagination uk-flex-center" uk-margin>
+                        <li>
+                            <a href="#"><span uk-pagination-previous></span></a>
+                        </li>
+                        <li><a href="#">1</a></li>
+                        <li class="uk-disabled"><span>...</span></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">6</a></li>
+                        <li class="uk-active"><span>7</span></li>
+                        <li><a href="#">8</a></li>
+                        <li>
+                            <a href="#"><span uk-pagination-next></span></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
         </div>
     </div>
 </div>
