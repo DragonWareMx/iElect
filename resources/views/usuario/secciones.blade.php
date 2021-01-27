@@ -87,38 +87,30 @@ Secciones
                         <tbody>
 
                             @foreach ($datos as $seccion)
-                            {{ dd($seccion->town()->nombre) }}
                             <tr>
                                 <td>{{ $seccion->num_seccion }}</td>
-                                <td>{{ $seccion->federal_district_id }}</td>
-                                <td>{{ $seccion->local_district_id }}</td>
-                                <td>{{ $seccion->federal_district_id }}</td>
+                                <td>{{ $seccion->federal_district->cabecera }}</td>
+                                <td>{{ $seccion->local_district->cabecera }}</td>
+                                <td>{{ $seccion->town->nombre }}</td>
                                 <td>
                                     <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
                                     <div class="uk-align-right">52%</div>
                                 </td>
-                                <td>257</td>
-                                <td>458</td>
-                                <td>Alta</td>
+                                <td>
+                                    @php
+                                    $hombres=$seccion->hombres;
+                                    $mujeres=$seccion->mujeres;
+                                    $resultado=$hombres+$mujeres;
+                                    echo($resultado);
+                                    @endphp
+                                </td>
+                                <td>#FALTA DEFINIRLO</td>
+                                <td>{{ $seccion->prioridad }}</td>
                             </tr>
                             @endforeach
-
-                            <tr>
-                                <td>#2458</td>
-                                <td>1</td>
-                                <td>1</td>
-                                <td>Michoacán</td>
-                                <td>
-                                    <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">52%</div>
-                                </td>
-                                <td>257</td>
-                                <td>458</td>
-                                <td>Alta</td>
-                            </tr>
-
                         </tbody>
                     </table>
+                    <!--
                     <ul class="uk-pagination uk-flex-center" uk-margin>
                         <li>
                             <a href="#"><span uk-pagination-previous></span></a>
@@ -132,10 +124,10 @@ Secciones
                         <li>
                             <a href="#"><span uk-pagination-next></span></a>
                         </li>
-                    </ul>
+                    </ul>-->
                 </div>
+                {!! $datos->links() !!}
             </div>
-
         </div>
     </div>
 </div>

@@ -10,7 +10,7 @@ class SeccionesController extends Controller
     function verSecciones()
     {
         //Recibe todas las secciones
-        $secciones = Section::all();
+        $secciones = Section::paginate(10);
         //dd($secciones);
 
         return view('usuario.secciones', ['datos' => $secciones]);
