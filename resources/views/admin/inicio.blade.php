@@ -51,7 +51,7 @@ Inicio
                     </div>
                     <div class="uk-width-1-4@m uk-text-center">
                         <img src="{{asset('img/icons/brigadista.png')}}" style="max-width: 120px; width: 100%;" />
-                        <p class="uk-text-bold uk-margin-remove">Agentes</p>
+                        <p class="uk-text-bold uk-margin-remove">Brigadistas</p>
                         <p class="uk-margin-remove">61</p>
                     </div>
                 </div>
@@ -134,6 +134,7 @@ Inicio
 
     </div>
 </div>
+
 @endsection
 
 @section('scripts')
