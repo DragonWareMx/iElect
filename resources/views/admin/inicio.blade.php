@@ -22,7 +22,7 @@ Inicio
                   align-items: center;
                   display: flex;
                   max-height: 55px !important;
-                " uk-toggle="target: #modal-agregar-simp">
+                " uk-toggle="target: #modal-agregar-user">
                         Agregar agente
                         <span uk-icon="icon: plus" class="uk-margin-left"></span>
                     </button>
@@ -33,7 +33,7 @@ Inicio
                         align-items: center;
                         display: flex;
                         max-height: 55px !important;
-                        " uk-toggle="target: #modal-agregar-simp">
+                        " uk-toggle="target: #modal-agregar-user">
                         Agregar agente
                         <span uk-icon="icon: plus" class="uk-margin-left"></span>
                     </button>
@@ -131,7 +131,86 @@ Inicio
                 <canvas id="barChart" width="auto" height="200"></canvas>
             </div>
         </div>
+    </div>
 
+    <!-- Modal Agregar Usuario -->
+    <div id="modal-agregar-user" class="uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">Agregar agente</h2>
+            </div>
+            <form class="uk-modal-body">
+                <div uk-grid>
+                    <div class="uk-width-1">
+                        <!-- Avatar -->
+                        <div class="avatar-wrapper uk-margin-bottom">
+                            <img class="profile-pic uk-border-circle uk-flex" style="margin-left:auto; margin-right:auto;" src="{{asset('img/test/avatar.jpg')}}" width="200"
+                                height="200" alt="Border circle" />
+                            <div class=" uk-text-center" style="cursor: pointer">
+                                Agregar foto
+                                <span class="uk-margin-small-left" uk-icon="upload"></span>
+                            </div>
+                        </div>
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">NOMBRE</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required />
+                                        <span class="omrs-input-label">Nombre completo</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">CORREO</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required />
+                                        <span class="omrs-input-label">Correo electrónico</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">CONTRASEÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required />
+                                        <span class="omrs-input-label">Contraseña</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">CONFIRMAR CONTRASEÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required />
+                                        <span class="omrs-input-label">Confirmar contraseña</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">TIPO</h6>
+                                <div class="uk-form-controls omrs-input-group uk-margin">
+                                    <select class="uk-select" i>
+                                        <option value="agente">Agente</option> 
+                                        <option value="administrador">Administrador</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">
+                        Cancelar
+                    </button>
+                    <button class="uk-button uk-button-primary" type="submit">
+                        Enviar
+                    </button>
+                </p>
+            </form>
+        </div>
     </div>
 </div>
 
