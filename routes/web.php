@@ -117,6 +117,9 @@ Route::get('/admin/404', function () {
 //Admin | Inicio
 Route::get('/admin/inicio', 'adminController@inicio')->name('admin-inicio');
 
+//Admin | agregar usuario
+Route::post('/admin/agregar/usuario', 'adminController@agregarUsuario')->name('agregar-usuario');
+
 //Admin | Cuenta
 Route::get('/admin/cuenta', function () {
     return view('admin.cuenta');
