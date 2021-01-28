@@ -8,6 +8,33 @@ Secciones
 @extends('subviews.chartjs')
 @endsection
 
+@php
+//Parte del Backend
+$hombresCol = $datosBack->pluck('hombres');
+$hCount = $hombresCol->sum();
+
+$mujeresCol = $datosBack->pluck('mujeres');
+$mCount = $mujeresCol->sum();
+
+$total = $hCount + $mCount;
+//Porcentaje
+$hPorc = round(($hCount * 100)/$total, 2);
+$mPorc = round(($mCount * 100)/$total, 2);
+
+$g18 = $datosBack->pluck('18')->sum();
+$g19 = $datosBack->pluck('19')->sum();
+$g20 = $datosBack->pluck('20_24')->sum();
+$g25 = $datosBack->pluck('25_29')->sum();
+$g30 = $datosBack->pluck('30_34')->sum();
+$g35 = $datosBack->pluck('35_39')->sum();
+$g40 = $datosBack->pluck('40_44')->sum();
+$g45 = $datosBack->pluck('45_49')->sum();
+$g50 = $datosBack->pluck('50_54')->sum();
+$g55 = $datosBack->pluck('55_59')->sum();
+$g60 = $datosBack->pluck('60_64')->sum();
+$g65 = $datosBack->pluck('65_mas')->sum();
+@endphp
+
 @section('body')
 <div class="uk-margin uk-margin-left uk-margin-right">
     <!-- Card de SECCIONES -->
@@ -47,11 +74,11 @@ Secciones
                         <div class="uk-flex-none">
                             <div>
                                 <span class="uk-badge" style="background-color: #9b51e0"></span>
-                                Hombres 47%
+                                Hombres {{$hPorc}}%
                             </div>
                             <div>
                                 <span class="uk-badge" style="background-color: #fb8832"></span>
-                                Mujeres 53%
+                                Mujeres {{$mPorc}}%
                             </div>
                         </div>
                     </div>
@@ -87,7 +114,7 @@ Secciones
                         <tbody>
 
                             @foreach ($datos as $seccion)
-                            <tr>
+                            <tr onclick="abrirSeccion(this)" data-route="{{ route('seccion', ['id'=>$seccion->id]) }}">
                                 <td>{{ $seccion->num_seccion }}</td>
                                 <td>{{ $seccion->federal_district->cabecera }}</td>
                                 <td>{{ $seccion->local_district->cabecera }}</td>
@@ -110,21 +137,6 @@ Secciones
                             @endforeach
                         </tbody>
                     </table>
-                    <!--
-                    <ul class="uk-pagination uk-flex-center" uk-margin>
-                        <li>
-                            <a href="#"><span uk-pagination-previous></span></a>
-                        </li>
-                        <li><a href="#">1</a></li>
-                        <li class="uk-disabled"><span>...</span></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">6</a></li>
-                        <li class="uk-active"><span>7</span></li>
-                        <li><a href="#">8</a></li>
-                        <li>
-                            <a href="#"><span uk-pagination-next></span></a>
-                        </li>
-                    </ul>-->
                 </div>
                 {!! $datos->links() !!}
             </div>
@@ -134,6 +146,12 @@ Secciones
 @endsection
 
 @section('scripts')
+
+//Abrir sección
+function abrirSeccion(x) {
+window.location = x.getAttribute('data-route');
+}
+
 //Grafica de pastel
 var simpCanvas = document.getElementById("simpChart");
 
@@ -145,7 +163,7 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
-data: [47, 53],
+data: [{{$hCount}}, {{$mCount}}],
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],
@@ -177,8 +195,8 @@ labels: [
 ],
 datasets: [
 {
-label: "data-1",
-data: [200, 153, 60, 180, 130, 175, 112, 124, 180, 55, 45, 150],
+data: [{{$g18}}, {{$g19}}, {{$g20}}, {{$g25}}, {{$g30}}, {{$g35}}, {{$g40}}, {{$g45}}, {{$g50}}, {{$g55}}, {{$g60}},
+{{$g65}}],
 backgroundColor: "rgba(0,122,255,1)",
 },
 ],

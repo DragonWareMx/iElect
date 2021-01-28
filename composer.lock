@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ddeabc1ce42c24615f2fd0343a6ea0f2",
+    "content-hash": "f05d6d308d73ead21697e7712b37a69a",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -2414,6 +2414,59 @@
                 }
             ],
             "time": "2020-08-18T17:17:46+00:00"
+        },
+        {
+            "name": "revolution/laravel-pagination-uikit",
+            "version": "1.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kawax/laravel-pagination-uikit.git",
+                "reference": "5cd5329142157056724609867b1012da7ce78389"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kawax/laravel-pagination-uikit/zipball/5cd5329142157056724609867b1012da7ce78389",
+                "reference": "5cd5329142157056724609867b1012da7ce78389",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "*",
+                "php": "^7.2||^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Revolution\\Pagination\\UIkit\\UIkitServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Revolution\\Pagination\\UIkit\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "kawax",
+                    "email": "kawaxbiz@gmail.com"
+                }
+            ],
+            "description": "Laravel pagination template for UIkit",
+            "keywords": [
+                "laravel",
+                "pagination",
+                "uikit"
+            ],
+            "support": {
+                "issues": "https://github.com/kawax/laravel-pagination-uikit/issues",
+                "source": "https://github.com/kawax/laravel-pagination-uikit/tree/1.0.3"
+            },
+            "time": "2020-03-21T06:30:08+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",

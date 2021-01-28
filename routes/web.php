@@ -74,9 +74,7 @@ Route::get('/ajustes/partido_electoral', function () {
 Route::get('/secciones', 'SeccionesController@verSecciones')->name('secciones');
 
 //Seccion
-Route::get('/seccion', function () {
-    return view('usuario.seccion');
-})->name('seccion');
+Route::get('/seccion/{id}', 'SeccionesController@verSeccion')->name('seccion');
 
 /****** BRIGADISTAS ******/
 //Brigadistas

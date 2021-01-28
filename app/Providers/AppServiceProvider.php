@@ -24,6 +24,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Paginator::useBootstrap();
+        Paginator::defaultView('pagination-uikit::uikit3');
+        Paginator::defaultSimpleView('pagination-uikit::uikit3-simple');
     }
 }

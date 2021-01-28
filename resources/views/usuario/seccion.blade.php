@@ -11,6 +11,28 @@ Seccion
 <link rel="stylesheet" href="{{asset('css/usuario/seccion.css')}}" />
 @endsection
 
+@php
+$hombres = $datosSec[0]->hombres;
+$mujeres = $datosSec[0]->mujeres;
+$totalSimp = $hombres+$mujeres;
+
+$hPorc = round(($hombres * 100)/$totalSimp, 2);
+$mPorc = round(($mujeres * 100)/$totalSimp, 2);
+
+$g18 = $datosSec[0]->{18};
+$g19 = $datosSec[0]->{19};
+$g20 = $datosSec[0]->{'20_24'};
+$g25 = $datosSec[0]->{'25_29'};
+$g30 = $datosSec[0]->{'30_34'};
+$g35 = $datosSec[0]->{'35_39'};
+$g40 = $datosSec[0]->{'40_44'};
+$g45 = $datosSec[0]->{'45_49'};
+$g50 = $datosSec[0]->{'50_54'};
+$g55 = $datosSec[0]->{'55_59'};
+$g60 = $datosSec[0]->{'60_64'};
+$g65 = $datosSec[0]->{'65_mas'};
+@endphp
+
 @section('body')
 <!-- Modal Editar datos de sección -->
 <div id="modal-datos-seccion" uk-modal>
@@ -286,7 +308,8 @@ Seccion
             <div class="uk-padding-small" uk-grid style="display: flex; align-items: center">
                 <div>
                     <h3 class="uk-card-title uk-text-bold">
-                        <a class="uk-margin-right" href="{{route('secciones')}}" uk-icon="arrow-left"></a>Seccion 1272
+                        <a class="uk-margin-right" href="{{route('secciones')}}" uk-icon="arrow-left"></a>Seccion
+                        {{$datosSec[0]->num_seccion}}
                     </h3>
                 </div>
                 <div>
@@ -343,11 +366,11 @@ Seccion
                         <div class="uk-flex-none">
                             <div>
                                 <span class="uk-badge" style="background-color: #9b51e0"></span>
-                                Hombres 47%
+                                Hombres {{$hPorc}}%
                             </div>
                             <div>
                                 <span class="uk-badge" style="background-color: #fb8832"></span>
-                                Mujeres 53%
+                                Mujeres {{$mPorc}}%
                             </div>
                         </div>
                     </div>
@@ -402,23 +425,23 @@ Seccion
                 <div uk-grid>
                     <div class="uk-width-auto uk-width-1-4@m uk-text-left">
                         <div class="uk-text-bold">Entidad federativa</div>
-                        <div>Michoacán - 16</div>
+                        <div>Michoacán - 16 ##FALTA VER</div>
                         <br />
                         <div class="uk-text-bold">Distrito federal</div>
-                        <div>Distrito federal 11</div>
+                        <div>Distrito federal {{$datosSec[0]->federal_district_id}} ##FALTA VER</div>
                         <br />
                         <div class="uk-text-bold">Distrito local</div>
-                        <div>Distrito local 1</div>
+                        <div>Distrito local {{$datosSec[0]->local_district_id}} ##FALTA VER</div>
                         <br />
                         <div class="uk-text-bold">Cabecera distrito local</div>
-                        <div>Cabecera 1</div>
+                        <div>{{$datosSec[0]->local_district->cabecera}} ##FALTA VER</div>
                         <br />
                         <div class="uk-text-bold">Municipio</div>
                         <div>Morelia</div>
                     </div>
                     <div class="uk-width-auto uk-width-1-2@m uk-text-left">
                         <div class="uk-text-bold">Prioridad</div>
-                        <div class="uk-text-danger">Alta</div>
+                        <div class="uk-text-danger">{{$datosSec[0]->prioridad}} ##FALTA VER</div>
                         <br />
                         <div class="uk-text-bold">Estatus</div>
                         <div style="display: flex">
@@ -434,7 +457,10 @@ Seccion
                         </div>
                         <br />
                         <div class="uk-text-bold"># Simpatizantes</div>
-                        <div>257 simpatizantes</div>
+                        <div>@php
+
+                            echo($totalSimp);
+                            @endphp ##FALTA VER simpatizantes</div>
                         <br />
                         <div class="uk-text-bold">Meta final</div>
                         <div>485 simpatizantes</div>
@@ -657,7 +683,7 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
-data: [47, 53],
+data: [{{$hombres}}, {{$mujeres}}],
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],
@@ -689,8 +715,8 @@ labels: [
 ],
 datasets: [
 {
-label: "data-1",
-data: [200, 153, 60, 180, 130, 175, 112, 124, 180, 55, 45, 150],
+data: [{{$g18}}, {{$g19}}, {{$g20}}, {{$g25}}, {{$g30}}, {{$g35}}, {{$g40}}, {{$g45}}, {{$g50}}, {{$g55}}, {{$g60}},
+{{$g65}}],
 backgroundColor: "rgba(0,122,255,1)",
 },
 ],
