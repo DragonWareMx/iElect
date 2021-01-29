@@ -7,7 +7,7 @@
     <title>Solicitud de eliminación de datos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    @extends('subviews.imports')
+    @include('subviews.imports')
 
     <!-- CSS Avatar -->
     <link rel="stylesheet" href="{{asset('css/simpatizante/aviso_datos.css')}}" />
@@ -40,33 +40,29 @@
                             <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
                                 Solicitud de eliminación de datos
                             </h3>
+                            <div class="uk-alert-danger" uk-alert id="errors" style="display: none">
+                                <a class="uk-alert-close" uk-close></a>
+                                <ul id="errors-list">
+                                </ul>
+                            </div>
                             <!--Input correo electronico-->
                             <div class="uk-margin">
-                                <div class="omrs-input-group">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input required />
-                                        <span class="omrs-input-label">Clave de elector</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <!--Input contraseña-->
-                            <div class="uk-margin">
-                                <div class="omrs-input-group">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input type="text" required />
-                                        <span class="omrs-input-label">Motivo de la solicitud</span>
-                                    </label>
+                                <div class="uk-text">
+                                    Texto que diga que se van a eliminar los datos de forma chida
                                 </div>
                             </div>
                             <!--Div grid-->
                             <div class="uk-child-width-1-1 uk-grid">
                                 <!--Botón inicio-->
-                                <div class="uk-text-left@m uk-text-center uk-margin-top">
-                                    <button class="uk-button uk-button-primary"
-                                        uk-toggle="target: #modal-close-default">
+                                <form class="uk-text-left@m uk-text-center uk-margin-top" method="POST"
+                                    action="{{ route('solicitud_baja-delete',['uuid'=>$uuid]) }}"
+                                    id="form-delete-datos">
+                                    @csrf @method('DELETE')
+                                    <input type="hidden" value="{{$uuid}}" name="uuid">
+                                    <button class="uk-button uk-button-primary" id="btnEnviar">
                                         Enviar
                                     </button>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -97,5 +93,66 @@
         </div>
     </footer>
 </body>
+
+<script>
+    $(document).ready(function(){
+            //ajax del form de eliminar
+            $("#form-delete-datos").bind("submit",function(){
+                // Capturamnos el boton de envío
+                var btnEnviar = $("#btnEnviar");
+
+                $.ajax({
+                    type: $(this).attr("method"),
+                    url: $(this).attr("action"),
+                    data: $(this).serialize(),
+                    beforeSend: function(data){
+                        /*
+                        * Esta función se ejecuta durante el envió de la petición al
+                        * servidor.
+                        * */
+                        // btnEnviar.text("Enviando"); Para button
+                        btnEnviar.val("Enviando"); // Para input de tipo button
+                        btnEnviar.attr("disabled","disabled");
+                    },
+                    complete:function(data){
+                        /*
+                        * Se ejecuta al termino de la petición
+                        * */
+                        btnEnviar.val("Enviar formulario");
+                    },
+                    success: function(data){
+                        /*
+                        * Se ejecuta cuando termina la petición y esta ha sido
+                        * correcta
+                        * */
+                        $('#errors').css('display', 'none');
+
+                        UIkit.modal('#modal-close-default').show();
+                    },
+                    error: function(data){
+                        /*
+                        * Se ejecuta si la peticón ha sido erronea
+                        * */
+                        btnEnviar.removeAttr("disabled");
+                        $('#errors').css('display', 'block');
+                        var errors = data.responseJSON.errors;
+                        var errorsContainer = $('#errors-list');
+                        errorsContainer.innerHTML = '';
+                        var errorsList = '';
+                        for(var key in errors){
+                            var obj=errors[key];
+                            for(var yek in obj){
+                                var error=obj[yek];
+                                errorsList += '<li>'+ error +'</li>';
+                            }
+                        }
+                        errorsContainer.html(errorsList);
+                    }
+                });
+                // Nos permite cancelar el envio del formulario
+                return false;
+            });
+        });
+</script>
 
 </html>
