@@ -198,3 +198,5 @@ Route::get('/simpatizante/aviso', function () {
 
 //Simpatizante | Solicitud de baja
 Route::get('/simpatizante/baja/{uuid}', 'SimpatizanteController@index')->name('simpatizante-solicitud_baja');
+
+Route::delete('/simpatizante/baja/{uuid}', 'SimpatizanteController@delete')->name('solicitud_baja-delete');
