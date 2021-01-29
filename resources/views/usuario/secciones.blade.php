@@ -8,6 +8,33 @@ Secciones
 @extends('subviews.chartjs')
 @endsection
 
+@php
+//Parte del Backend
+$hombresCol = $datosBack->pluck('hombres');
+$hCount = $hombresCol->sum();
+
+$mujeresCol = $datosBack->pluck('mujeres');
+$mCount = $mujeresCol->sum();
+
+$total = $hCount + $mCount;
+//Porcentaje
+$hPorc = round(($hCount * 100)/$total, 2);
+$mPorc = round(($mCount * 100)/$total, 2);
+
+$g18 = $datosBack->pluck('18')->sum();
+$g19 = $datosBack->pluck('19')->sum();
+$g20 = $datosBack->pluck('20_24')->sum();
+$g25 = $datosBack->pluck('25_29')->sum();
+$g30 = $datosBack->pluck('30_34')->sum();
+$g35 = $datosBack->pluck('35_39')->sum();
+$g40 = $datosBack->pluck('40_44')->sum();
+$g45 = $datosBack->pluck('45_49')->sum();
+$g50 = $datosBack->pluck('50_54')->sum();
+$g55 = $datosBack->pluck('55_59')->sum();
+$g60 = $datosBack->pluck('60_64')->sum();
+$g65 = $datosBack->pluck('65_mas')->sum();
+@endphp
+
 @section('body')
 <div class="uk-margin uk-margin-left uk-margin-right">
     <!-- Card de SECCIONES -->
@@ -35,7 +62,7 @@ Secciones
             </div>
 
             <!-- Graficas -->
-            <div uk-grid class="uk-padding-small">
+            <div uk-grid class="uk-padding-small" style="margin-top: 0">
                 <div class="uk-width-1-4@m">
                     <h5 class="uk-text-bold uk-padding-small" style="padding-top: 0">
                         Sexo
@@ -47,197 +74,84 @@ Secciones
                         <div class="uk-flex-none">
                             <div>
                                 <span class="uk-badge" style="background-color: #9b51e0"></span>
-                                Hombres 47%
+                                Hombres {{$hPorc}}%
                             </div>
                             <div>
                                 <span class="uk-badge" style="background-color: #fb8832"></span>
-                                Mujeres 53%
+                                Mujeres {{$mPorc}}%
                             </div>
                         </div>
                     </div>
                 </div>
                 <!-- Grafica de barras -->
-                <div class="uk-width-expand@m">
+                <div class="uk-width-1-2@m">
                     <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
                     <canvas id="barChart" width="auto" height="200"></canvas>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Card de SIMPATIZANTES -->
-    <div class="uk-card uk-card-default uk-padding-small">
-        <div class="uk-card-title">
-            <h5 class="uk-text-bold">Información por sección, listado nominal</h5>
-        </div>
-        <!-- Tabla -->
-        <div class="uk-overflow-auto">
-            <table class="uk-table uk-table-small uk-table-divider">
-                <thead class="uk-background-muted">
-                    <tr>
-                        <th>Número de Sección</th>
-                        <th>Distrito federal</th>
-                        <th>Distrito local</th>
-                        <th>Municipio</th>
-                        <th>Estatus</th>
-                        <th># Simpatizantes</th>
-                        <th>Meta final</th>
-                        <th>Prioridad</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                    <tr>
-                        <td>#3530</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">100%</div>
-                        </td>
-                        <td>325</td>
-                        <td>325</td>
-                        <td>Media</td>
-                    </tr>
-                    <tr>
-                        <td>#4540</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">23%</div>
-                        </td>
-                        <td>178</td>
-                        <td>578</td>
-                        <td>Baja</td>
-                    </tr>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                    <tr>
-                        <td>#3530</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">100%</div>
-                        </td>
-                        <td>325</td>
-                        <td>325</td>
-                        <td>Media</td>
-                    </tr>
-                    <tr>
-                        <td>#4540</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">23%</div>
-                        </td>
-                        <td>178</td>
-                        <td>578</td>
-                        <td>Baja</td>
-                    </tr>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                    <tr>
-                        <td>#3530</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">100%</div>
-                        </td>
-                        <td>325</td>
-                        <td>325</td>
-                        <td>Media</td>
-                    </tr>
-                    <tr>
-                        <td>#4540</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">23%</div>
-                        </td>
-                        <td>178</td>
-                        <td>578</td>
-                        <td>Baja</td>
-                    </tr>
-                    <tr>
-                        <td>#2458</td>
-                        <td>1</td>
-                        <td>1</td>
-                        <td>Michoacán</td>
-                        <td>
-                            <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                            <div class="uk-align-right">52%</div>
-                        </td>
-                        <td>257</td>
-                        <td>458</td>
-                        <td>Alta</td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul class="uk-pagination uk-flex-center" uk-margin>
-                <li>
-                    <a href="#"><span uk-pagination-previous></span></a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li class="uk-disabled"><span>...</span></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li class="uk-active"><span>7</span></li>
-                <li><a href="#">8</a></li>
-                <li>
-                    <a href="#"><span uk-pagination-next></span></a>
-                </li>
-            </ul>
+            <hr />
+
+            <div class="uk-padding-small">
+                <div class="uk-card-title">
+                    <h5 class="uk-text-bold">Información por sección, listado nominal</h5>
+                </div>
+                <!-- Tabla -->
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-small uk-table-divider">
+                        <thead class="uk-background-muted">
+                            <tr>
+                                <th>Número de Sección</th>
+                                <th>Distrito federal</th>
+                                <th>Distrito local</th>
+                                <th>Municipio</th>
+                                <th>Estatus</th>
+                                <th># Simpatizantes</th>
+                                <th>Meta final</th>
+                                <th>Prioridad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            @foreach ($datos as $seccion)
+                            <tr onclick="abrirSeccion(this)" data-route="{{ route('seccion', ['id'=>$seccion->id]) }}">
+                                <td>{{ $seccion->num_seccion }}</td>
+                                <td>{{ $seccion->federal_district->cabecera }}</td>
+                                <td>{{ $seccion->local_district->cabecera }}</td>
+                                <td>{{ $seccion->town->nombre }}</td>
+                                <td>
+                                    <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
+                                    <div class="uk-align-right">52%</div>
+                                </td>
+                                <td>
+                                    @php
+                                    $hombres=$seccion->hombres;
+                                    $mujeres=$seccion->mujeres;
+                                    $resultado=$hombres+$mujeres;
+                                    echo($resultado);
+                                    @endphp
+                                </td>
+                                <td>#FALTA DEFINIRLO</td>
+                                <td>{{ $seccion->prioridad }}</td>
+                            </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+                {!! $datos->links() !!}
+            </div>
         </div>
     </div>
 </div>
 @endsection
 
 @section('scripts')
+
+//Abrir sección
+function abrirSeccion(x) {
+window.location = x.getAttribute('data-route');
+}
+
 //Grafica de pastel
 var simpCanvas = document.getElementById("simpChart");
 
@@ -249,7 +163,7 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
-data: [47, 53],
+data: [{{$hCount}}, {{$mCount}}],
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],
@@ -281,8 +195,8 @@ labels: [
 ],
 datasets: [
 {
-label: "data-1",
-data: [200, 153, 60, 180, 130, 175, 112, 124, 180, 55, 45, 150],
+data: [{{$g18}}, {{$g19}}, {{$g20}}, {{$g25}}, {{$g30}}, {{$g35}}, {{$g40}}, {{$g45}}, {{$g50}}, {{$g55}}, {{$g60}},
+{{$g65}}],
 backgroundColor: "rgba(0,122,255,1)",
 },
 ],

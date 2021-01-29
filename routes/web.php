@@ -1,6 +1,8 @@
 <?php
 
 //use Illuminate\Support\Facades\Gate;
+
+use App\Http\Controllers\SeccionesController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
@@ -69,14 +71,10 @@ Route::get('/ajustes/partido_electoral', function () {
 
 /****** SECCIONES ******/
 //Secciones
-Route::get('/secciones', function () {
-    return view('usuario.secciones');
-})->name('secciones');
+Route::get('/secciones', 'SeccionesController@verSecciones')->name('secciones');
 
 //Seccion
-Route::get('/seccion', function () {
-    return view('usuario.seccion');
-})->name('seccion');
+Route::get('/seccion/{id}', 'SeccionesController@verSeccion')->name('seccion');
 
 /****** BRIGADISTAS ******/
 //Brigadistas
