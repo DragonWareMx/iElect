@@ -93,8 +93,21 @@ class adminController extends Controller
         Gate::authorize('haveaccess', 'admin.perm');
         $data=request()->validate([
             'name'=>'required | max:255 |',
-            'email'=>'required|max:255|unique:users,email',
-            'actualpassword'=>'nullable|max:255|min:8',
+            'email' => ['required','max:255', function ($attribute, $value, $fail) use ($id) {
+                $usuario=User::findOrFail($id);
+                if($usuario->email != $value){
+                    $emailRepetido=User::where('email',$value)->first();
+                    if($emailRepetido){
+                        return $fail(__('El correo ingresado pertenece a otra cuenta.')); 
+                    }
+                }    
+            }],
+            'actualPassword' => ['nullable', function ($attribute, $value, $fail) use ($id) {
+                $user=User::findOrFail($id);
+                if (!Hash::check($value, $user->password)) {
+                    return $fail(__('La contraseña actual es incorrecta.'));
+                }
+            }],
             'password'=>'nullable|max:255|min:8|same:password-confirm',
             'password-confirm'=>'nullable|max:255|min:8',
             'fileField'=>'mimes:jpeg,jpg,png,gif|image'
@@ -105,14 +118,12 @@ class adminController extends Controller
                 $usuario->name=$request->name;
                 $usuario->email=$request->email;
                 if($request->password){
-                    if(Hash::check($request->password, $usuario->password))
-                        $usuario->password=Hash::make($request->password);
-                    else
-                        return response()->json(['errors' => ['catch' => [0 => 'La contraseña actual incorrecta.']]], 500);  
+                    $usuario->password=Hash::make($request->password);
                 }
                 if($request->fileField){
-                    if (file_exists('/public/uploads/'.$usuario->avatar)) {
-                        unlink('/public/uploads/'.$usuario->avatar);
+                    $oldFile=public_path().'/storage/uploads/'.$usuario->avatar;
+                    if(file_exists($oldFile)){
+                        unlink($oldFile);
                     }
                     $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
                     $fileName = pathinfo( $fileNameWithTheExtension,PATHINFO_FILENAME);
