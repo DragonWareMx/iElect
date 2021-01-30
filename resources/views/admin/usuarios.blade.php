@@ -9,271 +9,6 @@ Usuarios
 @endsection
 
 @section('body')
-<!-- Modal Editar datos de sección -->
-<div id="modal-datos-seccion" uk-modal>
-    <div class="uk-modal-dialog">
-        <button class="uk-modal-close-default" type="button" uk-close></button>
-        <div class="uk-modal-header">
-            <h2 class="uk-modal-title">Editar datos de sección</h2>
-        </div>
-        <div class="uk-modal-body">
-            <div class="uk-margin">
-                <div class="select">
-                    <select class="select-text" required>
-                        <option value="" disabled selected></option>
-                        <option value="1">Alta</option>
-                        <option value="2">Media</option>
-                        <option value="3">Baja</option>
-                    </select>
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label class="select-label">Select</label>
-                </div>
-            </div>
-            <div class="uk-margin">
-                <div class="uk-form-controls">
-                    <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Meta final de simpatizantes</span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Cancelar
-                </button>
-                <button class="uk-button uk-button-primary" type="button">
-                    Enviar
-                </button>
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Datos Simpatizante -->
-<div id="modal-datos-simp" class="uk-modal-container" uk-modal>
-    <div class="uk-modal-dialog">
-        <button class="uk-modal-close-default" type="button" uk-close></button>
-        <div class="uk-modal-header">
-            <h2 class="uk-modal-title">Simpatizante #</h2>
-        </div>
-        <div class="uk-modal-body">
-            <div uk-grid>
-                <div class="uk-width-1-2@m">
-                    <!-- Avatar -->
-                    <div class="avatar-wrapper uk-text-center">
-                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="150"
-                            height="150" alt="Border circle" />
-                    </div>
-                    <div class="uk-text-bold">Nombre</div>
-                    <div>José Agustín Aguilar Solórzano</div>
-                    <br />
-                    <div class="uk-text-bold">Domicilio</div>
-                    <div>Morelia, Centro #442</div>
-                    <br />
-                    <!--Grid DATOS-->
-                    <div uk-grid>
-                        <div class="uk-width-expand@m">
-                            <div class="uk-text-bold">Edad</div>
-                            <div>32</div>
-                            <br />
-                            <div class="uk-text-bold">Ocupación</div>
-                            <div>Escritor</div>
-                            <br />
-                            <div class="uk-text-bold">Correo electrónico</div>
-                            <div>correo@ejemplo.com</div>
-                            <br />
-                            <div class="uk-text-bold">Sección electoral</div>
-                            <div>#</div>
-                            <br />
-                            <div class="uk-text-bold">Clave de elector</div>
-                            <div>#########</div>
-                            <br />
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="uk-text-bold">Sexo</div>
-                            <div>Masculino</div>
-                            <br />
-                            <div class="uk-text-bold">Teléfono</div>
-                            <div>1234567891</div>
-                            <br />
-                            <div class="uk-text-bold">Facebook</div>
-                            <div>link</div>
-                            <br />
-                            <div class="uk-text-bold">Twitter</div>
-                            <div>link</div>
-                            <br />
-                            <div class="uk-text-bold">Brigadista</div>
-                            <div>#######</div>
-                            <br />
-                        </div>
-                    </div>
-                </div>
-                <div class="uk-width-1-2@m">
-                    <img class="uk-margin-bottom" data-src="{{asset('img/test/ine_front.jpg')}}" width="75%"
-                        height="auto" alt="" uk-img />
-                    <img data-src="{{asset('img/test/ine_back.jpg')}}" width="75%" height="auto" alt="" uk-img />
-                </div>
-            </div>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Editar
-                </button>
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Agregar Agente -->
-<div id="modal-agregar-simp" class="uk-modal-container" uk-modal>
-    <div class="uk-modal-dialog">
-        <button class="uk-modal-close-default" type="button" uk-close></button>
-        <div class="uk-modal-header">
-            <h2 class="uk-modal-title">Agregar simpatizante</h2>
-        </div>
-        <div class="uk-modal-body">
-            <div uk-grid>
-                <!-- Lado izquierdo -->
-                <div class="uk-width-1-2@m">
-                    <!-- Avatar -->
-                    <div class="avatar-wrapper uk-margin-bottom">
-                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="200"
-                            height="200" alt="Border circle" />
-                        <div class="upload-text">
-                            Editar foto
-                            <span class="uk-margin-small-left" uk-icon="upload"></span>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Nombre completo</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Domicilio</span>
-                        </label>
-                    </div>
-                    <!--Grid Edad, Sexo, Ocupación, Teléfono-->
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Edad</span>
-                                </label>
-                            </div>
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Ocupación</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Sexo</span>
-                                </label>
-                            </div>
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Teléfono</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Correo electrónico</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Selección electoral</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Clave de elector</span>
-                        </label>
-                    </div>
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Facebook</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Twitter</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Lado derecho -->
-                <div class="uk-width-1-2@m">
-                    <p>Fotografías</p>
-                    <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                        <span class="uk-text-middle">Foto de credencial anverso</span>
-                        <span uk-icon="icon: cloud-upload"></span>
-                        <div uk-form-custom>
-                            <input type="file" multiple />
-                            <span class="uk-link">Selecciona una</span>
-                        </div>
-                    </div>
-
-                    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-                    <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                        <span class="uk-text-middle">Foto de credencial inverso</span>
-                        <span uk-icon="icon: cloud-upload"></span>
-                        <div uk-form-custom>
-                            <input type="file" multiple />
-                            <span class="uk-link">Selecciona una</span>
-                        </div>
-                    </div>
-
-                    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-                </div>
-            </div>
-            <p class="uk-text-muted">
-                El ciudadano involucrado será notificado sobre la carga de su
-                información personal al sistema iElect brindandole transparencia
-                total y la posibilidad de solicitud de eliminación de la misma.
-            </p>
-            <p class="uk-position-medium uk-position-bottom-left">
-                <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
-                    Eliminar
-                </button>
-            </p>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Cancelar
-                </button>
-                <button class="uk-button uk-button-primary" type="button">
-                    Enviar
-                </button>
-            </p>
-        </div>
-    </div>
-</div>
-
 <!-- Contenido de la página -->
 <div class="uk-margin uk-margin-left uk-margin-right">
     <!-- Card de SECCION -->
@@ -291,7 +26,7 @@ Usuarios
                 align-items: center;
                 display: flex;
                 max-height: 55px !important;
-              " uk-toggle="target: #modal-agregar-simp">
+              " uk-toggle="target: #modal-agregar-user">
                         Agregar agente
                         <span uk-icon="icon: plus" class="uk-margin-left"></span>
                     </button>
@@ -302,7 +37,7 @@ Usuarios
                 align-items: center;
                 display: flex;
                 max-height: 55px !important;
-              " uk-toggle="target: #modal-agregar-simp">
+              " uk-toggle="target: #modal-agregar-user">
                         Agregar agente
                         <span uk-icon="icon: plus" class="uk-margin-left"></span>
                     </button>
@@ -312,76 +47,57 @@ Usuarios
             <!-- Sección ADMINISTRADORES -->
             <div class="uk-padding-small uk-grid-column-small uk-grid-row-large uk-child-width-1-4@s" uk-grid
                 style="margin-top: 0 !important">
-                <div>
-                    <!-- Tarjeta administrador -->
-                    <div class="uk-card uk-card-default uk-padding-small">
-                        <div uk-grid>
-                            <div class="uk-width-auto@m">
-                                <div>
-                                    <img class="uk-border-circle uk-align-center" width="100" height="100"
-                                        src="{{asset('img/test/avatar.jpg')}}" style="margin-bottom: 0" />
+                @foreach ($administradores as $admin)
+                    <div class="editar-admin" data-id="{{$admin->id}}" style="cursor: pointer;" uk-toggle="target: #modal-editar-user">
+                        <!-- Tarjeta administrador -->
+                        <div class="uk-card uk-card-default uk-padding-small">
+                            <div uk-grid>
+                                <div class="uk-width-auto@m">
+                                    <div>
+                                        @if($admin->avatar)
+                                            <img class="uk-border-circle uk-align-center" width="100" height="100"
+                                            src="{{asset('storage/uploads/'.$admin->avatar)}}" style="margin-bottom:0;height:100px; background-size:cover; object-fit:cover;" />
+                                        @else
+                                            <img class="uk-border-circle uk-align-center" width="100" height="100"
+                                                src="{{asset('/img/icons/default.png')}}" style="margin-bottom:0;height:100px; background-size:cover; object-fit:cover;" />
+                                        @endif
+                                    </div>
                                 </div>
-                                <div class="uk-background-primary uk-margin-small-top uk-text-center"
-                                    style="color: white; border-radius: 4px">
-                                    <p style="padding: 2px; margin: 0">Administrador</p>
-                                </div>
-                            </div>
-                            <div class="uk-width-expand@m">
-                                <p class="uk-text-bold uk-margin-remove-bottom uk-text-center uk-text-left@m">
-                                    José Agustín Aguilar Solórzano
-                                </p>
-                                <p class="uk-text-meta uk-margin-remove-top uk-text-center uk-text-left@m"
-                                    style="margin: 0">
-                                    Correo electrónico
-                                </p>
-                                <div class="uk-margin-small-top uk-text-center uk-align-center uk-align-left@m" style="
-                      background-color: #62d69e;
-                      color: white;
-                      border-radius: 4px;
-                      width: fit-content;
-                      min-width: 6rem;
-                    ">
-                                    <p style="padding: 2px; margin: 0">Activo</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                    <!-- Tarjeta administrador -->
-                    <div class="uk-card uk-card-default uk-padding-small">
-                        <div uk-grid>
-                            <div class="uk-width-auto@m">
-                                <div>
-                                    <img class="uk-border-circle uk-align-center" width="100" height="100"
-                                        src="{{asset('img/test/avatar.jpg')}}" style="margin-bottom: 0" />
-                                </div>
-                                <div class="uk-background-primary uk-margin-small-top uk-text-center"
-                                    style="color: white; border-radius: 4px">
-                                    <p style="padding: 2px; margin: 0">Administrador</p>
-                                </div>
-                            </div>
-                            <div class="uk-width-expand@m">
-                                <p class="uk-text-bold uk-margin-remove-bottom uk-text-center uk-text-left@m">
-                                    José Agustín Aguilar Solórzano
-                                </p>
-                                <p class="uk-text-meta uk-margin-remove-top uk-text-center uk-text-left@m"
-                                    style="margin: 0">
-                                    Correo electrónico
-                                </p>
-                                <div class="uk-margin-small-top uk-text-center uk-align-center uk-align-left@m" style="
-                      background-color: #f4e55d;
-                      color: white;
-                      border-radius: 4px;
-                      width: fit-content;
-                      min-width: 6rem;
-                    ">
-                                    <p style="padding: 2px; margin: 0">Inactivo</p>
+                                <div class="uk-width-expand@m">
+                                    <p class="uk-text-bold uk-margin-remove-bottom uk-text-center uk-text-left@m uk-text-truncate">
+                                        {{$admin->name}}
+                                    </p>
+                                    <p class="uk-text-meta uk-margin-remove-top uk-text-center uk-text-left@m uk-text-truncate"
+                                        style="margin: 0">
+                                        {{$admin->email}}
+                                    </p>
+                                    @if ($admin->status == 'activo')
+                                        <div class="uk-margin-small-top uk-text-center uk-align-center uk-align-left@m" style="
+                                        background-color: #62d69e;
+                                        color: white;
+                                        border-radius: 4px;
+                                        width: fit-content;
+                                        min-width: 6rem;
+                                        ">
+                                            <p style="padding: 2px; margin: 0">Activo</p>
+                                        </div>
+                                    @else 
+                                        <div class="uk-margin-small-top uk-text-center uk-align-center uk-align-left@m" style="
+                                        background-color: #F4E55D;
+                                        color: white;
+                                        border-radius: 4px;
+                                        width: fit-content;
+                                        min-width: 6rem;
+                                        ">
+                                            <p style="padding: 2px; margin: 0">Inactivo</p>
+                                        </div>
+                                    @endif
+
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -401,77 +117,39 @@ Usuarios
                                 <th>#</th>
                                 <th>Nombre</th>
                                 <th>Correo electrónico</th>
-                                <th>Partido</th>
+                                <th>Campaña</th>
                                 <th>Secciones</th>
                                 <th>Estatus</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr onclick="myFunction(this)">
-                                <td>#1</td>
-                                <td>José Agustín Aguilar Solórzano</td>
-                                <td>correo@ejemplo.com</td>
-                                <td>NDP</td>
-                                <td>178</td>
-                                <td>Activo</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#1</td>
-                                <td>José Agustín Aguilar Solórzano</td>
-                                <td>correo@ejemplo.com</td>
-                                <td>NDP</td>
-                                <td>178</td>
-                                <td>Activo</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#1</td>
-                                <td>José Agustín Aguilar Solórzano</td>
-                                <td>correo@ejemplo.com</td>
-                                <td>NDP</td>
-                                <td>178</td>
-                                <td>Activo</td>
-                            </tr>
+                            @foreach($agentes as $agente)
+                                <tr class="editar-agente" style="cursor:pointer;" data-id="{{$agente->id}}" uk-toggle="target: #modal-editar-user">
+                                    <td>#{{$agente->id}}</td>}}
+                                    <td>{{$agente->name}}</td>
+                                    <td>{{$agente->email}}</td>
+                                    <td>
+                                        @foreach($agente->campaign as $campana)
+                                            {{$campana->name}} ,
+                                        @endforeach
+                                    </td>
+                                    <td>
+                                        @php
+                                            $total=0;   
+                                        @endphp
+                                        @foreach($agente->campaign as $campana)
+                                            @php
+                                             $total+=$campana->section->count();   
+                                            @endphp
+                                        @endforeach
+                                        {{$total}}
+                                    </td>
+                                    <td class="uk-text-capitalize">{{$agente->status}}</td>
+                                </tr>
+                            @endforeach
                         </tbody>
                     </table>
                 </div>
-            </div>
-            <!-- Grafica de pastel -->
-            <div class="uk-width-1-3@m">
-                <h5 class="uk-text-bold uk-padding-small">Ocupaciones</h5>
-                <div class="uk-flex uk-flex-middle">
-                    <div>
-                        <canvas id="ocupChart" width="auto" height="200"></canvas>
-                    </div>
-                    <div class="uk-flex-none">
-                        <div>
-                            <span class="uk-badge" style="background-color: #ffd43a"></span>
-                            NDP
-                        </div>
-                        <div>
-                            <span class="uk-badge" style="background-color: #04be65"></span>
-                            PAN
-                        </div>
-                        <div>
-                            <span class="uk-badge" style="background-color: #2d9b94"></span>
-                            PRI
-                        </div>
-                        <div>
-                            <span class="uk-badge" style="background-color: #007aff"></span>
-                            PRD
-                        </div>
-                        <div>
-                            <span class="uk-badge" style="background-color: #c8194b"></span>
-                            PT
-                        </div>
-                        <div>
-                            <span class="uk-badge" style="background-color: #adadad"></span>
-                            PES
-                        </div>
-                    </div>
-                </div>
-                <p style="margin-top: 0 !important">
-                    Partidos políticos presentes en iElect
-                </p>
             </div>
         </div>
     </div>
@@ -489,41 +167,522 @@ Usuarios
                         <th>#</th>
                         <th>Nombre</th>
                         <th>Correo electronico</th>
-                        <th>Partido</th>
+                        <th>Campaña</th>
                         <th>Simpatizantes registrados</th>
                         <th>Estatus</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr onclick="myFunction(this)">
-                        <td>#1</td>
-                        <td>José Agustín Aguilar Solórzano</td>
-                        <td>correo@ejemplo.com</td>
-                        <td>NDP</td>
-                        <td>178</td>
-                        <td>Activo</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#2</td>
-                        <td>Leonardo Daniel López López</td>
-                        <td>correo@ejemplo.com</td>
-                        <td>NDP</td>
-                        <td>86</td>
-                        <td>Inactivo</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#4</td>
-                        <td>Oscar André Huerta García</td>
-                        <td>correo@ejemplo.com</td>
-                        <td>NDP</td>
-                        <td>178</td>
-                        <td>Activo</td>
-                    </tr>
+                    @foreach ($brigadistas as $brigadista)
+                        <tr class="editar-brigadista" style="cursor:pointer;" data-id="{{$brigadista->id}}" uk-toggle="target: #modal-editar-user">
+                            <td>{{$brigadista->id}}</td>
+                            <td>{{$brigadista->name}}</td>
+                            <td>{{$brigadista->email}}</td>
+                            <td>
+                                @foreach($brigadista->campaign as $campana)
+                                    {{$campana->name}} ,
+                                @endforeach
+                            </td>
+                            <td>
+                                {{$brigadista->elector->count()}}
+                            </td>
+                            <td>Activo</td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
     </div>
+    <!-- Modal Agregar Usuario -->
+    <div id="modal-agregar-user" class="uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">Agregar agente</h2>
+            </div>
+            <div id="errors" class="uk-alert-danger" uk-alert style="display:none;">
+            </div>
+            <form id="form-nuevo-usuario" class="uk-modal-body" action="{{ route('agregar-usuario')}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div uk-grid>
+                    <div class="uk-width-1">
+                        <!-- Avatar -->
+                        <div class="avatar-wrapper uk-margin-bottom">
+                            <img id="avatar" class="profile-pic uk-border-circle uk-flex" style="margin-left:auto; margin-right:auto; background-size:cover; object-fit:cover; height:200px;" src="{{asset('/img/icons/default.png')}}" width="200"
+                                height="200" alt="Border circle" />
+                            <div id="foto" class=" uk-text-center" style="cursor: pointer">
+                                Agregar foto
+                                <span class="uk-margin-small-left" uk-icon="upload"></span>
+                            </div>
+                            <input name="fileField" type="file" id="fileField" style="visibility:hidden;height:2px;width:30px"/>
+                        </div>
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">NOMBRE</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="name" type="text" maxlength="255" />
+                                        <span class="omrs-input-label">Nombre completo</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">CORREO</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required type="email" autocomplete="nope" name="email" maxlength="255"/>
+                                        <span class="omrs-input-label">Correo electrónico</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">CONTRASEÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required type='password' autocomplete='new-password' id="password" name="password" onchange="validatePassword();" maxlength="255"/>
+                                        <span class="omrs-input-label">Contraseña</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">CONFIRMAR CONTRASEÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required type='password' autocomplete='new-password' id="password-confirm" onkeyup="validatePassword()" name="password-confirm" maxlength="255"/>
+                                        <span class="omrs-input-label">Confirmar contraseña</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">TIPO</h6>
+                                <div class="uk-form-controls omrs-input-group uk-margin">
+                                    <select class="uk-select" required name="type">
+                                        <option value="agente">Agente</option> 
+                                        <option value="admin">Administrador</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">
+                        Cancelar
+                    </button>
+                    <button id="btnEnviar" class="uk-button uk-button-primary" type="submit">
+                        Enviar
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Usuario -->
+    <div id="modal-editar-user" class="uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">Editar usuario</h2>
+            </div>
+            <div id="errors-edit" class="uk-alert-danger" uk-alert style="display:none;">
+            </div>
+            <form id="form-editar-usuario" class="uk-modal-body" action="" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PATCH')
+                <div uk-grid>
+                    <div class="uk-width-1">
+                        <!-- Avatar -->
+                        <div class="avatar-wrapper uk-margin-bottom">
+                            <img id="avatar-edit" class="profile-pic uk-border-circle uk-flex" style="margin-left:auto; margin-right:auto; background-size:cover; object-fit:cover; height:200px;" src="{{asset('/img/icons/default.png')}}" width="200"
+                                height="200" alt="Border circle" />
+                            <div id="foto-edit" class=" uk-text-center" style="cursor: pointer">
+                                Cambiar foto
+                                <span class="uk-margin-small-left" uk-icon="upload"></span>
+                            </div>
+                            <input name="fileField" type="file" id="fileField-edit" style="visibility:hidden;height:2px;width:30px"/>
+                        </div>
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">NOMBRE</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input id="name-edit" required name="name" type="text" maxlength="255" />
+                                        <span class="omrs-input-label">Nombre completo</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">CORREO</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input id="email-edit" required type="email" autocomplete="nope" name="email" maxlength="255"/>
+                                        <span class="omrs-input-label">Correo electrónico</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m uk-text-primary uk-margin-top" style="cursor: pointer;" onclick="editarContrasena()">
+                                Editar contraseña
+                            </div>
+                            <div class="uk-width-1-2@m hide-password uk-margin-top" style="display:none;">
+                                <h6 class="uk-margin-remove uk-text-bold">ACTUAL CONTRASEÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input  type='password' autocomplete='new-password' id="actual-password" name="actual-password" maxlength="255"/>
+                                        <span class="omrs-input-label">Contraseña</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m hide-password uk-margin-top" style="display:none;">
+                                <h6 class="uk-margin-remove uk-text-bold">NUEVA CONTRASEÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input id="password-edit"  type='password' autocomplete='new-password' name="password" onchange="validatePasswordEdit();" maxlength="255"/>
+                                        <span class="omrs-input-label">Contraseña</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m hide-password uk-margin-top" style="display:none;">
+                                <h6 class="uk-margin-remove uk-text-bold">CONFIRMAR CONTRASEÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input id="password-confirm-edit"  type='password' autocomplete='new-password' onkeyup="validatePasswordEdit()" name="password-confirm" maxlength="255"/>
+                                        <span class="omrs-input-label">Confirmar contraseña</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">
+                        Cancelar
+                    </button>
+                    <button id="btnEnviar-edit" class="uk-button uk-button-primary" type="submit">
+                        Enviar
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
 </div>
+<script>
+    //Estos 3 querys cambian la info de editar usuario
+    $('.editar-admin').on('click', function() {
+        var userId = $(this).data('id'); 
+        var users = JSON.parse('<?php echo empty($administradores) ? '{}' : json_encode($administradores) ?>');
+        for(var key in users){
+            var obj=users[key];
+            if(obj["id"] == userId){
+                break;
+            }
+        } 
+        //Aqui empieza a llenarse el modal
+        $('.hide-password').css('display','none');
+        $('#actual-password').prop('required',false);
+        $('#password-edit').prop('required',false);
+        $('#password-confirm-edit').prop('required',false);
+        if(obj["avatar"])
+            $('#avatar-edit').attr("src","/storage/uploads/"+obj["avatar"]);
+        else
+            $('#avatar-edit').attr("src","/img/icons/default.png");
+        $('#name-edit').val(obj["name"]).change();
+        $('#email-edit').val(obj["email"]).change();
+        //esto es para poner el id en el action del form
+        $('#form-editar-usuario').attr('action', '/admin/editar/usuario/'+obj["id"]);
+        $('#form-eliminar-usuario').attr('action', 'admin/eliminar/usuario/'+obj["id"]);
+    });
+    $('.editar-agente').on('click', function() {
+        var userId = $(this).data('id'); 
+        var users = JSON.parse('<?php echo empty($agentes) ? '{}' : json_encode($agentes) ?>');
+        for(var key in users){
+            var obj=users[key];
+            if(obj["id"] == userId){
+                break;
+            }
+        } 
+        //Aqui empieza a llenarse el modal
+        $('.hide-password').css('display','none');
+        if(obj["avatar"])
+            $('#avatar-edit').attr("src","/storage/uploads/"+obj["avatar"]);
+        else
+            $('#avatar-edit').attr("src","/img/icons/default.png");
+        $('#name-edit').val(obj["name"]).change();
+        $('#email-edit').val(obj["email"]).change();
+        //esto es para poner el id en el action del form
+        $('#form-editar-usuario').attr('action', '/admin/editar/usuario/'+obj["id"]);
+        $('#form-eliminar-usuario').attr('action', 'admin/eliminar/usuario/'+obj["id"]);
+    });
+    $('.editar-brigadista').on('click', function() {
+        var userId = $(this).data('id'); 
+        var users = JSON.parse('<?php echo empty($brigadistas) ? '{}' : json_encode($brigadistas) ?>');
+        for(var key in users){
+            var obj=users[key];
+            if(obj["id"] == userId){
+                break;
+            }
+        } 
+        //Aqui empieza a llenarse el modal
+        $('.hide-password').css('display','none');
+        if(obj["avatar"])
+            $('#avatar-edit').attr("src","/storage/uploads/"+obj["avatar"]);
+        else
+            $('#avatar-edit').attr("src","/img/icons/default.png");
+        $('#name-edit').val(obj["name"]).change();
+        $('#email-edit').val(obj["email"]).change();
+        //esto es para poner el id en el action del form
+        $('#form-editar-usuario').attr('action', '/admin/editar/usuario/'+obj["id"]);
+        $('#form-eliminar-usuario').attr('action', 'admin/eliminar/usuario/'+obj["id"]);
+    });
+
+    //Abre los inputs de editar contraseña
+    function editarContrasena(){
+        $('.hide-password').css('display','block').change();
+        $('#actual-password').prop('required',true);
+        $('#password-edit').prop('required',true);
+        $('#password-confirm-edit').prop('required',true);
+    }
+
+    //Validar contraseña 
+    var password = document.getElementById("password")
+    , confirm_password = document.getElementById("password-confirm");
+
+    var passwordEdit = document.getElementById("password-edit")
+    , confirm_passwordEdit = document.getElementById("password-confirm-edit");
+
+    function validatePassword(){
+        if(password.value != confirm_password.value) {
+            confirm_password.setCustomValidity("Las contraseñas no coinciden");
+            confirm_password.reportValidity();
+        } else {
+            confirm_password.setCustomValidity('');
+            confirm_password.reportValidity();
+        }
+    }
+
+    function validatePasswordEdit(){
+        if(passwordEdit.value != confirm_passwordEdit.value) {
+            confirm_passwordEdit.setCustomValidity("Las contraseñas no coinciden");
+            confirm_passwordEdit.reportValidity();
+        } else {
+            confirm_passwordEdit.setCustomValidity('');
+            confirm_passwordEdit.reportValidity();
+        }
+    }
+
+    //Cambia la foto seleccionada de perfil en la vista
+    jQuery(($) => {
+        //esto es para la foto de perfil
+        $('#foto').on('click', function() {
+            $("#fileField").click();
+        });
+
+        function readURL(input) {
+            $('#avatar').attr('src', "/img/icons/default.png");
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                $('#avatar').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+        $("#fileField").change(function() {
+            readURL(this);
+        });
+    });
+
+    //Cambia la foto seleccionada del edit de perfil en la vista
+    jQuery(($) => {
+        //esto es para la foto de perfil
+        $('#foto-edit').on('click', function() {
+            $("#fileField-edit").click();
+        });
+
+        function readURL(input) {
+            $('#avatar-edit').attr('src', "/img/icons/default.png");
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                $('#avatar-edit').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+
+        $("#fileField-edit").change(function() {
+            readURL(this);
+        });
+    });
+
+    //ajax del form de nuevo
+    $("#form-nuevo-usuario").bind("submit",function(){
+        // Capturamnos el boton de envío
+        var btnEnviar = $("#btnEnviar");
+
+        $.ajax({
+            type: $(this).attr("method"),
+            url: $(this).attr("action"),
+            data: new FormData(this),
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
+            beforeSend: function(data){
+                /*
+                * Esta función se ejecuta durante el envió de la petición al
+                * servidor.
+                * */
+                // btnEnviar.text("Enviando"); Para button
+                btnEnviar.val("Enviando"); // Para input de tipo button
+                btnEnviar.attr("disabled","disabled");
+            },
+            complete:function(data){
+                /*
+                * Se ejecuta al termino de la petición
+                * */
+                btnEnviar.val("Enviar formulario");
+            },
+            success: function(data){
+                /*
+                * Se ejecuta cuando termina la petición y esta ha sido
+                * correcta
+                * */
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> Usuario creado con éxito!',
+                    status: 'success',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+                $('#errors').css('display', 'none');
+                setTimeout(
+                function()
+                {
+                    window.location.reload(true);
+                }, 2000);
+            },
+            error: function(data){
+                console.log(data);
+                // $('#success').css('display', 'none');
+                btnEnviar.removeAttr("disabled");
+                $('#errors').css('display', 'block');
+                var errors = data.responseJSON.errors;
+                var errorsContainer = $('#errors');
+                errorsContainer.innerHTML = '';
+                var errorsList = '';
+                // for (var i = 0; i < errors.length; i++) {
+                // //     //if(errors[i].redirect)
+                // //         //window.location.href = window.location.origin + '/logout'
+                    
+                //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                // }
+                for(var key in errors){
+                    var obj=errors[key];
+                    console.log(obj);
+                    for(var yek in obj){
+                        var error=obj[yek];
+                        console.log(error);
+                        errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                    }
+                }
+                errorsContainer.html(errorsList);
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                    status: 'danger',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+            }
+        });
+        // Nos permite cancelar el envio del formulario
+        return false;
+    });
+
+    //ajax del form de editar
+    $("#form-editar-usuario").bind("submit",function(){
+        // Capturamnos el boton de envío
+        var btnEnviar = $("#btnEnviar-edit");
+
+        $.ajax({
+            type: $(this).attr("method"),
+            url: $(this).attr("action"),
+            data: new FormData(this),
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
+            beforeSend: function(data){
+                /*
+                * Esta función se ejecuta durante el envió de la petición al
+                * servidor.
+                * */
+                // btnEnviar.text("Enviando"); Para button
+                btnEnviar.val("Enviando"); // Para input de tipo button
+                btnEnviar.attr("disabled","disabled");
+            },
+            complete:function(data){
+                /*
+                * Se ejecuta al termino de la petición
+                * */
+                btnEnviar.val("Enviar formulario");
+            },
+            success: function(data){
+                /*
+                * Se ejecuta cuando termina la petición y esta ha sido
+                * correcta
+                * */
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> Usuario editado con éxito!',
+                    status: 'success',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+                $('#errors-edit').css('display', 'none');
+                setTimeout(
+                function()
+                {
+                    window.location.reload(true);
+                }, 2000);
+            },
+            error: function(data){
+                console.log(data);
+                // $('#success').css('display', 'none');
+                btnEnviar.removeAttr("disabled");
+                $('#errors-edit').css('display', 'block');
+                var errors = data.responseJSON.errors;
+                var errorsContainer = $('#errors-edit');
+                errorsContainer.innerHTML = '';
+                var errorsList = '';
+                // for (var i = 0; i < errors.length; i++) {
+                // //     //if(errors[i].redirect)
+                // //         //window.location.href = window.location.origin + '/logout'
+                    
+                //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                // }
+                for(var key in errors){
+                    var obj=errors[key];
+                    console.log(obj);
+                    for(var yek in obj){
+                        var error=obj[yek];
+                        console.log(error);
+                        errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                    }
+                }
+                errorsContainer.html(errorsList);
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                    status: 'danger',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+            }
+        });
+        // Nos permite cancelar el envio del formulario
+        return false;
+    });
+</script>
 @endsection
 
 @section('scripts')

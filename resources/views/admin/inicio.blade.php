@@ -15,7 +15,7 @@ Inicio
         <div class="uk-width-expand@m">
             <div class="uk-card uk-card-default uk-padding-small uk-overflow-auto">
                 <h3 class="uk-card-title uk-text-bold uk-margin-remove">Usuarios</h3>
-                <p class="uk-margin-remove-top">Total:5185</p>
+                <p class="uk-margin-remove-top">Total: {{$totalUsers}}</p>
                 <div>
                     <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom" style="
                   justify-content: center;
@@ -42,17 +42,17 @@ Inicio
                     <div class="uk-width-1-4@m uk-text-center">
                         <img src="{{asset('img/icons/admin.png')}}" style="max-width: 120px; width: 100%;" />
                         <p class="uk-text-bold uk-margin-remove">Administradores</p>
-                        <p class="uk-margin-remove">2</p>
+                        <p class="uk-margin-remove">{{$totalAdmins}}</p>
                     </div>
                     <div class="uk-width-1-4@m uk-text-center">
                         <img src="{{asset('img/icons/agente.png')}}" style="max-width: 120px; width: 100%;" />
                         <p class="uk-text-bold uk-margin-remove">Agentes</p>
-                        <p class="uk-margin-remove">61</p>
+                        <p class="uk-margin-remove">{{$totalAgents}}</p>
                     </div>
                     <div class="uk-width-1-4@m uk-text-center">
                         <img src="{{asset('img/icons/brigadista.png')}}" style="max-width: 120px; width: 100%;" />
                         <p class="uk-text-bold uk-margin-remove">Brigadistas</p>
-                        <p class="uk-margin-remove">61</p>
+                        <p class="uk-margin-remove">{{$totalBrigadists}}</p>
                     </div>
                 </div>
             </div>
@@ -98,6 +98,43 @@ Inicio
                 <p>
                     Partidos políticos presentes en iElect
                 </p>
+            </div>
+        </div>
+    </div>
+    <!-- Card de CAMPAÑAS -->
+    <div class="uk-width-expand@m uk-margin-top">
+        <div class="uk-card uk-card-default uk-padding-small uk-overflow-auto">
+            <h3 class="uk-card-title uk-text-bold uk-margin-remove">Campañas</h3>
+            <p class="uk-margin-remove-top">Total: {{$totalCampanas}}</p>
+            <div>
+                <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom" style="
+              justify-content: center;
+              align-items: center;
+              display: flex;
+              max-height: 55px !important;
+            " uk-toggle="target: #modal-agregar-campana">
+                    Agregar campaña
+                    <span uk-icon="icon: plus" class="uk-margin-left"></span>
+                </button>
+            </div>
+            <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
+                <button class="uk-button uk-button-default uk-background-muted uk-margin-right" style="
+                    justify-content: center;
+                    align-items: center;
+                    display: flex;
+                    max-height: 55px !important;
+                    " uk-toggle="target: #modal-agregar-campana">
+                    Agregar campaña
+                    <span uk-icon="icon: plus" class="uk-margin-left"></span>
+                </button>
+            </div>
+            <div uk-grid>
+                <div class="uk-width-1-4@m uk-text-center">
+                    <img src="{{asset('img/icons/admin.png')}}" style="max-width: 120px; width: 100%;" />
+                    <p class="uk-text-bold uk-margin-remove">Nombre de la campaña</p>
+                    <p class="uk-margin-remove">#Código</p>
+                    <p class="uk-margin-remove">Candidato</p>
+                </div>
             </div>
         </div>
     </div>
