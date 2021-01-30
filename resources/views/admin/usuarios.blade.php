@@ -125,7 +125,7 @@ Usuarios
                         <tbody>
                             @foreach($agentes as $agente)
                                 <tr class="editar-agente" style="cursor:pointer;" data-id="{{$agente->id}}" uk-toggle="target: #modal-editar-user">
-                                    <td>#{{$agente->id}}</td>}}
+                                    <td>#{{$agente->id}}</td>
                                     <td>{{$agente->name}}</td>
                                     <td>{{$agente->email}}</td>
                                     <td>
@@ -239,7 +239,7 @@ Usuarios
                                 <h6 class="uk-margin-remove uk-text-bold">CONTRASEÑA</h6>
                                 <div class="omrs-input-group uk-margin">
                                     <label class="omrs-input-underlined input-outlined">
-                                        <input required type='password' autocomplete='new-password' id="password" name="password" onchange="validatePassword();" maxlength="255"/>
+                                        <input required type='password' autocomplete='new-password' id="password" name="password" onchange="validatePassword()" maxlength="255"/>
                                         <span class="omrs-input-label">Contraseña</span>
                                     </label>
                                 </div>
@@ -327,7 +327,7 @@ Usuarios
                                 <h6 class="uk-margin-remove uk-text-bold">ACTUAL CONTRASEÑA</h6>
                                 <div class="omrs-input-group uk-margin">
                                     <label class="omrs-input-underlined input-outlined">
-                                        <input  type='password' autocomplete='new-password' id="actual-password" name="actual-password" maxlength="255"/>
+                                        <input  type='password' autocomplete='new-password' id="actual-password" name="actualPassword" maxlength="255"/>
                                         <span class="omrs-input-label">Contraseña</span>
                                     </label>
                                 </div>
@@ -336,7 +336,7 @@ Usuarios
                                 <h6 class="uk-margin-remove uk-text-bold">NUEVA CONTRASEÑA</h6>
                                 <div class="omrs-input-group uk-margin">
                                     <label class="omrs-input-underlined input-outlined">
-                                        <input id="password-edit"  type='password' autocomplete='new-password' name="password" onchange="validatePasswordEdit();" maxlength="255"/>
+                                        <input id="password-edit"  type='password' autocomplete='new-password' name="password" onchange="validatePasswordEdit()" maxlength="255"/>
                                         <span class="omrs-input-label">Contraseña</span>
                                     </label>
                                 </div>
@@ -381,6 +381,9 @@ Usuarios
         $('#actual-password').prop('required',false);
         $('#password-edit').prop('required',false);
         $('#password-confirm-edit').prop('required',false);
+        $('#actual-password').val('');
+        $('#password-edit').val('');
+        $('#password-confirm-edit').val('');
         if(obj["avatar"])
             $('#avatar-edit').attr("src","/storage/uploads/"+obj["avatar"]);
         else
@@ -402,6 +405,12 @@ Usuarios
         } 
         //Aqui empieza a llenarse el modal
         $('.hide-password').css('display','none');
+        $('#actual-password').prop('required',false);
+        $('#password-edit').prop('required',false);
+        $('#password-confirm-edit').prop('required',false);
+        $('#actual-password').val('');
+        $('#password-edit').val('');
+        $('#password-confirm-edit').val('');
         if(obj["avatar"])
             $('#avatar-edit').attr("src","/storage/uploads/"+obj["avatar"]);
         else
@@ -423,6 +432,12 @@ Usuarios
         } 
         //Aqui empieza a llenarse el modal
         $('.hide-password').css('display','none');
+        $('#actual-password').prop('required',false);
+        $('#password-edit').prop('required',false);
+        $('#password-confirm-edit').prop('required',false);
+        $('#actual-password').val('');
+        $('#password-edit').val('');
+        $('#password-confirm-edit').val('');
         if(obj["avatar"])
             $('#avatar-edit').attr("src","/storage/uploads/"+obj["avatar"]);
         else
