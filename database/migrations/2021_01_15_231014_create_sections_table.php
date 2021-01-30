@@ -21,7 +21,6 @@ class CreateSectionsTable extends Migration
             $table->unsignedBigInteger('local_district_id');    //id del distrito local al que pertenece la sección
             $table->string('num_seccion', 6);                   //id de la sección en el INE
             $table->unsignedInteger('casillas')->nullable();    //numero de casillas
-            $table->enum('prioridad', ['Alta','Media','Baja']); //prioridad de la sección según meta o cliente
             
             $table->unsignedBigInteger('hombres');               //cantidad total de hombres en la sección
             $table->unsignedBigInteger('mujeres');              //cantidad total de mujeres en la sección

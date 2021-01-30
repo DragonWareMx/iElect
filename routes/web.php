@@ -3,7 +3,7 @@
 //use Illuminate\Support\Facades\Gate;
 
 use App\Http\Controllers\SeccionesController;
-//use App\Models\Elector;
+use App\Models\Elector;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
@@ -31,35 +31,35 @@ use Illuminate\Support\Facades\Auth;
 //     Gate::authorize('haveaccess', 'admin.perm');
 //     return 'hola we';
 // })->name('lay')->middleware('auth');
-// Route::get('/crear/elector', function () {
-//     $elector = new Elector();
-//     $elector->uuid = Uuid::generate()->string;
-//     $elector->nombre = 'Leonardo';
-//     $elector->apellido_p = 'Lopez';
-//     $elector->apellido_m = 'Lopez';
-//     $elector->job_id = '1';
-//     $elector->edo_civil = 'soltero';
-//     $elector->fecha_nac = '1999-04-12';
-//     $elector->telefono = '4433998915';
-//     $elector->email = 'lopez_lopez_daniel@hotmail.com';
-//     $elector->red_social = '@LeoLopez';
-//     $elector->calle = 'Antono Alzate';
-//     $elector->ext_num = '142';
-//     $elector->int_num = 'A';
-//     $elector->colonia = 'Centro';
-//     $elector->localidad = 'Morelia';
-//     $elector->municipio = 'Morelia';
-//     $elector->cp = '58000';
-//     $elector->section_id = '1';
-//     $elector->campaign_id = '1';
-//     $elector->user_id = '1';
-//     $elector->clave_elector = 'LASOASDASLD';
-//     $elector->foto_elector = 'foto.jpg';
-//     $elector->credencial_a = 'foto1.jpg';
-//     $elector->credencial_r = 'foto2.jpg';
-//     $elector->save();
-//     return 'se hizo';
-// });
+Route::get('/crear/elector', function () {
+    $elector = new Elector();
+    $elector->uuid = Uuid::generate()->string;
+    $elector->nombre = 'Leonardo';
+    $elector->apellido_p = 'Lopez';
+    $elector->apellido_m = 'Lopez';
+    $elector->job_id = '1';
+    $elector->edo_civil = 'soltero';
+    $elector->fecha_nac = '1999-04-12';
+    $elector->telefono = '4433998915';
+    $elector->email = 'lopez_lopez_daniel@hotmail.com';
+    $elector->red_social = '@LeoLopez';
+    $elector->calle = 'Antono Alzate';
+    $elector->ext_num = '142';
+    $elector->int_num = 'A';
+    $elector->colonia = 'Centro';
+    $elector->localidad = 'Morelia';
+    $elector->municipio = 'Morelia';
+    $elector->cp = '58000';
+    $elector->section_id = '1';
+    $elector->campaign_id = '1';
+    $elector->user_id = '1';
+    $elector->clave_elector = 'LASOASDASLD';
+    $elector->foto_elector = 'foto.jpg';
+    $elector->credencial_a = 'foto1.jpg';
+    $elector->credencial_r = 'foto2.jpg';
+    $elector->save();
+    return 'se hizo';
+});
 
 
 //Ruta principal
@@ -122,9 +122,10 @@ Route::get('/brigadistas/solicitudes', function () {
 
 /****** SIMPATIZANTES ******/
 //Simpatizantes
-Route::get('/simpatizantes', function () {
-    return view('usuario.simpatizantes');
-})->name('simpatizantes');
+Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simpatizantes');
+
+//agregar simpatizante
+Route::post('/simpatizantes/agregar', 'simpatizanteController@agregarSimpatizante')->name('agregar-simpatizante');
 
 //Simpatizantes
 Route::get('/simpatizantes/solicitudes', function () {

@@ -43,6 +43,7 @@ class CreateElectorsTable extends Migration
             $table->text('credencial_r'); //foto credencial ine atrás
             $table->text('documento')->nullable();  //documento de privacidad si aplica
             $table->boolean('aprobado')->default(0); //Si ya fue aprovado por un agente o no,
+            $table->enum('sexo', ['m','h']); //m = mujer, h = hombre
             //IMPORTANTE: sólo los aprobados se toman en cuenta en estadísticas
 
 
