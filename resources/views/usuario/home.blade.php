@@ -87,42 +87,53 @@ Inicio
                         </div>
                     </div>
                 </div>
-                <p class="uk-text-right">
-                    <button class="uk-button uk-button-default uk-modal-close" type="button">
-                        Añadir nuevo
-                    </button>
-                </p>
             </div>
         </div>
     </div>
+
+    @if (!is_null($campana))
     <!-- Card de PARTIDO ELECTORAL -->
     <div class="uk-card uk-card-default uk-card-body uk-margin-top">
         <div class="uk-card-title">
-            <h3 class="uk-text-bold">Partido electoral</h3>
+            <h3 class="uk-text-bold">
+                Campaña
+            </h3>
             <a class="uk-position-right uk-padding" href="" uk-icon="cog"></a>
         </div>
 
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
-            <div class="uk-width-auto uk-width-auto@m">
+            <div class="uk-width-auto uk-width-1-5@m">
+
                 <!-- Avatar circulo -->
-                <div>
-                    <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="200" height="200"
-                        alt="Border circle" />
+                <div class="uk-grid uk-child-width-1">
+                    @foreach ($campana->politic_partie as $pp)
+                    <div class="uk-flex uk-flex-middle uk-margin-bottom">
+                        <img class="uk-border-circle" src="{{$pp->logo}}" width="80" height="80" alt="Border circle" />
+                        <div class="uk-margin-left">
+                            {{$pp->siglas}}
+                        </div>
+                    </div>
+                    @endforeach
                 </div>
-                Nombre del partido NDP
             </div>
             <div class="uk-width-auto uk-width-expand@m uk-text-left">
+                <div class="uk-text-bold">Nombre de la campaña</div>
+                <div>{{$campana->name}}</div>
+                <br />
                 <div class="uk-text-bold">Postulación</div>
-                <div>Gobernador estatal de Michoacán</div>
+                <div>{{$campana->position->name}}</div>
                 <br />
                 <div class="uk-text-bold">Candidato(a)</div>
-                <div>José Solórzano Huerta</div>
+                <div>{{$campana->candidato}}</div>
                 <br />
                 <div class="uk-text-bold">Municipio, estado</div>
-                <div>Morelia, Michoacán</div>
+                <div>@foreach ($campana->section as $section){{$section->town->nombre}},
+                    {{$section->town->federal_entitie->nombre}}
+                    <br />
+                    @endforeach</div>
                 <br />
                 <div class="uk-text-bold">Código de campaña</div>
-                <div>##########</div>
+                <div>{{$campana->codigo}}</div>
                 <div class="uk-text-muted">
                     Este código deberá ser proporcionado a los brigadistas para que
                     puedan registrarse en iElecet
@@ -130,6 +141,18 @@ Inicio
             </div>
         </div>
     </div>
+    @else
+    <!-- Card de PARTIDO ELECTORAL -->
+    <div class="uk-card uk-card-default uk-card-body uk-margin-top">
+        <div class="uk-card-title">
+            <h3 class="uk-text-bold">
+                Sin campaña
+            </h3>
+            <a class="uk-position-right uk-padding" href="" uk-icon="cog"></a>
+        </div>
+    </div>
+    @endif
+
 </div>
 @endsection
 

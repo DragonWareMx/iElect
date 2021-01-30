@@ -12,25 +12,25 @@ Seccion
 @endsection
 
 @php
-$hombres = $datosSec[0]->hombres;
-$mujeres = $datosSec[0]->mujeres;
+$hombres = $datosSec->hombres;
+$mujeres = $datosSec->mujeres;
 $totalSimp = $hombres+$mujeres;
 
 $hPorc = round(($hombres * 100)/$totalSimp, 2);
 $mPorc = round(($mujeres * 100)/$totalSimp, 2);
 
-$g18 = $datosSec[0]->{18};
-$g19 = $datosSec[0]->{19};
-$g20 = $datosSec[0]->{'20_24'};
-$g25 = $datosSec[0]->{'25_29'};
-$g30 = $datosSec[0]->{'30_34'};
-$g35 = $datosSec[0]->{'35_39'};
-$g40 = $datosSec[0]->{'40_44'};
-$g45 = $datosSec[0]->{'45_49'};
-$g50 = $datosSec[0]->{'50_54'};
-$g55 = $datosSec[0]->{'55_59'};
-$g60 = $datosSec[0]->{'60_64'};
-$g65 = $datosSec[0]->{'65_mas'};
+$g18 = $datosSec->{18};
+$g19 = $datosSec->{19};
+$g20 = $datosSec->{'20_24'};
+$g25 = $datosSec->{'25_29'};
+$g30 = $datosSec->{'30_34'};
+$g35 = $datosSec->{'35_39'};
+$g40 = $datosSec->{'40_44'};
+$g45 = $datosSec->{'45_49'};
+$g50 = $datosSec->{'50_54'};
+$g55 = $datosSec->{'55_59'};
+$g60 = $datosSec->{'60_64'};
+$g65 = $datosSec->{'65_mas'};
 @endphp
 
 @section('body')
@@ -52,7 +52,7 @@ $g65 = $datosSec[0]->{'65_mas'};
                     </select>
                     <span class="select-highlight"></span>
                     <span class="select-bar"></span>
-                    <label class="select-label">Select</label>
+                    <label class="select-label">Prioridad</label>
                 </div>
             </div>
             <div class="uk-margin">
@@ -309,20 +309,8 @@ $g65 = $datosSec[0]->{'65_mas'};
                 <div>
                     <h3 class="uk-card-title uk-text-bold">
                         <a class="uk-margin-right" href="{{route('secciones')}}" uk-icon="arrow-left"></a>Seccion
-                        {{$datosSec[0]->num_seccion}}
+                        {{$datosSec->num_seccion}}
                     </h3>
-                </div>
-                <div>
-                    <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom"
-                        style="
-                    justify-content: center;
-                    align-items: center;
-                    display: flex;
-                    max-height: 55px !important;
-                  " uk-toggle="target: #modal-agregar-simp">
-                        Agregar simpatizante
-                        <span uk-icon="icon: plus" class="uk-margin-left"></span>
-                    </button>
                 </div>
                 <div class="uk-hidden@m">
                     <div class="omrs-input-group">
@@ -333,15 +321,6 @@ $g65 = $datosSec[0]->{'65_mas'};
                     </div>
                 </div>
                 <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
-                    <button class="uk-button uk-button-default uk-background-muted uk-margin-right" style="
-                    justify-content: center;
-                    align-items: center;
-                    display: flex;
-                    max-height: 55px !important;
-                  " uk-toggle="target: #modal-agregar-simp">
-                        Agregar simpatizante
-                        <span uk-icon="icon: plus" class="uk-margin-left"></span>
-                    </button>
                     <div class="uk-visible@m">
                         <div class="omrs-input-group">
                             <label class="omrs-input-underlined input-outlined input-trail-icon">
@@ -425,23 +404,35 @@ $g65 = $datosSec[0]->{'65_mas'};
                 <div uk-grid>
                     <div class="uk-width-auto uk-width-1-4@m uk-text-left">
                         <div class="uk-text-bold">Entidad federativa</div>
-                        <div>Michoacán - 16 ##FALTA VER</div>
+                        <div>{{$datosSec->town->federal_entitie->nombre}} - {{$datosSec->town->federal_entitie->id}}
+                        </div>
                         <br />
                         <div class="uk-text-bold">Distrito federal</div>
-                        <div>Distrito federal {{$datosSec[0]->federal_district_id}} ##FALTA VER</div>
+                        <div>{{$datosSec->federal_district->cabecera}}</div>
                         <br />
                         <div class="uk-text-bold">Distrito local</div>
-                        <div>Distrito local {{$datosSec[0]->local_district_id}} ##FALTA VER</div>
+                        <div>Distrito Local {{$datosSec->local_district->numero}}</div>
                         <br />
                         <div class="uk-text-bold">Cabecera distrito local</div>
-                        <div>{{$datosSec[0]->local_district->cabecera}} ##FALTA VER</div>
+                        <div>{{$datosSec->local_district->cabecera}}</div>
                         <br />
                         <div class="uk-text-bold">Municipio</div>
-                        <div>Morelia</div>
+                        <div>{{$datosSec->town->nombre}}</div>
                     </div>
                     <div class="uk-width-auto uk-width-1-2@m uk-text-left">
                         <div class="uk-text-bold">Prioridad</div>
-                        <div class="uk-text-danger">{{$datosSec[0]->prioridad}} ##FALTA VER</div>
+                        <div class="@switch($datosSec->prioridad)
+                            @case('Alta')
+                                uk-text-danger
+                                @break
+                            @case('Media')
+                                uk-text-warning
+                                @break
+                            @case('Baja')
+                                uk-text-success
+                            @default
+                                
+                        @endswitch">{{$datosSec->prioridad}}</div>
                         <br />
                         <div class="uk-text-bold">Estatus</div>
                         <div style="display: flex">
@@ -458,9 +449,8 @@ $g65 = $datosSec[0]->{'65_mas'};
                         <br />
                         <div class="uk-text-bold"># Simpatizantes</div>
                         <div>@php
-
                             echo($totalSimp);
-                            @endphp ##FALTA VER simpatizantes</div>
+                            @endphp</div>
                         <br />
                         <div class="uk-text-bold">Meta final</div>
                         <div>485 simpatizantes</div>
