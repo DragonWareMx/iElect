@@ -19,7 +19,8 @@ class SeccionesController extends Controller
 
     function verSeccion($id)
     {
-        $seccion = Section::where('id', $id)->get();
+        //$seccion = Section::where('id', $id)->get();
+        $seccion = Section::find($id);
         $electores = Elector::where('section_id', $id)->get();
         return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores]);
     }

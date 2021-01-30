@@ -77,9 +77,7 @@ Route::get('/registro/brigadista', function () {
 Route::post('/registro/brigadista', 'OrderController@brigadista')->name('registro.brig');
 
 //Home
-Route::get('/inicio', function () {
-    return view('usuario.home');
-})->name('home')->middleware('auth');
+Route::get('/inicio', 'HomeController@index')->name('home');
 
 //Ruta Mapa Seccional
 Route::get('/mapa_seccional', 'mapaSeccionalController@index')->name('mapa_seccional');
