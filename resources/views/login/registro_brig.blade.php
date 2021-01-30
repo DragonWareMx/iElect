@@ -21,8 +21,8 @@
     </div>
     @endif --}}
     <!-- This is the modal with the default close button -->
-    <div id="modal-close-default" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body">
+    <div id="modal-close-default" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <h2 class="uk-modal-title uk-text-primary">iElect</h2>
             <h3 class="uk-text-center">
