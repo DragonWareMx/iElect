@@ -108,6 +108,24 @@ Simpatizantes
                                 <span class="uk-margin-small-left" uk-icon="upload"></span>
                             </div>
                         </div>
+                        @if (!is_null($secciones) && count($secciones) > 0)
+                            <h6 class="uk-text-bold">Secciones</h6>
+                            <div class="select">
+                                <select class="select-text" required name="seccion">
+                                    @foreach ($secciones as $seccion)
+                                        <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option> 
+                                    @endforeach
+                                </select>
+                                <span class="select-highlight"></span>
+                                <span class="select-bar"></span>
+                                <label class="select-label">Prioridad</label>
+                            </div>
+                        @else
+                            <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
+                        @endif
+
+                        <h6 class="uk-text-bold">Datos personales</h6>
+
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined">
                                 <input required name="nombre" type="text" maxlength="100"/>
@@ -128,44 +146,7 @@ Simpatizantes
                                 <div class="omrs-input-group uk-margin">
                                     <label class="omrs-input-underlined input-outlined">
                                         <input required name="apellido_m" type="text" maxlength="100"/>
-                                        <span class="omrs-input-label">Apellido materno</span>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="omrs-input-group uk-margin">
-                            <label class="omrs-input-underlined input-outlined">
-                                <input required />
-                                <span class="omrs-input-label">Domicilio</span>
-                            </label>
-                        </div>
-                        <!--Grid Edad, Sexo, Ocupación, Teléfono-->
-                        <div uk-grid>
-                            <div class="uk-width-1-2@m">
-                                <div class="omrs-input-group uk-margin">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input required />
-                                        <span class="omrs-input-label">Edad</span>
-                                    </label>
-                                </div>
-                                <div class="omrs-input-group uk-margin">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input required />
-                                        <span class="omrs-input-label">Ocupación</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <div class="uk-width-1-2@m">
-                                <div class="omrs-input-group uk-margin">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input required />
-                                        <span class="omrs-input-label">Sexo</span>
-                                    </label>
-                                </div>
-                                <div class="omrs-input-group uk-margin">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input required />
-                                        <span class="omrs-input-label">Teléfono</span>
+                                        <span class="omrs-input-label">Apellido materno (opcional)</span>
                                     </label>
                                 </div>
                             </div>
@@ -174,6 +155,96 @@ Simpatizantes
                             <label class="omrs-input-underlined input-outlined">
                                 <input required />
                                 <span class="omrs-input-label">Correo electrónico</span>
+                            </label>
+                        </div>
+                        <div uk-grid class="uk-margin">
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="apellido_m" type="text" maxlength="100"/>
+                                        <span class="omrs-input-label">Edad</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <div class="select">
+                                    <select class="select-text" required name="sexo">
+                                        <option value="" disabled selected></option>
+                                        <option value="h">Hombre</option>
+                                        <option value="m">Mujer</option> 
+                                    </select>
+                                    <span class="select-highlight"></span>
+                                    <span class="select-bar"></span>
+                                    <label class="select-label">Sexo</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div uk-grid class="uk-margin">
+                            <div class="uk-width-1-2@m">
+                                <div class="select">
+                                    <select class="select-text" required name="seccion">
+                                        @foreach ($ocupaciones as $ocupacion)
+                                            <option value="{{ $ocupacion->id }}">{{ $ocupacion->nombre }}</option> 
+                                        @endforeach
+                                    </select>
+                                    <span class="select-highlight"></span>
+                                    <span class="select-bar"></span>
+                                    <label class="select-label">Ocupación</label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="apellido_m" type="text" maxlength="100"/>
+                                        <span class="omrs-input-label">Teléfono</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                                                    
+                        <h6 class="uk-text-bold">Datos del domicilio</h6>
+
+
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="apellido_m" type="text" maxlength="100"/>
+                                <span class="omrs-input-label">Colonia</span>
+                            </label>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="apellido_m" type="text" maxlength="100"/>
+                                <span class="omrs-input-label">Calle</span>
+                            </label>
+                        </div>
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="apellido_p" type="text" maxlength="100"/>
+                                        <span class="omrs-input-label">Número exterior</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="apellido_m" type="text" maxlength="100"/>
+                                        <span class="omrs-input-label">Número interior (opcional)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="apellido_m" type="text" maxlength="100"/>
+                                <span class="omrs-input-label">Código postal</span>
+                            </label>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required />
+                                <span class="omrs-input-label">Domicilio</span>
                             </label>
                         </div>
                         <div class="omrs-input-group uk-margin">

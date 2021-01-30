@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Elector;
+use App\Models\Section;
+use App\Models\Campaign;
+use App\Models\Job;
+use App\Models\LocalDistrict;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class SimpatizanteController extends Controller
 {
@@ -36,10 +41,30 @@ class SimpatizanteController extends Controller
     }
 
     public function simpatizantes(){
+        //$campana = session()->get('campana');
+        $campana = Campaign::find(1);
+
         //Recibe todas las secciones
         $simpatizantes = Elector::paginate(10);
 
-        return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes]);
+        $ocupaciones = Job::all();
+
+        if(!is_null($campana))
+        {    
+            $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
+                $query->where('campaigns.id', '=', $campana->id);
+            })->get();
+        }
+        else{
+            $secciones = null;
+        }
+
+        /*
+        $localidades = LocalDistrict::whereHas('section', function (Builder $query) use ($campana) {
+            $query->where('section.id', '=', $campana->id);
+        })->get();*/
+
+        return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
     }
 
     public function agregarSimpatizante(){
