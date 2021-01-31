@@ -87,8 +87,8 @@ class SimpatizanteController extends Controller
             'CP'=>['required','regex:/^[0-9]{5}$/'],
             'facebook'=>['nullable','max:50','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
             'twitter'=>['nullable','max:50','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'foto_anverso'=>'required|mimes:jpeg,jpg,png,gif|image',
-            'foto_inverso'=>'required|mimes:jpeg,jpg,png,gif|image',
+            'foto_anverso'=>'required|mimes:jpeg,jpg,png|image',
+            'foto_inverso'=>'required|mimes:jpeg,jpg,png|image',
         ]);
 
         try {
