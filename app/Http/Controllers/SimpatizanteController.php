@@ -21,7 +21,7 @@ class SimpatizanteController extends Controller
         $elector = Elector::where('uuid', '=', $uuid)->first();
         if (!$elector)
             abort(404);
-        return view('simpatizante.solicitud_baja', ['uuid' => $uuid]);
+        return view('simpatizante.solicitud_baja', ['uuid' => $uuid, 'campaign' => $elector->campaign->name]);
     }
 
     public function delete(Request $request, $uuid)
@@ -41,7 +41,8 @@ class SimpatizanteController extends Controller
         }
     }
 
-    public function simpatizantes(){
+    public function simpatizantes()
+    {
         //$campana = session()->get('campana');
         $campana = Campaign::find(1);
 
@@ -50,13 +51,11 @@ class SimpatizanteController extends Controller
 
         $ocupaciones = Job::all();
 
-        if(!is_null($campana))
-        {    
+        if (!is_null($campana)) {
             $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
                 $query->where('campaigns.id', '=', $campana->id);
             })->get();
-        }
-        else{
+        } else {
             $secciones = null;
         }
 
@@ -90,7 +89,7 @@ class SimpatizanteController extends Controller
             'foto_inverso'=>'mimes:jpeg,jpg,png,gif|image',
         ]);
 
-        try{
+        try {
             DB::transaction(function () use ($request) {
                 $simpatizante=new Elector();
                 $simpatizante->uuid = Uuid::generate()->string;
@@ -133,11 +132,11 @@ class SimpatizanteController extends Controller
                 /*
                 if($request->foto_anverso){
                     $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
-                    $fileName = pathinfo( $fileNameWithTheExtension,PATHINFO_FILENAME);
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
                     $extension = request('fileField')->getClientOriginalExtension();
-                    $newFileName=$fileName.'_'.time().'.'.$extension;
-                    $path = request('fileField')->storeAs('/public/uploads/',$newFileName);
-                    $usuario->avatar=$newFileName;
+                    $newFileName = $fileName . '_' . time() . '.' . $extension;
+                    $path = request('fileField')->storeAs('/public/uploads/', $newFileName);
+                    $usuario->avatar = $newFileName;
                 }
 
                 if($request->foto_anverso){
@@ -151,13 +150,12 @@ class SimpatizanteController extends Controller
 
                 $simpatizante->save();
             });
-            if($request->ajax()){
-                session()->flash('status','Usuario creado con éxito!');
+            if ($request->ajax()) {
+                session()->flash('status', 'Usuario creado con éxito!');
                 return 200;
             }
-        }
-        catch(QueryException $ex){
-            if($request->ajax()){
+        } catch (QueryException $ex) {
+            if ($request->ajax()) {
                 return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
             }
         }

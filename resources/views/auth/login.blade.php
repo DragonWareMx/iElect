@@ -26,6 +26,12 @@
                             Iniciar Sesión
                         </h3>
                         <!--Input correo electronico-->
+                        @error('email')
+                        <div class="uk-alert-danger" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p>{{$message}}</p>
+                        </div>
+                        @enderror
                         <div class="uk-margin">
                             <div class="omrs-input-group">
                                 <label class="omrs-input-underlined input-outlined input-lead-icon">
@@ -35,12 +41,6 @@
                                     <span class="uk-form-icon" uk-icon="icon: mail"></span>
                                 </label>
                             </div>
-                            @error('email')
-                            <div class="uk-alert-danger" uk-alert>
-                                <a class="uk-alert-close" uk-close></a>
-                                <p>{{$message}}</p>
-                            </div>
-                            @enderror
                         </div>
                         <!--Input contraseña-->
                         <div class="uk-margin">

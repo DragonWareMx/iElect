@@ -21,8 +21,8 @@
     </div>
     @endif --}}
     <!-- This is the modal with the default close button -->
-    <div id="modal-close-default" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body">
+    <div id="modal-close-default" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <h2 class="uk-modal-title uk-text-primary">iElect</h2>
             <h3 class="uk-text-center">
@@ -37,82 +37,92 @@
         </div>
     </div>
 
-    <div>
-        <div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
-            <div class="uk-card uk-card-default uk-position-center">
-                <div class="uk-child-width-expand uk-padding-large" uk-grid>
-                    <div class="uk-width-auto@m uk-text-center uk-margin-auto-vertical">
+
+    <div class="uk-container uk-flex uk-flex-middle uk-flex-center" style="padding: 0px; min-height:100vh">
+        <div class="uk-grid uk-grid-stack" uk-grid>
+            <div class="uk-width-5-6@m uk-margin-auto">
+                <div class="uk-card uk-card-default uk-card-large uk-grid-collapse uk-child-width-1-2@s uk-margin uk-border-rounded uk-position-relative uk-overflow-hidden"
+                    uk-grid>
+                    <div
+                        class="uk-card-media-right uk-cover-container uk-text-center uk-margin-auto-vertical uk-width-1-3@m">
                         <h1 class="uk-text-primary" style="font-size: 80px">iElect</h1>
                         <small class="uk-text-muted uk-visible@m">Copyright ©2021 iElect</small>
+                        <canvas width="400" height="1"></canvas>
                     </div>
-                    <form class="uk-width-expand@m uk-width-xlarge" action="{{ route('registro.brig') }}" method="POST"
-                        id="form-brigadista">
-                        @csrf
-                        <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
-                            Registro Brigadista
-                        </h3>
-                        <div class="uk-alert-danger" uk-alert id="errors" style="display: none">
-                            <a class="uk-alert-close" uk-close></a>
-                            <ul id="errors-list">
-                            </ul>
-                        </div>
-                        <!--Input código de campaña-->
-                        <div class="omrs-input-group uk-margin">
-                            <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="text" id="codigo" name="codigo" required autocomplete="off" />
-                                <span class="omrs-input-label">Código de campaña</span>
-                                <span class="uk-form-icon" uk-icon="icon: mail"></span>
-                            </label>
-                        </div>
-                        <!--Input nombre completo-->
-                        <div class="omrs-input-group uk-margin">
-                            <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="text" id="nombre" name="nombre" required autocomplete="off" />
-                                <span class="omrs-input-label">Nombre completo</span>
-                                <span class="uk-form-icon" uk-icon="icon: user"></span>
-                            </label>
-                        </div>
-                        <!--Input correo electrónico-->
-                        <div class="omrs-input-group uk-margin">
-                            <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="email" id="email" name="email" required autocomplete="off" />
-                                <span class="omrs-input-label">Correo electrónico</span>
-                                <span class="uk-form-icon" uk-icon="icon: mail"></span>
-                            </label>
-                        </div>
-                        <!--Input contraseña-->
-                        <div class="omrs-input-group uk-margin">
-                            <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="password" id="password" name="password" required autocomplete="off" />
-                                <span class="omrs-input-label">Contraseña</span>
-                                <span class="uk-form-icon" uk-icon="icon: lock"></span>
-                            </label>
-                        </div>
-                        <!--Input confirmar contraseña-->
-                        <div class="omrs-input-group uk-margin">
-                            <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                <input type="password" id="password_confirmation" name="password_confirmation" required
-                                    onkeyup="validatePassword()" />
-                                <span class="omrs-input-label">Confirmar contraseña</span>
-                                <span class="uk-form-icon" uk-icon="icon: lock"></span>
-                            </label>
-                        </div>
+                    <div class="uk-width-expand@m">
+                        <div class="uk-card-body" style="padding-top: 2.5rem; padding-bottom:2.5rem">
+                            <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center uk-margin-small-top">
+                                Registro Brigadista
+                            </h3>
+                            <div class="uk-alert-danger" uk-alert id="errors" style="display: none">
+                                <a class="uk-alert-close" uk-close></a>
+                                <ul id="errors-list">
+                                </ul>
+                            </div>
+                            <form class=" uk-margin-small-top" action="{{ route('registro.brig') }}" method="POST"
+                                id="form-brigadista">
+                                @csrf
+                                <!--Input código de campaña-->
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined input-lead-icon">
+                                        <input type="text" id="codigo" name="codigo" required autocomplete="off" />
+                                        <span class="omrs-input-label">Código de campaña</span>
+                                        <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                    </label>
+                                </div>
+                                <!--Input nombre completo-->
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined input-lead-icon">
+                                        <input type="text" id="nombre" name="nombre" required autocomplete="off" />
+                                        <span class="omrs-input-label">Nombre completo</span>
+                                        <span class="uk-form-icon" uk-icon="icon: user"></span>
+                                    </label>
+                                </div>
+                                <!--Input correo electrónico-->
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined input-lead-icon">
+                                        <input type="email" id="email" name="email" required autocomplete="off" />
+                                        <span class="omrs-input-label">Correo electrónico</span>
+                                        <span class="uk-form-icon" uk-icon="icon: mail"></span>
+                                    </label>
+                                </div>
+                                <!--Input contraseña-->
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined input-lead-icon">
+                                        <input type="password" id="password" name="password" required
+                                            autocomplete="off" />
+                                        <span class="omrs-input-label">Contraseña</span>
+                                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                    </label>
+                                </div>
+                                <!--Input confirmar contraseña-->
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined input-lead-icon">
+                                        <input type="password" id="password_confirmation" name="password_confirmation"
+                                            required onkeyup="validatePassword()" />
+                                        <span class="omrs-input-label">Confirmar contraseña</span>
+                                        <span class="uk-form-icon" uk-icon="icon: lock"></span>
+                                    </label>
+                                </div>
 
-                        <div class="uk-text-left@m uk-text-center uk-margin-top">
-                            {{-- <button class="uk-button uk-button-primary" uk-toggle="target: #modal-close-default"> --}}
-                            <button class="uk-button uk-button-primary" id="btnEnviar">
-                                Enviar
-                            </button>
+                                <div class="uk-text-left@m uk-text-center uk-margin-top">
+                                    {{-- <button class="uk-button uk-button-primary" uk-toggle="target: #modal-close-default"> --}}
+                                    <button class="uk-button uk-button-primary" id="btnEnviar">
+                                        Enviar
+                                    </button>
+                                </div>
+                                <div>
+                                    <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
+                                        style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
+                                </div>
+                            </form>
                         </div>
-                        <div>
-                            <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
-                                style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
-                        </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 
     <script>
         var password = document.getElementById("password")

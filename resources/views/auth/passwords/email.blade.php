@@ -36,6 +36,12 @@
                             <p>{{session('status')}}</p>
                         </div>
                         @endif
+                        @error('email')
+                        <div class="uk-alert-danger" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p>{{$message}}</p>
+                        </div>
+                        @enderror
                         <!--Input correo electronico-->
                         <div class="uk-margin">
                             <div class="omrs-input-group">
@@ -46,12 +52,6 @@
                                     <span class="uk-form-icon" uk-icon="icon: mail"></span>
                                 </label>
                             </div>
-                            @error('email')
-                            <div class="uk-alert-danger" uk-alert>
-                                <a class="uk-alert-close" uk-close></a>
-                                <p>{{$message}}</p>
-                            </div>
-                            @enderror
                         </div>
                         <!--Div grid-->
                         <div class="uk-child-width-1-1 uk-grid">
