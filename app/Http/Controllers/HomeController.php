@@ -31,9 +31,11 @@ class HomeController extends Controller
         $user = Auth::user();
         //$campana = session()->get('campana');
         $campana = Campaign::find(1);
-        //$electorsH = Elector::where('campaign_id', $campana->id)->where('sexo', 'h')->get();
-        //$electorsM = Elector::where('campaign_id', $campana->id)->where('sexo', 'm')->get();
-        $electors = Elector::where('campaign_id', $campana->id)->get();
+        if (!is_null($campana)) {
+            $electors = Elector::where('campaign_id', $campana->id)->get();
+        } else {
+            $electors = null;
+        }
 
         return view('usuario.home', ['campana' => $campana, 'electores' => $electors]);
     }

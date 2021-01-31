@@ -9,6 +9,7 @@ Inicio
 @endsection
 
 @php
+if(!is_null($electores) && !is_null($campana)){
 $simpatizantes = 0;
 $porcentaje = 0;
 $countS = array_count_values($electores->pluck('sexo')->toArray());
@@ -18,6 +19,7 @@ $total = $hombres + $mujeres;
 
 $porcH = round(($hombres * 100)/$total, 2);
 $porcM = round(($mujeres * 100)/$total, 2);
+}
 
 @endphp
 
@@ -27,6 +29,7 @@ $porcM = round(($mujeres * 100)/$total, 2);
         <!-- Card de SECCIONES -->
         <div class="uk-width-expand@m">
             <div class="uk-card uk-card-default uk-card-body uk-overflow-auto">
+                @if (!is_null($electores) && !is_null($campana))
                 <h3 class="uk-card-title uk-text-bold">Secciones</h3>
                 <div class="uk-overflow-auto">
                     <table class="uk-table uk-table-small uk-table-divider">
@@ -69,11 +72,16 @@ $porcM = round(($mujeres * 100)/$total, 2);
                         <a>Ver todo</a>
                     </p>
                 </div>
+                @else
+                <h3 class="uk-card-title uk-text-bold">Sin Secciones</h3>
+                @endif
+
             </div>
         </div>
         <!-- Card de SIMPATIZANTES -->
         <div class="uk-width-1-3@m">
             <div class="uk-card uk-card-default uk-card-body">
+                @if (!is_null($electores) && !is_null($campana))
                 <h3 class="uk-card-title uk-text-bold" style="margin: 0">
                     Simpatizantes
                 </h3>
@@ -93,6 +101,11 @@ $porcM = round(($mujeres * 100)/$total, 2);
                         </div>
                     </div>
                 </div>
+                @else
+                <h3 class="uk-card-title uk-text-bold" style="margin: 0">
+                    Sin Simpatizantes
+                </h3>
+                @endif
             </div>
         </div>
     </div>
@@ -173,7 +186,11 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
+@if (!is_null($electores) && !is_null($campana))
 data: [{{$hombres}}, {{$mujeres}}],
+@else
+
+@endif
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],
