@@ -20,32 +20,21 @@ $total = $hombres + $mujeres;
 
 $porcH = round(($hombres * 100)/$total, 2);
 $porcM = round(($mujeres * 100)/$total, 2);
+
+$g18 = $rangos['18'];
+$g19 = $rangos['19'];
+$g20 = $rangos['20_24'];
+$g25 = $rangos['25_29'];
+$g30 = $rangos['30_34'];
+$g35 = $rangos['35_39'];
+$g40 = $rangos['40_44'];
+$g45 = $rangos['45_49'];
+$g50 = $rangos['50_54'];
+$g55 = $rangos['55_59'];
+$g60 = $rangos['60_64'];
+$g65 = $rangos['65_mas'];
+
 }
-
-//Parte del Backend
-$hombresCol = $datosBack->pluck('hombres');
-$hCount = $hombresCol->sum();
-
-$mujeresCol = $datosBack->pluck('mujeres');
-$mCount = $mujeresCol->sum();
-
-$total = $hCount + $mCount;
-//Porcentaje
-$hPorc = round(($hCount * 100)/$total, 2);
-$mPorc = round(($mCount * 100)/$total, 2);
-
-$g18 = $datosBack->pluck('18')->sum();
-$g19 = $datosBack->pluck('19')->sum();
-$g20 = $datosBack->pluck('20_24')->sum();
-$g25 = $datosBack->pluck('25_29')->sum();
-$g30 = $datosBack->pluck('30_34')->sum();
-$g35 = $datosBack->pluck('35_39')->sum();
-$g40 = $datosBack->pluck('40_44')->sum();
-$g45 = $datosBack->pluck('45_49')->sum();
-$g50 = $datosBack->pluck('50_54')->sum();
-$g55 = $datosBack->pluck('55_59')->sum();
-$g60 = $datosBack->pluck('60_64')->sum();
-$g65 = $datosBack->pluck('65_mas')->sum();
 @endphp
 
 @section('body')
@@ -77,6 +66,7 @@ $g65 = $datosBack->pluck('65_mas')->sum();
             <!-- Graficas -->
             <div uk-grid class="uk-padding-small" style="margin-top: 0">
                 <div class="uk-width-1-4@m">
+                    @if (!is_null($electores))
                     <h5 class="uk-text-bold uk-padding-small" style="padding-top: 0">
                         Sexo
                     </h5>
@@ -95,6 +85,11 @@ $g65 = $datosBack->pluck('65_mas')->sum();
                             </div>
                         </div>
                     </div>
+                    @else
+                    <h5 class="uk-text-bold uk-padding-small" style="padding-top: 0">
+                        Sin datos
+                    </h5>
+                    @endif
                 </div>
                 <!-- Grafica de barras -->
                 <div class="uk-width-1-2@m">
@@ -106,6 +101,7 @@ $g65 = $datosBack->pluck('65_mas')->sum();
             <hr />
 
             <div class="uk-padding-small">
+                @if (!is_null($datos))
                 <div class="uk-card-title">
                     <h5 class="uk-text-bold">Información por sección, listado nominal</h5>
                 </div>
@@ -153,6 +149,11 @@ $g65 = $datosBack->pluck('65_mas')->sum();
                     </table>
                 </div>
                 {!! $datos->links() !!}
+                @else
+                <div class="uk-card-title">
+                    <h5 class="uk-text-bold">Sin datos</h5>
+                </div>
+                @endif
             </div>
         </div>
     </div>
@@ -177,7 +178,9 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
+@if (!is_null($electores))
 data: [{{$hombres}}, {{$mujeres}}],
+@endif
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],
@@ -209,8 +212,10 @@ labels: [
 ],
 datasets: [
 {
+@if (!is_null($electores))
 data: [{{$g18}}, {{$g19}}, {{$g20}}, {{$g25}}, {{$g30}}, {{$g35}}, {{$g40}}, {{$g45}}, {{$g50}}, {{$g55}}, {{$g60}},
 {{$g65}}],
+@endif
 backgroundColor: "rgba(0,122,255,1)",
 },
 ],
