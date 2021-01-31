@@ -384,6 +384,7 @@ Simpatizantes
 
             <a class="uk-padding-small" href="{{route('simpatizantes_eliminar')}}">Solicitudes de eliminación</a>
 
+            @if ($simpatizantes && count($simpatizantes) > 0)
             <h5 class="uk-text-bold uk-padding-small" style="margin: 0">Información por sección</h5>
             <!-- Tabla -->
             <div class="uk-overflow-auto uk-padding-small">
@@ -404,120 +405,20 @@ Simpatizantes
                             <tr onclick="myFunction(this)">
                                 <td>#1</td>
                                 <td>{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}</td>
-                                <td>{{ $simpatizante->nombre }}</td>
-                                <td>32</td>
-                                <td>Escritor</td>
-                                <td>#</td>
-                                <td>#########</td>
+                                <td>{{ $simpatizante->sexo }}</td>
+                                <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años, %m meses y %d dias') }}</td>
+                                <td>{{ $simpatizante->job->nombre }}</td>
+                                <td>{{ $simpatizante->section->num_seccion }}</td>
+                                <td>{{ $simpatizante->clave_elector }}</td>
                             </tr>
                         @endforeach
-                        <tr onclick="myFunction(this)">
-                            <td>#1</td>
-                            <td>José Agustín Aguilar Solórzano</td>
-                            <td>Masculino</td>
-                            <td>32</td>
-                            <td>Escritor</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#2</td>
-                            <td>Leonardo Daniel López López</td>
-                            <td>Masculino</td>
-                            <td>21</td>
-                            <td>Profesor</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#3</td>
-                            <td>Fernando Adrián García Sánchez</td>
-                            <td>Masculino</td>
-                            <td>18</td>
-                            <td>Estudiante</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#4</td>
-                            <td>Oscar André Huerta García</td>
-                            <td>Masculino</td>
-                            <td>57</td>
-                            <td>Estudiante</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#5</td>
-                            <td>Dulce Gabriela Marín Rendón</td>
-                            <td>Femenino</td>
-                            <td>47</td>
-                            <td>Contratista</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#1</td>
-                            <td>José Agustín Aguilar Solórzano</td>
-                            <td>Masculino</td>
-                            <td>32</td>
-                            <td>Escritor</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#2</td>
-                            <td>Leonardo Daniel López López</td>
-                            <td>Masculino</td>
-                            <td>21</td>
-                            <td>Profesor</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#3</td>
-                            <td>Fernando Adrián García Sánchez</td>
-                            <td>Masculino</td>
-                            <td>18</td>
-                            <td>Estudiante</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#4</td>
-                            <td>Oscar André Huerta García</td>
-                            <td>Masculino</td>
-                            <td>57</td>
-                            <td>Estudiante</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
-                        <tr onclick="myFunction(this)">
-                            <td>#5</td>
-                            <td>Dulce Gabriela Marín Rendón</td>
-                            <td>Femenino</td>
-                            <td>47</td>
-                            <td>Contratista</td>
-                            <td>#</td>
-                            <td>#########</td>
-                        </tr>
                     </tbody>
                 </table>
-                <ul class="uk-pagination uk-flex-center" uk-margin>
-                    <li>
-                        <a href="#"><span uk-pagination-previous></span></a>
-                    </li>
-                    <li><a href="#">1</a></li>
-                    <li class="uk-disabled"><span>...</span></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">6</a></li>
-                    <li class="uk-active"><span>7</span></li>
-                    <li><a href="#">8</a></li>
-                    <li>
-                        <a href="#"><span uk-pagination-next></span></a>
-                    </li>
-                </ul>
+                {!! $simpatizantes->links() !!}
             </div>
+            @else
+                <h5 class="uk-text-bold uk-padding-small" style="margin: 0">No hay simpatizantes registrados</h5>
+            @endif
         </div>
     </div>
 

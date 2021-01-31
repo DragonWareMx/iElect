@@ -140,8 +140,6 @@ class SimpatizanteController extends Controller
                 DOCUMENTO
                 */
                 
-                error_log('Some message here.');
-
                 if($request->foto_anverso){
                     $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
