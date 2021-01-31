@@ -140,7 +140,7 @@ Simpatizantes
                                 <div class="uk-width-1-2@m">
                                     <div class="omrs-input-group uk-margin">
                                         <label class="omrs-input-underlined input-outlined">
-                                            <input required name="apellido_p" type="text" maxlength="100"/>
+                                            <input required name="apellido_paterno" type="text" maxlength="100"/>
                                             <span class="omrs-input-label">Apellido paterno</span>
                                         </label>
                                     </div>
@@ -148,7 +148,7 @@ Simpatizantes
                                 <div class="uk-width-1-2@m">
                                     <div class="omrs-input-group uk-margin">
                                         <label class="omrs-input-underlined input-outlined">
-                                            <input name="apellido_m" type="text" maxlength="100"/>
+                                            <input name="apellido_materno" type="text" maxlength="100"/>
                                             <span class="omrs-input-label">Apellido materno (opcional)</span>
                                         </label>
                                     </div>
@@ -156,7 +156,7 @@ Simpatizantes
                             </div>
                             <div class="omrs-input-group uk-margin">
                                 <label class="omrs-input-underlined input-outlined">
-                                    <input required name="email" type="email" maxlength="320"/>
+                                    <input required name="correo_electronico" type="email" maxlength="320"/>
                                     <span class="omrs-input-label">Correo electrónico</span>
                                 </label>
                             </div>
@@ -205,6 +205,20 @@ Simpatizantes
                                     </div>
                                 </div>
                             </div>
+                            <div class="select">
+                                <select class="select-text" name="estado_civil">
+                                    <option value="" disabled selected></option>
+                                    <option value="soltero">Soltero/a</option>
+                                    <option value="casado">Casado/a</option>
+                                    <option value="unionl">Unión libre o unión de hecho</option> 
+                                    <option value="separado">Separado/a</option> 
+                                    <option value="divorciado">Divorciado/a</option> 
+                                    <option value="viudo">Viudo/a</option> 
+                                </select>
+                                <span class="select-highlight"></span>
+                                <span class="select-bar"></span>
+                                <label class="select-label">Estado Civil</label>
+                            </div>
                             <div class="omrs-input-group uk-margin">
                                 <label class="omrs-input-underlined input-outlined">
                                     <input required name="clave_elector" type="text" maxlength="20" minlength="16"/>
@@ -231,7 +245,7 @@ Simpatizantes
                                 <div class="uk-width-1-2@m">
                                     <div class="omrs-input-group uk-margin">
                                         <label class="omrs-input-underlined input-outlined">
-                                            <input name="num_ext" type="text" maxlength="10"/>
+                                            <input name="num_exterior" type="text" maxlength="10"/>
                                             <span class="omrs-input-label">Número exterior (opcional)</span>
                                         </label>
                                     </div>
@@ -239,7 +253,7 @@ Simpatizantes
                                 <div class="uk-width-1-2@m">
                                     <div class="omrs-input-group uk-margin">
                                         <label class="omrs-input-underlined input-outlined">
-                                            <input name="num_int" type="text" maxlength="10"/>
+                                            <input name="num_interior" type="text" maxlength="10"/>
                                             <span class="omrs-input-label">Número interior (opcional)</span>
                                         </label>
                                     </div>
@@ -247,7 +261,7 @@ Simpatizantes
                             </div>
                             <div class="omrs-input-group uk-margin">
                                 <label class="omrs-input-underlined input-outlined">
-                                    <input required name="cp" type="text" maxlength="5"/>
+                                    <input required name="CP" type="text" maxlength="5" minlength="5"/>
                                     <span class="omrs-input-label">Código postal</span>
                                 </label>
                             </div>
@@ -277,7 +291,7 @@ Simpatizantes
                                 <span class="uk-text-middle">Foto de credencial anverso</span>
                                 <span uk-icon="icon: cloud-upload"></span>
                                 <div uk-form-custom>
-                                    <input type="file" multiple name="foto_a"/>
+                                    <input type="file" name="foto_anverso"/>
                                     <span class="uk-link">Selecciona una</span>
                                 </div>
                             </div>
@@ -286,7 +300,7 @@ Simpatizantes
                                 <span class="uk-text-middle">Foto de credencial inverso</span>
                                 <span uk-icon="icon: cloud-upload"></span>
                                 <div uk-form-custom>
-                                    <input type="file" multiple name="foto_r"/>
+                                    <input type="file" name="foto_inverso"/>
                                     <span class="uk-link">Selecciona una</span>
                                 </div>
                             </div>
@@ -517,86 +531,86 @@ Simpatizantes
 
     <script>
         //ajax del form de nuevo
-        $("#form-nuevo-simp").bind("submit",function(){
-            // Capturamnos el boton de envío
-            var btnEnviar = $("#btnEnviar");
+        // $("#form-nuevo-simp").bind("submit",function(){
+        //     // Capturamnos el boton de envío
+        //     var btnEnviar = $("#btnEnviar");
 
-            $.ajax({
-                type: $(this).attr("method"),
-                url: $(this).attr("action"),
-                data: new FormData(this),
-                dataType: "JSON",
-                processData: false,
-                contentType: false,
-                beforeSend: function(data){
-                    /*
-                    * Esta función se ejecuta durante el envió de la petición al
-                    * servidor.
-                    * */
-                    // btnEnviar.text("Enviando"); Para button
-                    btnEnviar.val("Enviando"); // Para input de tipo button
-                    btnEnviar.attr("disabled","disabled");
-                },
-                complete:function(data){
-                    /*
-                    * Se ejecuta al termino de la petición
-                    * */
-                    btnEnviar.val("Enviar formulario");
-                },
-                success: function(data){
-                    /*
-                    * Se ejecuta cuando termina la petición y esta ha sido
-                    * correcta
-                    * */
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: check\'></span> Usuario creado con éxito!',
-                        status: 'success',
-                        pos: 'top-center',
-                        timeout: 2000
-                    });
-                    $('#errors').css('display', 'none');
-                    setTimeout(
-                    function()
-                    {
-                        window.location.reload(true);
-                    }, 2000);
-                },
-                error: function(data){
-                    console.log(data);
-                    // $('#success').css('display', 'none');
-                    btnEnviar.removeAttr("disabled");
-                    $('#errors').css('display', 'block');
-                    var errors = data.responseJSON.errors;
-                    var errorsContainer = $('#errors');
-                    errorsContainer.innerHTML = '';
-                    var errorsList = '';
-                    // for (var i = 0; i < errors.length; i++) {
-                    // //     //if(errors[i].redirect)
-                    // //         //window.location.href = window.location.origin + '/logout'
+        //     $.ajax({
+        //         type: $(this).attr("method"),
+        //         url: $(this).attr("action"),
+        //         data: new FormData(this),
+        //         dataType: "JSON",
+        //         processData: false,
+        //         contentType: false,
+        //         beforeSend: function(data){
+        //             /*
+        //             * Esta función se ejecuta durante el envió de la petición al
+        //             * servidor.
+        //             * */
+        //             // btnEnviar.text("Enviando"); Para button
+        //             btnEnviar.val("Enviando"); // Para input de tipo button
+        //             btnEnviar.attr("disabled","disabled");
+        //         },
+        //         complete:function(data){
+        //             /*
+        //             * Se ejecuta al termino de la petición
+        //             * */
+        //             btnEnviar.val("Enviar formulario");
+        //         },
+        //         success: function(data){
+        //             /*
+        //             * Se ejecuta cuando termina la petición y esta ha sido
+        //             * correcta
+        //             * */
+        //             UIkit.notification({
+        //                 message: '<span uk-icon=\'icon: check\'></span> Usuario creado con éxito!',
+        //                 status: 'success',
+        //                 pos: 'top-center',
+        //                 timeout: 2000
+        //             });
+        //             $('#errors').css('display', 'none');
+        //             setTimeout(
+        //             function()
+        //             {
+        //                 window.location.reload(true);
+        //             }, 2000);
+        //         },
+        //         error: function(data){
+        //             console.log(data);
+        //             // $('#success').css('display', 'none');
+        //             btnEnviar.removeAttr("disabled");
+        //             $('#errors').css('display', 'block');
+        //             var errors = data.responseJSON.errors;
+        //             var errorsContainer = $('#errors');
+        //             errorsContainer.innerHTML = '';
+        //             var errorsList = '';
+        //             // for (var i = 0; i < errors.length; i++) {
+        //             // //     //if(errors[i].redirect)
+        //             // //         //window.location.href = window.location.origin + '/logout'
                         
-                    //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
-                    // }
-                    for(var key in errors){
-                        var obj=errors[key];
-                        console.log(obj);
-                        for(var yek in obj){
-                            var error=obj[yek];
-                            console.log(error);
-                            errorsList += '<div><a></a><p>'+ error +'</p></div>';
-                        }
-                    }
-                    errorsContainer.html(errorsList);
-                    UIkit.notification({
-                        message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
-                        status: 'danger',
-                        pos: 'top-center',
-                        timeout: 2000
-                    });
-                }
-            });
-            // Nos permite cancelar el envio del formulario
-            return false;
-        });
+        //             //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+        //             // }
+        //             for(var key in errors){
+        //                 var obj=errors[key];
+        //                 console.log(obj);
+        //                 for(var yek in obj){
+        //                     var error=obj[yek];
+        //                     console.log(error);
+        //                     errorsList += '<div><a></a><p>'+ error +'</p></div>';
+        //                 }
+        //             }
+        //             errorsContainer.html(errorsList);
+        //             UIkit.notification({
+        //                 message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+        //                 status: 'danger',
+        //                 pos: 'top-center',
+        //                 timeout: 2000
+        //             });
+        //         }
+        //     });
+        //     // Nos permite cancelar el envio del formulario
+        //     return false;
+        // });
     </script>
 </div>
 @endsection

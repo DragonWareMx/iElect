@@ -11,6 +11,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Validation\Rule;
 
 class SimpatizanteController extends Controller
 {
@@ -69,33 +70,68 @@ class SimpatizanteController extends Controller
 
     public function agregarSimpatizante(){
         $data=request()->validate([
-            'nombre'=>'required | max:100 | alpha',
-            'apellido_p'=>'max:100 | alpha',
-            'apellido_m'=>'max:100 | alpha',
-            'email'=>'required|max:320|email',
+            'nombre'=>['required','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'apellido_paterno'=>['nullable','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'apellido_materno'=>['nullable','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'correo_electronico'=>'required|max:320|email',
             'sexo'=>['required',Rule::in(['h', 'm']),],
-            'trabajo'=>'required|exists:job,nombre',
-            'telefono'=>'required|regex:/[0-9]{3}[ -]*[0-9]{3}[ -]*[0-9]{4}/',
-            'clave_elector'=>'required|max:20|min:16|alpha_num',
-            'colonia'=>'max:100 | alpha_num',
-            'calle'=>'max:100 | alpha_num',
-            'num_ext'=>'max:10 | alpha_num',
-            'num_int'=>'max:10 | alpha_num',
-            'cp'=>'max:5 | alpha_num | numeric',
-            'facebook'=>'max:50 | alpha_num',
-            'twitter'=>'max:50 | alpha_num',
-            'fileField'=>'mimes:jpeg,jpg,png,gif|image'
+            'trabajo'=>'required|exists:jobs,nombre',
+            'telefono'=>['required','regex:/^[0-9]{3}[ -]*[0-9]{3}[ -]*[0-9]{4}$/'],
+            'estado_civil'=>['required',Rule::in(['soltero', 'casado', 'unionl', 'separado', 'divorciado', 'viudo']),],
+            'clave_elector'=>['required','max:20','min:16','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'colonia'=>['required','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'calle'=>['nullable','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'num_exterior'=>['nullable','max:10','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'num_interior'=>['nullable','max:10','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'CP'=>['required','regex:/^[0-9]{5}$/'],
+            'facebook'=>['nullable','max:50','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'twitter'=>['nullable','max:50','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'foto_anverso'=>'mimes:jpeg,jpg,png,gif|image',
+            'foto_inverso'=>'mimes:jpeg,jpg,png,gif|image',
         ]);
-
-        dd(request());
 
         try{
             DB::transaction(function () use ($request) {
-                $usuario=new User();
-                $usuario->name=$request->name;
-                $usuario->email=$request->email;
-                $usuario->password=Hash::make($request->password);
-                if($request->fileField){
+                $simpatizante=new Elector();
+                $simpatizante->uuid = Uuid::generate()->string;
+                $simpatizante->nombre=$request->nombre;
+                $simpatizante->apellido_p=$request->apellido_paterno;
+                $simpatizante->apellido_m=$request->apellido_materno;
+                $simpatizante->email=$request->correo_electronico;
+                $simpatizante->sexo=$request->sexo;
+
+                //encuentra el trabajo
+                $trabajo = Job::where('nombre','=',$request->trabajo);
+
+                $simpatizante->job_id=$request->trabajo;
+                $simpatizante->telefono=$request->telefono;
+                $simpatizante->edo_civil=$request->estado_civil;
+
+                //FALTA: obtener fecha de nacimiento
+                $simpatizante->fecha_nac='1999-06-05';
+
+                $simpatizante->clave_elector=$request->clave_elector;
+
+                //DATOS DOMICILIO
+                $simpatizante->colonia=$request->colonia;
+                $simpatizante->calle=$calle->calle;
+                $simpatizante->ext_num=$request->num_exterior;
+                $simpatizante->int_num=$request->num_interior;
+                $simpatizante->cp=$request->CP;
+
+                /*
+                FALTA:
+                REDES SOCIALES
+                LOCALIDAD
+                MUNICIPIO
+                SECTION ID
+                CAMPAIGNID
+                USER ID
+                DOCUMENTO
+                */
+                
+                /*
+                if($request->foto_anverso){
                     $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
                     $fileName = pathinfo( $fileNameWithTheExtension,PATHINFO_FILENAME);
                     $extension = request('fileField')->getClientOriginalExtension();
@@ -103,11 +139,17 @@ class SimpatizanteController extends Controller
                     $path = request('fileField')->storeAs('/public/uploads/',$newFileName);
                     $usuario->avatar=$newFileName;
                 }
-                $usuario->save();
-                if($request->type=="admin")
-                    $usuario->roles()->sync(1);
-                else
-                    $usuario->roles()->sync(2);
+
+                if($request->foto_anverso){
+                    $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
+                    $fileName = pathinfo( $fileNameWithTheExtension,PATHINFO_FILENAME);
+                    $extension = request('fileField')->getClientOriginalExtension();
+                    $newFileName=$fileName.'_'.time().'.'.$extension;
+                    $path = request('fileField')->storeAs('/public/uploads/',$newFileName);
+                    $usuario->avatar=$newFileName;
+                }*/
+
+                $simpatizante->save();
             });
             if($request->ajax()){
                 session()->flash('status','Usuario creado con éxito!');
