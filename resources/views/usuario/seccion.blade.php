@@ -11,6 +11,28 @@ Seccion
 <link rel="stylesheet" href="{{asset('css/usuario/seccion.css')}}" />
 @endsection
 
+@php
+$hombres = $datosSec->hombres;
+$mujeres = $datosSec->mujeres;
+$totalSimp = $hombres+$mujeres;
+
+$hPorc = round(($hombres * 100)/$totalSimp, 2);
+$mPorc = round(($mujeres * 100)/$totalSimp, 2);
+
+$g18 = $datosSec->{18};
+$g19 = $datosSec->{19};
+$g20 = $datosSec->{'20_24'};
+$g25 = $datosSec->{'25_29'};
+$g30 = $datosSec->{'30_34'};
+$g35 = $datosSec->{'35_39'};
+$g40 = $datosSec->{'40_44'};
+$g45 = $datosSec->{'45_49'};
+$g50 = $datosSec->{'50_54'};
+$g55 = $datosSec->{'55_59'};
+$g60 = $datosSec->{'60_64'};
+$g65 = $datosSec->{'65_mas'};
+@endphp
+
 @section('body')
 <!-- Modal Editar datos de sección -->
 <div id="modal-datos-seccion" uk-modal>
@@ -30,7 +52,7 @@ Seccion
                     </select>
                     <span class="select-highlight"></span>
                     <span class="select-bar"></span>
-                    <label class="select-label">Select</label>
+                    <label class="select-label">Prioridad</label>
                 </div>
             </div>
             <div class="uk-margin">
@@ -286,20 +308,9 @@ Seccion
             <div class="uk-padding-small" uk-grid style="display: flex; align-items: center">
                 <div>
                     <h3 class="uk-card-title uk-text-bold">
-                        <a class="uk-margin-right" href="{{route('secciones')}}" uk-icon="arrow-left"></a>Seccion 1272
+                        <a class="uk-margin-right" href="{{route('secciones')}}" uk-icon="arrow-left"></a>Seccion
+                        {{$datosSec->num_seccion}}
                     </h3>
-                </div>
-                <div>
-                    <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom"
-                        style="
-                    justify-content: center;
-                    align-items: center;
-                    display: flex;
-                    max-height: 55px !important;
-                  " uk-toggle="target: #modal-agregar-simp">
-                        Agregar simpatizante
-                        <span uk-icon="icon: plus" class="uk-margin-left"></span>
-                    </button>
                 </div>
                 <div class="uk-hidden@m">
                     <div class="omrs-input-group">
@@ -310,15 +321,6 @@ Seccion
                     </div>
                 </div>
                 <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
-                    <button class="uk-button uk-button-default uk-background-muted uk-margin-right" style="
-                    justify-content: center;
-                    align-items: center;
-                    display: flex;
-                    max-height: 55px !important;
-                  " uk-toggle="target: #modal-agregar-simp">
-                        Agregar simpatizante
-                        <span uk-icon="icon: plus" class="uk-margin-left"></span>
-                    </button>
                     <div class="uk-visible@m">
                         <div class="omrs-input-group">
                             <label class="omrs-input-underlined input-outlined input-trail-icon">
@@ -343,11 +345,11 @@ Seccion
                         <div class="uk-flex-none">
                             <div>
                                 <span class="uk-badge" style="background-color: #9b51e0"></span>
-                                Hombres 47%
+                                Hombres {{$hPorc}}%
                             </div>
                             <div>
                                 <span class="uk-badge" style="background-color: #fb8832"></span>
-                                Mujeres 53%
+                                Mujeres {{$mPorc}}%
                             </div>
                         </div>
                     </div>
@@ -393,188 +395,206 @@ Seccion
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
 
-    <!-- Card Datos de la sección -->
-    <div class="uk-card uk-card-default uk-padding">
-        <a class="uk-position-right uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog"></a>
-        <div uk-grid>
-            <div class="uk-width-auto uk-width-1-4@m uk-text-left">
-                <div class="uk-text-bold">Entidad federativa</div>
-                <div>Michoacán - 16</div>
-                <br />
-                <div class="uk-text-bold">Distrito federal</div>
-                <div>Distrito federal 11</div>
-                <br />
-                <div class="uk-text-bold">Distrito local</div>
-                <div>Distrito local 1</div>
-                <br />
-                <div class="uk-text-bold">Cabecera distrito local</div>
-                <div>Cabecera 1</div>
-                <br />
-                <div class="uk-text-bold">Municipio</div>
-                <div>Morelia</div>
-            </div>
-            <div class="uk-width-auto uk-width-1-2@m uk-text-left">
-                <div class="uk-text-bold">Prioridad</div>
-                <div class="uk-text-danger">Alta</div>
-                <br />
-                <div class="uk-text-bold">Estatus</div>
-                <div style="display: flex">
-                    <progress class="uk-progress uk-margin-right" value="50" max="100"
-                        style="margin-bottom: 0"></progress>
-                    <div>50%</div>
-                    <div class="uk-margin-left uk-hidden@m">
-                        n simpatizantes faltantes para alcanzar la meta
+            <hr />
+
+            <!-- Card Datos de la sección -->
+            <div class="uk-padding-small">
+                <a class="uk-position-right uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog"></a>
+                <div uk-grid>
+                    <div class="uk-width-auto uk-width-1-4@m uk-text-left">
+                        <div class="uk-text-bold">Entidad federativa</div>
+                        <div>{{$datosSec->town->federal_entitie->nombre}} - {{$datosSec->town->federal_entitie->id}}
+                        </div>
+                        <br />
+                        <div class="uk-text-bold">Distrito federal</div>
+                        <div>{{$datosSec->federal_district->cabecera}}</div>
+                        <br />
+                        <div class="uk-text-bold">Distrito local</div>
+                        <div>Distrito Local {{$datosSec->local_district->numero}}</div>
+                        <br />
+                        <div class="uk-text-bold">Cabecera distrito local</div>
+                        <div>{{$datosSec->local_district->cabecera}}</div>
+                        <br />
+                        <div class="uk-text-bold">Municipio</div>
+                        <div>{{$datosSec->town->nombre}}</div>
                     </div>
-                    <div class="uk-margin-left uk-text-nowrap uk-visible@m">
-                        n simpatizantes faltantes para alcanzar la meta
+                    <div class="uk-width-auto uk-width-1-2@m uk-text-left">
+                        <div class="uk-text-bold">Prioridad</div>
+                        <div class="@switch($datosSec->prioridad)
+                            @case('Alta')
+                                uk-text-danger
+                                @break
+                            @case('Media')
+                                uk-text-warning
+                                @break
+                            @case('Baja')
+                                uk-text-success
+                            @default
+                                
+                        @endswitch">{{$datosSec->prioridad}}</div>
+                        <br />
+                        <div class="uk-text-bold">Estatus</div>
+                        <div style="display: flex">
+                            <progress class="uk-progress uk-margin-right" value="50" max="100"
+                                style="margin-bottom: 0"></progress>
+                            <div>50%</div>
+                            <div class="uk-margin-left uk-hidden@m">
+                                n simpatizantes faltantes para alcanzar la meta
+                            </div>
+                            <div class="uk-margin-left uk-text-nowrap uk-visible@m">
+                                n simpatizantes faltantes para alcanzar la meta
+                            </div>
+                        </div>
+                        <br />
+                        <div class="uk-text-bold"># Simpatizantes</div>
+                        <div>@php
+                            echo($totalSimp);
+                            @endphp</div>
+                        <br />
+                        <div class="uk-text-bold">Meta final</div>
+                        <div>485 simpatizantes</div>
+                        <br />
+                        <div class="uk-text-bold">Ganador elecciones 2018</div>
+                        <div class="uk-text-middle">
+                            <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="50" height="50"
+                                alt="Border circle" />
+                            <span class="uk-text-middle">Nombre del partido NDP</span>
+                        </div>
                     </div>
                 </div>
-                <br />
-                <div class="uk-text-bold"># Simpatizantes</div>
-                <div>257 simpatizantes</div>
-                <br />
-                <div class="uk-text-bold">Meta final</div>
-                <div>485 simpatizantes</div>
-                <br />
-                <div class="uk-text-bold">Ganador elecciones 2018</div>
-                <div class="uk-text-middle">
-                    <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="50" height="50"
-                        alt="Border circle" />
-                    <span class="uk-text-middle">Nombre del partido NDP</span>
+            </div>
+
+            <hr />
+
+            <!-- Card de SIMPATIZANTES -->
+            <div class="uk-padding-small">
+                <div class="uk-card-title">
+                    <h5 class="uk-text-bold">Información por sección</h5>
+                </div>
+                <!-- Tabla -->
+                <div class="uk-overflow-auto">
+                    <table class="uk-table uk-table-small uk-table-divider">
+                        <thead class="uk-background-muted">
+                            <tr>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Sexo</th>
+                                <th>Edad</th>
+                                <th>Ocupación</th>
+                                <th>Sección electoral</th>
+                                <th>Clave de elecetor</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr onclick="myFunction(this)">
+                                <td>#1</td>
+                                <td>José Agustín Aguilar Solórzano</td>
+                                <td>Masculino</td>
+                                <td>32</td>
+                                <td>Escritor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#2</td>
+                                <td>Leonardo Daniel López López</td>
+                                <td>Masculino</td>
+                                <td>21</td>
+                                <td>Profesor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#3</td>
+                                <td>Fernando Adrián García Sánchez</td>
+                                <td>Masculino</td>
+                                <td>18</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#4</td>
+                                <td>Oscar André Huerta García</td>
+                                <td>Masculino</td>
+                                <td>57</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#5</td>
+                                <td>Dulce Gabriela Marín Rendón</td>
+                                <td>Femenino</td>
+                                <td>47</td>
+                                <td>Contratista</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#1</td>
+                                <td>José Agustín Aguilar Solórzano</td>
+                                <td>Masculino</td>
+                                <td>32</td>
+                                <td>Escritor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#2</td>
+                                <td>Leonardo Daniel López López</td>
+                                <td>Masculino</td>
+                                <td>21</td>
+                                <td>Profesor</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#3</td>
+                                <td>Fernando Adrián García Sánchez</td>
+                                <td>Masculino</td>
+                                <td>18</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#4</td>
+                                <td>Oscar André Huerta García</td>
+                                <td>Masculino</td>
+                                <td>57</td>
+                                <td>Estudiante</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                            <tr onclick="myFunction(this)">
+                                <td>#5</td>
+                                <td>Dulce Gabriela Marín Rendón</td>
+                                <td>Femenino</td>
+                                <td>47</td>
+                                <td>Contratista</td>
+                                <td>#</td>
+                                <td>#########</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <ul class="uk-pagination uk-flex-center" uk-margin>
+                        <li>
+                            <a href="#"><span uk-pagination-previous></span></a>
+                        </li>
+                        <li><a href="#">1</a></li>
+                        <li class="uk-disabled"><span>...</span></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">6</a></li>
+                        <li class="uk-active"><span>7</span></li>
+                        <li><a href="#">8</a></li>
+                        <li>
+                            <a href="#"><span uk-pagination-next></span></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Card de SIMPATIZANTES -->
-    <div class="uk-card uk-card-default uk-padding-small">
-        <div class="uk-card-title">
-            <h5 class="uk-text-bold">Información por sección</h5>
-        </div>
-        <!-- Tabla -->
-        <div class="uk-overflow-auto">
-            <table class="uk-table uk-table-small uk-table-divider">
-                <thead class="uk-background-muted">
-                    <tr>
-                        <th>#</th>
-                        <th>Nombre</th>
-                        <th>Sexo</th>
-                        <th>Edad</th>
-                        <th>Ocupación</th>
-                        <th>Sección electoral</th>
-                        <th>Clave de elecetor</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr onclick="myFunction(this)">
-                        <td>#1</td>
-                        <td>José Agustín Aguilar Solórzano</td>
-                        <td>Masculino</td>
-                        <td>32</td>
-                        <td>Escritor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#2</td>
-                        <td>Leonardo Daniel López López</td>
-                        <td>Masculino</td>
-                        <td>21</td>
-                        <td>Profesor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#3</td>
-                        <td>Fernando Adrián García Sánchez</td>
-                        <td>Masculino</td>
-                        <td>18</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#4</td>
-                        <td>Oscar André Huerta García</td>
-                        <td>Masculino</td>
-                        <td>57</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#5</td>
-                        <td>Dulce Gabriela Marín Rendón</td>
-                        <td>Femenino</td>
-                        <td>47</td>
-                        <td>Contratista</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#1</td>
-                        <td>José Agustín Aguilar Solórzano</td>
-                        <td>Masculino</td>
-                        <td>32</td>
-                        <td>Escritor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#2</td>
-                        <td>Leonardo Daniel López López</td>
-                        <td>Masculino</td>
-                        <td>21</td>
-                        <td>Profesor</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#3</td>
-                        <td>Fernando Adrián García Sánchez</td>
-                        <td>Masculino</td>
-                        <td>18</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#4</td>
-                        <td>Oscar André Huerta García</td>
-                        <td>Masculino</td>
-                        <td>57</td>
-                        <td>Estudiante</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                    <tr onclick="myFunction(this)">
-                        <td>#5</td>
-                        <td>Dulce Gabriela Marín Rendón</td>
-                        <td>Femenino</td>
-                        <td>47</td>
-                        <td>Contratista</td>
-                        <td>#</td>
-                        <td>#########</td>
-                    </tr>
-                </tbody>
-            </table>
-            <ul class="uk-pagination uk-flex-center" uk-margin>
-                <li>
-                    <a href="#"><span uk-pagination-previous></span></a>
-                </li>
-                <li><a href="#">1</a></li>
-                <li class="uk-disabled"><span>...</span></li>
-                <li><a href="#">5</a></li>
-                <li><a href="#">6</a></li>
-                <li class="uk-active"><span>7</span></li>
-                <li><a href="#">8</a></li>
-                <li>
-                    <a href="#"><span uk-pagination-next></span></a>
-                </li>
-            </ul>
         </div>
     </div>
 </div>
@@ -653,7 +673,7 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
-data: [47, 53],
+data: [{{$hombres}}, {{$mujeres}}],
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],
@@ -685,8 +705,8 @@ labels: [
 ],
 datasets: [
 {
-label: "data-1",
-data: [200, 153, 60, 180, 130, 175, 112, 124, 180, 55, 45, 150],
+data: [{{$g18}}, {{$g19}}, {{$g20}}, {{$g25}}, {{$g30}}, {{$g35}}, {{$g40}}, {{$g45}}, {{$g50}}, {{$g55}}, {{$g60}},
+{{$g65}}],
 backgroundColor: "rgba(0,122,255,1)",
 },
 ],
