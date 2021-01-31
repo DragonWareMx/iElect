@@ -67,16 +67,18 @@ class SimpatizanteController extends Controller
         return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
     }
 
-    public function agregarSimpatizante(){
+    public function agregarSimpatizante(Request $request){
         $data=request()->validate([
+            'seccion'=>'required|exists:sections,id',
             'nombre'=>['required','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'apellido_paterno'=>['nullable','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'apellido_paterno'=>['required','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
             'apellido_materno'=>['nullable','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'correo_electronico'=>'required|max:320|email',
+            'correo_electronico'=>'nullable|max:320|email',
+            'fecha_de_nacimiento'=>'required|date|before:today',
             'sexo'=>['required',Rule::in(['h', 'm']),],
             'trabajo'=>'required|exists:jobs,nombre',
-            'telefono'=>['required','regex:/^[0-9]{3}[ -]*[0-9]{3}[ -]*[0-9]{4}$/'],
-            'estado_civil'=>['required',Rule::in(['soltero', 'casado', 'unionl', 'separado', 'divorciado', 'viudo']),],
+            'telefono'=>['required_without:correo_electronico','regex:/^[0-9]{3}[ -]{0,1}[0-9]{3}[ -]{0,1}[0-9]{4}$/'],
+            'estado_civil'=>['nullable',Rule::in(['soltero', 'casado', 'unionl', 'separado', 'divorciado', 'viudo']),],
             'clave_elector'=>['required','max:20','min:16','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
             'colonia'=>['required','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
             'calle'=>['nullable','max:100','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
@@ -85,68 +87,78 @@ class SimpatizanteController extends Controller
             'CP'=>['required','regex:/^[0-9]{5}$/'],
             'facebook'=>['nullable','max:50','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
             'twitter'=>['nullable','max:50','regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'foto_anverso'=>'mimes:jpeg,jpg,png,gif|image',
-            'foto_inverso'=>'mimes:jpeg,jpg,png,gif|image',
+            'foto_anverso'=>'required|mimes:jpeg,jpg,png,gif|image',
+            'foto_inverso'=>'required|mimes:jpeg,jpg,png,gif|image',
         ]);
 
         try {
             DB::transaction(function () use ($request) {
+                //SE CREA EL ELECTOR
                 $simpatizante=new Elector();
-                $simpatizante->uuid = Uuid::generate()->string;
+
+                //UUID
+                $simpatizante->uuid = '64e97250-603f-11eb-b43c-af13f7a92b36';
+                
+                //DATOS PERSONALES
                 $simpatizante->nombre=$request->nombre;
                 $simpatizante->apellido_p=$request->apellido_paterno;
                 $simpatizante->apellido_m=$request->apellido_materno;
                 $simpatizante->email=$request->correo_electronico;
                 $simpatizante->sexo=$request->sexo;
-
                 //encuentra el trabajo
-                $trabajo = Job::where('nombre','=',$request->trabajo);
-
-                $simpatizante->job_id=$request->trabajo;
+                $trabajo = Job::where('nombre','=',$request->trabajo)->first();
+                $simpatizante->job_id=$trabajo->id;
                 $simpatizante->telefono=$request->telefono;
                 $simpatizante->edo_civil=$request->estado_civil;
-
-                //FALTA: obtener fecha de nacimiento
-                $simpatizante->fecha_nac='1999-06-05';
-
+                $simpatizante->fecha_nac=$request->fecha_de_nacimiento;
                 $simpatizante->clave_elector=$request->clave_elector;
 
                 //DATOS DOMICILIO
                 $simpatizante->colonia=$request->colonia;
-                $simpatizante->calle=$calle->calle;
+                $simpatizante->calle=$request->calle;
                 $simpatizante->ext_num=$request->num_exterior;
                 $simpatizante->int_num=$request->num_interior;
                 $simpatizante->cp=$request->CP;
+                //se obtiene la seccion
+                $seccion = Section::find($request->seccion);
+                $simpatizante->localidad=$seccion->local_district->numero;
+                $simpatizante->municipio=$seccion->town->numero;
+                $simpatizante->section_id=$seccion->id;
+                $simpatizante->campaign_id=1;
+                $simpatizante->user_id=1;
+
+                //OTROS DATOS
+                $simpatizante->facebook=$request->facebook;
+                $simpatizante->twitter=$request->twitter;
 
                 /*
                 FALTA:
-                REDES SOCIALES
-                LOCALIDAD
-                MUNICIPIO
-                SECTION ID
-                CAMPAIGNID
-                USER ID
+                LOCALIDAD*
+                MUNICIPIO*
+                CAMPAIGNID*
+                USER ID*
                 DOCUMENTO
                 */
                 
-                /*
-                if($request->foto_anverso){
-                    $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
-                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('fileField')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('fileField')->storeAs('/public/uploads/', $newFileName);
-                    $usuario->avatar = $newFileName;
-                }
+                error_log('Some message here.');
 
                 if($request->foto_anverso){
-                    $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
+                    $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                    $extension = request('foto_anverso')->getClientOriginalExtension();
+                    $newFileName = $fileName . '_' . time() . '.' . $extension;
+                    $path = request('foto_anverso')->storeAs('/public/uploads/', $newFileName);
+                    $simpatizante->credencial_a = $newFileName;
+                }
+
+                if($request->foto_inverso){
+                    $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
                     $fileName = pathinfo( $fileNameWithTheExtension,PATHINFO_FILENAME);
-                    $extension = request('fileField')->getClientOriginalExtension();
+                    $extension = request('foto_inverso')->getClientOriginalExtension();
                     $newFileName=$fileName.'_'.time().'.'.$extension;
-                    $path = request('fileField')->storeAs('/public/uploads/',$newFileName);
-                    $usuario->avatar=$newFileName;
-                }*/
+                    $path = request('foto_inverso')->storeAs('/public/uploads/',$newFileName);
+                    $simpatizante->credencial_r=$newFileName;
+                }
 
                 $simpatizante->save();
             });
@@ -155,6 +167,22 @@ class SimpatizanteController extends Controller
                 return 200;
             }
         } catch (QueryException $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $out->writeln($ex);
+            if ($request->ajax()) {
+                return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+            }
+        }
+        catch (Exception $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $out->writeln($ex);
+            if ($request->ajax()) {
+                return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+            }
+        }
+        catch (Throwable $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+        $out->writeln($ex);
             if ($request->ajax()) {
                 return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
             }

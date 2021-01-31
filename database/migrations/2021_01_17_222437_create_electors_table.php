@@ -20,20 +20,21 @@ class CreateElectorsTable extends Migration
 
             $table->text('nombre');
             $table->text('apellido_p');
-            $table->text('apellido_m');
+            $table->text('apellido_m')->nullable();
             $table->unsignedBigInteger('job_id');
-            $table->enum('edo_civil', ['soltero', 'casado', 'union libre', 'divorciado', 'viudo'])->nullable();
+            $table->enum('edo_civil', ['soltero', 'casado', 'unionl', 'divorciado', 'separado', 'viudo'])->nullable();
             $table->date('fecha_nac'); //falaba en diseño bd
-            $table->string('telefono', 25);
-            $table->string('email', 320);
-            $table->text('red_social')->nullable();
-            $table->text('calle');
-            $table->string('ext_num', 6);
+            $table->string('telefono', 12)->nullable();
+            $table->string('email', 320)->nullable();
+            $table->text('facebook')->nullable();
+            $table->text('twitter')->nullable();
+            $table->text('calle')->nullable();
+            $table->string('ext_num', 6)->nullable();
             $table->string('int_num', 6)->nullable();
-            $table->text('colonia')->nullable();
+            $table->text('colonia');
             $table->text('localidad')->nullable();
             $table->text('municipio')->nullable();
-            $table->string('cp', 25)->nullable();
+            $table->string('cp', 25);
             $table->unsignedBigInteger('section_id');    //id de seccion a la que pertenece
             $table->unsignedBigInteger('campaign_id');   //id de campaña SE AGREGÓ
             $table->unsignedBigInteger('user_id');         //brigadista que lo dio de alta SE AGREGÓ
