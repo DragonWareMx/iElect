@@ -328,6 +328,60 @@ Inicio
                                     <input type="hidden" id="input_agentes" name="input_agentes" value="" />
                                 </div>
                             </div>
+                            {{-- SELECT DE SECCIONES --}}
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">SECCIONES</h6>
+                                <div class="uk-form-controls omrs-input-group uk-margin">
+                                    <select class="uk-select" id="secciones">
+                                        <option value="" disabled selected>Seleccionar secciones por:</option> 
+                                        <option value="1">Distrito local</option> 
+                                        <option value="2">Distrito federal</option> 
+                                        <option value="3">Municipio</option> 
+                                    </select>
+                                </div>
+                            </div>
+                            <div id="locales"class="uk-width-1-2@m uk-margin-medium-top" style="display:none">
+                                <h6 class="uk-margin-remove uk-text-bold">POR DISTRITO LOCAL</h6>
+                                <div class="uk-form-controls omrs-input-group uk-margin">
+                                    <select class="uk-select" id="local">
+                                        <option value="">Selecciona un distrito local</option>
+                                        @foreach($locales as $local)
+                                            <option value="{{$local->id}}">{{$local->cabecera}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div id="lista_locales" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
+                                    </div>
+                                    <input type="hidden" id="input_locales" name="input_locales" value="" />
+                                </div>
+                            </div>
+                            <div id="federales" class="uk-width-1-2@m uk-margin-medium-top" style="display:none">
+                                <h6 class="uk-margin-remove uk-text-bold">POR DISTRITO FEDERAL</h6>
+                                <div class="uk-form-controls omrs-input-group uk-margin">
+                                    <select class="uk-select" id="federal">
+                                        <option value="">Selecciona un distrito federal</option>
+                                        @foreach($federales as $federal)
+                                            <option value="{{$federal->id}}">{{$federal->cabecera}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div id="lista_federales" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
+                                    </div>
+                                    <input type="hidden" id="input_federales" name="input_federales" value="" />
+                                </div>
+                            </div>
+                            <div id="municipios" class="uk-width-1-2@m uk-margin-medium-top" style="display:none">
+                                <h6 class="uk-margin-remove uk-text-bold">POR MUNICIPIO</h6>
+                                <div class="uk-form-controls omrs-input-group uk-margin">
+                                    <select class="uk-select" id="municipio">
+                                        <option value="">Selecciona un municipio</option>
+                                        @foreach($municipios as $municipio)
+                                            <option value="{{$municipio->id}}">{{$municipio->nombre}}</option>
+                                        @endforeach
+                                    </select>
+                                    <div id="lista_municipios" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
+                                    </div>
+                                    <input type="hidden" id="input_municipios" name="input_municipios" value="" />
+                                </div>
+                            </div>
                             <div class="uk-width-1-2@m">
                                 <h6 class="uk-margin-remove uk-text-bold">POSICIÓN</h6>
                                 <div class="uk-form-controls omrs-input-group uk-margin">
@@ -359,7 +413,138 @@ Inicio
 
     var arrPartidos=[];
     var arrAgentes=[];
+    var arrLocales=[];
+    var arrFederales=[];
+    var arrMunicipios=[];
 
+
+    //Script para manejar las secciones
+    $('#secciones').on('change', function() {
+        arrLocales=[];
+        arrFederales=[];
+        arrMunicipios=[];
+        $('#input_federales').val(arrFederales);
+        $('#input_locales').val(arrLocales);
+        $('#input_municipios').val(arrMunicipios);
+        $('#federales').css('display','none');
+        $('#locales').css('display','none');
+        $('#municipios').css('display','none');
+        $('#lista_locales').empty();
+        $('#lista_federales').empty();
+        $('#lista_municipios').empty();
+        switch(this.value) {
+        case '1':
+            $('#locales').css('display','block').hide().show('normal');
+            break;
+        case '2':
+            $('#federales').css('display','block').hide().show('normal');
+            break;
+        case '3':
+            $('#municipios').css('display','block').hide().show('normal');
+            break;
+        }
+    });
+    // ONCHANGES DEL SELECT DE LOCALES
+    $('#local').on('change', function(){
+        var input = $('#local').children("option:selected").val();
+        var locales = JSON.parse('<?php echo empty($locales) ? '{}' : json_encode($locales) ?>');
+        for(var key in locales){
+            var obj=locales[key];
+            if(obj["id"] == input){
+                $("#local").val('');
+                if($.inArray(obj["id"],arrLocales)==-1){
+                    $('#lista_locales').append('<div id="'+obj['id']+'l" class="uk-flex uk-flex-middle"><img class="delete_local" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["cabecera"]+'</div></div>');
+                    $('#'+obj["id"]+'l').hide().show('normal');
+                    arrLocales.push(obj["id"]);
+                    $('#input_locales').val(arrLocales);
+                }
+                break;
+            }
+        }
+    });
+    $(document.body).on('click','.delete_local', function(e) {
+        var id=$(this).data('id');
+        arrLocales = jQuery.grep(arrLocales, function(value) {
+            return value != id;
+        });
+        $('#'+id+'l').hide('normal');
+        setTimeout(
+            function()
+            {
+                var div = document.getElementById(id+'l');
+                div.remove();
+            },
+        500);
+        $('#input_locales').val(arrLocales);
+    });
+    // ONCHANGES DEL SELECT DE FEDERALES
+    $('#federal').on('change', function(){
+        var input = $('#federal').children("option:selected").val();
+        var federales = JSON.parse('<?php echo empty($federales) ? '{}' : json_encode($federales) ?>');
+        for(var key in federales){
+            var obj=federales[key];
+            if(obj["id"] == input){
+                $("#federal").val('');
+                if($.inArray(obj["id"],arrFederales)==-1){
+                    $('#lista_federales').append('<div id="'+obj['id']+'f" class="uk-flex uk-flex-middle"><img class="delete_federal" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["cabecera"]+'</div></div>');
+                    $('#'+obj["id"]+'f').hide().show('normal');
+                    arrFederales.push(obj["id"]);
+                    $('#input_federales').val(arrFederales);
+                }
+                break;
+            }
+        }
+    });
+    $(document.body).on('click','.delete_federal', function(e) {
+        var id=$(this).data('id');
+        arrFederales = jQuery.grep(arrFederales, function(value) {
+            return value != id;
+        });
+        $('#'+id+'f').hide('normal');
+        setTimeout(
+            function()
+            {
+                var div = document.getElementById(id+'f');
+                div.remove();
+            },
+        500);
+        $('#input_federales').val(arrFederales);
+    });
+    // ONCHANGES DEL SELECT DE MUNICIPIOS
+    $('#municipio').on('change', function(){
+        var input = $('#municipio').children("option:selected").val();
+        var municipios = JSON.parse('<?php echo empty($municipios) ? '{}' : json_encode($municipios) ?>');
+        for(var key in municipios){
+            var obj=municipios[key];
+            if(obj["id"] == input){
+                $("#municipio").val('');
+                if($.inArray(obj["id"],arrMunicipios)==-1){
+                    $('#lista_municipios').append('<div id="'+obj['id']+'m" class="uk-flex uk-flex-middle"><img class="delete_municipio" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["nombre"]+'</div></div>');
+                    $('#'+obj["id"]+'m').hide().show('normal');
+                    arrMunicipios.push(obj["id"]);
+                    $('#input_municipios').val(arrMunicipios);
+                }
+                break;
+            }
+        }
+    });
+    $(document.body).on('click','.delete_municipio', function(e) {
+        var id=$(this).data('id');
+        arrMunicipios = jQuery.grep(arrMunicipios, function(value) {
+            return value != id;
+        });
+        $('#'+id+'m').hide('normal');
+        setTimeout(
+            function()
+            {
+                var div = document.getElementById(id+'m');
+                div.remove();
+            },
+        500);
+        $('#input_municipios').val(arrMunicipios);
+    });
+
+    //AGREGAR PARTIDOS
     $('#agregar_partido').click(function(){
         var input=$('#partido');
         var partidos = JSON.parse('<?php echo empty($parties) ? '{}' : json_encode($parties) ?>');
@@ -622,30 +807,30 @@ Inicio
         // Nos permite cancelar el envio del formulario
         return false;
     });
+
+
+    //info para la gráfica de pastel
+    var simpCanvas = document.getElementById("simpChart");
+    var simpData = {
+    datasets: [{
+        data: [13, 10, 1, 2, 10, 8],
+        backgroundColor: ["#C8194B", "#FFD43A", "#ADADAD", "#3201C8", "#2D9B94", "#04BE65"],
+    },],
+    };
+
+    var pieChart = new Chart(simpCanvas, {
+        type: "pie",
+        data: simpData,
+    });
 </script>
 
 @endsection
 
 @section('scripts')
-var simpCanvas = document.getElementById("simpChart");
 
 Chart.defaults.global.defaultFontFamily = "Lato";
 Chart.defaults.global.defaultFontSize = 18;
 Chart.defaults.global.legend.display = false;
-
-var simpData = {
-datasets: [
-{
-data: [13, 10, 1, 2, 10, 8],
-backgroundColor: ["#C8194B", "#FFD43A", "#ADADAD", "#3201C8", "#2D9B94", "#04BE65"],
-},
-],
-};
-
-var pieChart = new Chart(simpCanvas, {
-type: "pie",
-data: simpData,
-});
 
 //Grafica de barras
 var ctx = document.getElementById("barChart").getContext("2d");

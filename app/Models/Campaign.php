@@ -24,6 +24,9 @@ class Campaign extends Model
     public function section(){
         return $this->belongsToMany('App\Models\Section');
     }
+    public function elector(){
+        return $this->hasMany('App\Models\Elector');
+    }
 
 
 }

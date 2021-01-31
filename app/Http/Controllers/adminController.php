@@ -16,6 +16,7 @@ use App\Models\Position;
 use App\Models\PoliticPartie;
 use App\Models\LocalDistrict;
 use App\Models\FederalDistrict;
+use App\Models\Town;
 
 class adminController extends Controller
 {
@@ -34,6 +35,10 @@ class adminController extends Controller
         $positions=Position::get();
         $parties=PoliticPartie::get();
         $agents=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('role_user.role_id',2)->get();
+        $federales=FederalDistrict::get();
+        $locales=LocalDistrict::get();
+        $municipios=Town::get();
+        // dd($parties[0]->campaign[0]->elector);
         return view('admin.inicio',[
             'totalUsers'=>$totalUsers,
             'totalAdmins'=>$totalAdmins,
@@ -42,7 +47,10 @@ class adminController extends Controller
             'totalCampanas'=>$totalCampanas,
             'positions'=>$positions,
             'parties'=>$parties,
-            'agents'=>$agents
+            'agents'=>$agents,
+            'federales'=>$federales,
+            'locales'=>$locales,
+            'municipios'=>$municipios
         ]);
     }
 
@@ -206,7 +214,7 @@ class adminController extends Controller
                 $str2 = '0123456789';
                 //En do while generamos el código aleatoriamente hasta que no exista un código igual en la base de datos
                 do {
-                    $prefix= $str[rand(0, strlen($str)-1)].$str[rand(0, strlen($str)-1)].$str[rand(0, strlen($str)-1)].'-';
+                    $prefix= $str[rand(0, strlen($str)-1)].$str[rand(0, strlen($str)-1)].$str[rand(0, strlen($str)-1)];
                     $subfix=$str2[rand(0, strlen($str2)-1)].$str2[rand(0, strlen($str2)-1)].$str2[rand(0, strlen($str2)-1)].$str2[rand(0, strlen($str2)-1)];
                     $codigo=$prefix.$subfix;
                     $codigoExistente=Campaign::where('codigo',$codigo)->first();
