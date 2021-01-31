@@ -145,4 +145,19 @@ class adminController extends Controller
             }
         }
     }
+
+    public function eliminarUsuario($id){
+        Gate::authorize('haveaccess', 'admin.perm');
+        try{
+            DB::transaction(function () use ($id) {
+                $usuario=User::findOrFail($id);
+                $usuario->status="inactivo";
+                $usuario->save();
+            });
+            return 200;
+        }
+        catch(QueryException $ex){
+           return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+    }
 }

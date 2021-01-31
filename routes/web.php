@@ -120,8 +120,11 @@ Route::get('/admin/inicio', 'adminController@inicio')->name('admin-inicio');
 //Admin | agregar usuario
 Route::post('/admin/agregar/usuario', 'adminController@agregarUsuario')->name('agregar-usuario');
 
-//Admin | agregar usuario
+//Admin | editar usuario
 Route::patch('/admin/editar/usuario/{id}', 'adminController@editarUsuario')->name('editar-usuario');
+
+//Admin | eliminar usuario
+Route::delete('/admin/eliminar/usuario/{id}', 'adminController@eliminarUsuario')->name('eliminar-usuario');
 
 //Admin | Cuenta
 Route::get('/admin/cuenta', function () {
