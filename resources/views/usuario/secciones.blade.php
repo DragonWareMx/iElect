@@ -9,6 +9,19 @@ Secciones
 @endsection
 
 @php
+
+if(!is_null($electores)){
+$simpatizantes = 0;
+$porcentaje = 0;
+$countS = array_count_values($electores->pluck('sexo')->toArray());
+$hombres = $countS['h'];
+$mujeres = $countS['m'];
+$total = $hombres + $mujeres;
+
+$porcH = round(($hombres * 100)/$total, 2);
+$porcM = round(($mujeres * 100)/$total, 2);
+}
+
 //Parte del Backend
 $hombresCol = $datosBack->pluck('hombres');
 $hCount = $hombresCol->sum();
@@ -74,11 +87,11 @@ $g65 = $datosBack->pluck('65_mas')->sum();
                         <div class="uk-flex-none">
                             <div>
                                 <span class="uk-badge" style="background-color: #9b51e0"></span>
-                                Hombres {{$hPorc}}%
+                                Hombres {{$porcH}}%
                             </div>
                             <div>
                                 <span class="uk-badge" style="background-color: #fb8832"></span>
-                                Mujeres {{$mPorc}}%
+                                Mujeres {{$porcM}}%
                             </div>
                         </div>
                     </div>
@@ -114,25 +127,26 @@ $g65 = $datosBack->pluck('65_mas')->sum();
                         <tbody>
 
                             @foreach ($datos as $seccion)
+                            @php
+                            $simpatizantes = $electores->where('section_id', $seccion->id)->count();
+                            $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1)
+                            @endphp
+
                             <tr onclick="abrirSeccion(this)" data-route="{{ route('seccion', ['id'=>$seccion->id]) }}">
                                 <td>{{ $seccion->num_seccion }}</td>
                                 <td>{{ $seccion->federal_district->cabecera }}</td>
                                 <td>{{ $seccion->local_district->cabecera }}</td>
                                 <td>{{ $seccion->town->nombre }}</td>
                                 <td>
-                                    <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">52%</div>
+                                    <progress class="uk-progress" value="{{$porcentaje}}" max="100"
+                                        style="margin: 0"></progress>
+                                    <div class="uk-align-right">{{$porcentaje}}%</div>
                                 </td>
                                 <td>
-                                    @php
-                                    $hombres=$seccion->hombres;
-                                    $mujeres=$seccion->mujeres;
-                                    $resultado=$hombres+$mujeres;
-                                    echo($resultado);
-                                    @endphp
+                                    {{$simpatizantes}}
                                 </td>
-                                <td>#FALTA DEFINIRLO</td>
-                                <td>{{ $seccion->prioridad }}</td>
+                                <td>{{ $seccion->pivot->meta }}</td>
+                                <td>{{ $seccion->pivot->prioridad }}</td>
                             </tr>
                             @endforeach
                         </tbody>
@@ -163,7 +177,7 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
-data: [{{$hCount}}, {{$mCount}}],
+data: [{{$hombres}}, {{$mujeres}}],
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],

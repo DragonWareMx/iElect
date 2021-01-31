@@ -16,8 +16,18 @@ $hombres = $datosSec->hombres;
 $mujeres = $datosSec->mujeres;
 $totalSimp = $hombres+$mujeres;
 
+if($hombres > 0){
 $hPorc = round(($hombres * 100)/$totalSimp, 2);
+}else{
+$hPorc = 0;
+}
+
+if($mujeres > 0){
 $mPorc = round(($mujeres * 100)/$totalSimp, 2);
+}else{
+$mPorc = 0;
+}
+
 
 $g18 = $datosSec->{18};
 $g19 = $datosSec->{19};

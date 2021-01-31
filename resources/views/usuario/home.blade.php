@@ -45,31 +45,25 @@ $porcM = round(($mujeres * 100)/$total, 2);
                         <tbody>
                             @foreach ($campana->section as $seccion)
                             @php
-                            for ($i=0; $i < sizeof($electores); $i++) { if($electores[$i]->section_id == $seccion->id){
-                                $simpatizantes = $simpatizantes + 1;
-                                }
-                                }
-                                $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1)
-                                @endphp
-                                <tr>
-                                    <td>{{$seccion->num_seccion}}</td>
-                                    <td>{{$seccion->town->federal_entitie->nombre}}</td>
-                                    <td>
-                                        <progress class="uk-progress" value="{{$porcentaje}}" max="100"
-                                            style="margin: 0"></progress>
-                                        <div class="uk-align-right">{{$porcentaje}}%</div>
-                                    </td>
-                                    <td>{{$simpatizantes}}</td>
-                                    <td>{{$seccion->pivot->meta}}</td>
-                                </tr>
-                                @php
-                                $simpatizantes = 0;
-                                @endphp
-                                @endforeach
+                            $simpatizantes = $electores->where('section_id', $seccion->id)->count();
+                            $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1)
+                            @endphp
+                            <tr>
+                                <td>{{$seccion->num_seccion}}</td>
+                                <td>{{$seccion->town->federal_entitie->nombre}}</td>
+                                <td>
+                                    <progress class="uk-progress" value="{{$porcentaje}}" max="100"
+                                        style="margin: 0"></progress>
+                                    <div class="uk-align-right">{{$porcentaje}}%</div>
+                                </td>
+                                <td>{{$simpatizantes}}</td>
+                                <td>{{$seccion->pivot->meta}}</td>
+                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <p class="uk-text-right">
-                        <a>Ver todo</a>
+                        <a href="{{route('secciones')}}">Ver todo</a>
                     </p>
                 </div>
                 @else
