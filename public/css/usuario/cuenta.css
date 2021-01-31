@@ -7,10 +7,26 @@
     border-radius: 50%;
 }
 
-.profile-pic {
+.profile-pic { 
     height: 100%;
     width: 100%;
     transition: all cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.omrs-input-group input{
+    border: solid 1px #E5E5E5 !important;
+    transition: all ease-in-out 0.25s;
+}
+
+.omrs-input-group input:hover, .omrs-input-group input:focus{
+    border: solid 1px #007AFF !important;
+    transition: all ease-in-out 0.25s;
+    background-color: transparent !important;
+}
+
+#passActual-error, #password-error, #cfmPassword-error{
+    font-size: 13px;
+    color: rgb(199, 48, 48);
 }
 
 .upload-text {

@@ -87,14 +87,13 @@ Route::get('/dF_mapa/{id}', 'mapaSeccionalController@secDF')->name('dF_mapa');
 Route::get('/dL_mapa/{id}', 'mapaSeccionalController@secDL')->name('dL_mapa');
 Route::get('/mN_mapa/{id}', 'mapaSeccionalController@secM')->name('mN_mapa');
 //Ruta Ajustes
-Route::get('/ajustes', function () {
-    return view('usuario.ajustes');
-})->name('ajustes');
+Route::get('/ajustes','CuentaController@index')->name('ajustes');
 
 //Ruta Cuenta
-Route::get('/ajustes/cuenta', function () {
-    return view('usuario.cuenta');
-})->name('ajustes_cuenta');
+Route::get('/ajustes/cuenta', 'CuentaController@cuenta')->name('ajustes_cuenta');
+
+// Ruta para actualizar cuenta de agente y brigadista
+Route::patch('/ajustes/cuenta/{id}', 'CuentaController@cuentaUpdate')->name('cuentaUpdate');
 
 //Ruta Partido Electoral
 Route::get('/ajustes/partido_electoral', function () {
@@ -155,9 +154,7 @@ Route::post('/admin/agregar/usuario', 'adminController@agregarUsuario')->name('a
 Route::patch('/admin/editar/usuario/{id}', 'adminController@editarUsuario')->name('editar-usuario');
 
 //Admin | Cuenta
-Route::get('/admin/cuenta', function () {
-    return view('admin.cuenta');
-})->name('admin-cuenta');
+Route::get('/admin/cuenta', 'CuentaController@cuentaAdmin')->name('admin-cuenta');
 
 //Admin | Seccion
 Route::get('/admin/seccion', function () {
