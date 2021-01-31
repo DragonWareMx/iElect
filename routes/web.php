@@ -187,7 +187,7 @@ Route::get('/admin/usuarios/usuario/edit', function () {
 //Brigadistas | Simpatizantes
 Route::get('/brigadistas/inicio', function () {
     return view('brigadista.simpatizantes');
-})->name('brigadistas-inicio');
+})->name('brigadistas-inicio')->middleware('auth');
 
 /********************/
 /**  SIMPATIZANTE  **/

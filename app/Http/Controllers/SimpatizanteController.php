@@ -130,6 +130,7 @@ class SimpatizanteController extends Controller
                 $simpatizante->section_id = $seccion->id;
                 $simpatizante->campaign_id = 1;
                 $simpatizante->user_id = 1;
+                //$simpatizante->user_id = auth()->user()->id;
 
                 //OTROS DATOS
                 $simpatizante->facebook = $request->facebook;
@@ -139,8 +140,8 @@ class SimpatizanteController extends Controller
                 FALTA:
                 LOCALIDAD*
                 MUNICIPIO*
+                USERID*
                 CAMPAIGNID*
-                USER ID*
                 DOCUMENTO
                 */
 
