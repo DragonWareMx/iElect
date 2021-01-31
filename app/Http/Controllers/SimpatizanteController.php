@@ -69,14 +69,25 @@ class SimpatizanteController extends Controller
 
     public function agregarSimpatizante(){
         $data=request()->validate([
-            'nombre'=>'required | max:100 |',
-            'apellido_p'=>'required | max:100 |',
-            'apellido_m'=>'required | max:100 |',
-            'email'=>'required|max:255|unique:users,email',
-            'password'=>'required|max:255|min:8|required_with:password-confirm|same:password-confirm',
-            'password-confirm'=>'max:255|min:8',
+            'nombre'=>'required | max:100 | alpha',
+            'apellido_p'=>'max:100 | alpha',
+            'apellido_m'=>'max:100 | alpha',
+            'email'=>'required|max:320|email',
+            'sexo'=>['required',Rule::in(['h', 'm']),],
+            'trabajo'=>'required|exists:job,nombre',
+            'telefono'=>'required|regex:/[0-9]{3}[ -]*[0-9]{3}[ -]*[0-9]{4}/',
+            'clave_elector'=>'required|max:20|min:16|alpha_num',
+            'colonia'=>'max:100 | alpha_num',
+            'calle'=>'max:100 | alpha_num',
+            'num_ext'=>'max:10 | alpha_num',
+            'num_int'=>'max:10 | alpha_num',
+            'cp'=>'max:5 | alpha_num | numeric',
+            'facebook'=>'max:50 | alpha_num',
+            'twitter'=>'max:50 | alpha_num',
             'fileField'=>'mimes:jpeg,jpg,png,gif|image'
         ]);
+
+        dd(request());
 
         try{
             DB::transaction(function () use ($request) {
