@@ -8,6 +8,19 @@ Inicio
 @extends('subviews.chartjs')
 @endsection
 
+@php
+$simpatizantes = 0;
+$porcentaje = 0;
+$countS = array_count_values($electores->pluck('sexo')->toArray());
+$hombres = $countS['h'];
+$mujeres = $countS['m'];
+$total = $hombres + $mujeres;
+
+$porcH = round(($hombres * 100)/$total, 2);
+$porcM = round(($mujeres * 100)/$total, 2);
+
+@endphp
+
 @section('body')
 <div class="uk-margin uk-margin-left uk-margin-right">
     <div class="uk-grid uk-grid-match">
@@ -27,36 +40,29 @@ Inicio
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>#2458</td>
-                                <td>Michoacán</td>
-                                <td>
-                                    <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">52%</div>
-                                </td>
-                                <td>257</td>
-                                <td>458</td>
-                            </tr>
-                            <tr>
-                                <td>#3530</td>
-                                <td>Michoacán</td>
-                                <td>
-                                    <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">100%</div>
-                                </td>
-                                <td>325</td>
-                                <td>325</td>
-                            </tr>
-                            <tr>
-                                <td>#4540</td>
-                                <td>Michoacán</td>
-                                <td>
-                                    <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">23%</div>
-                                </td>
-                                <td>178</td>
-                                <td>578</td>
-                            </tr>
+                            @foreach ($campana->section as $seccion)
+                            @php
+                            for ($i=0; $i < sizeof($electores); $i++) { if($electores[$i]->section_id == $seccion->id){
+                                $simpatizantes = $simpatizantes + 1;
+                                }
+                                }
+                                $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1)
+                                @endphp
+                                <tr>
+                                    <td>{{$seccion->num_seccion}}</td>
+                                    <td>{{$seccion->town->federal_entitie->nombre}}</td>
+                                    <td>
+                                        <progress class="uk-progress" value="{{$porcentaje}}" max="100"
+                                            style="margin: 0"></progress>
+                                        <div class="uk-align-right">{{$porcentaje}}%</div>
+                                    </td>
+                                    <td>{{$simpatizantes}}</td>
+                                    <td>{{$seccion->pivot->meta}}</td>
+                                </tr>
+                                @php
+                                $simpatizantes = 0;
+                                @endphp
+                                @endforeach
                         </tbody>
                     </table>
                     <p class="uk-text-right">
@@ -71,7 +77,7 @@ Inicio
                 <h3 class="uk-card-title uk-text-bold" style="margin: 0">
                     Simpatizantes
                 </h3>
-                <div>Total: 760</div>
+                <div>Total: {{$total}}</div>
                 <div class="uk-flex uk-flex-middle">
                     <div>
                         <canvas id="simpChart" width="auto" height="200"></canvas>
@@ -79,11 +85,11 @@ Inicio
                     <div class="uk-flex-none">
                         <div>
                             <span class="uk-badge" style="background-color: #9b51e0"></span>
-                            Hombres 47%
+                            Hombres {{$porcH}}%
                         </div>
                         <div>
                             <span class="uk-badge" style="background-color: #fb8832"></span>
-                            Mujeres 53%
+                            Mujeres {{$porcM}}%
                         </div>
                     </div>
                 </div>
@@ -167,7 +173,7 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
-data: [47, 53],
+data: [{{$hombres}}, {{$mujeres}}],
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],

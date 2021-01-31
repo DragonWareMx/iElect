@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\Section;
+use App\Models\Elector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -30,11 +31,10 @@ class HomeController extends Controller
         $user = Auth::user();
         //$campana = session()->get('campana');
         $campana = Campaign::find(1);
+        //$electorsH = Elector::where('campaign_id', $campana->id)->where('sexo', 'h')->get();
+        //$electorsM = Elector::where('campaign_id', $campana->id)->where('sexo', 'm')->get();
+        $electors = Elector::where('campaign_id', $campana->id)->get();
 
-        $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
-            $query->where('campaigns.id', '=', $campana->id);
-        })->get();
-
-        return view('usuario.home', ['campana' => $campana]);
+        return view('usuario.home', ['campana' => $campana, 'electores' => $electors]);
     }
 }
