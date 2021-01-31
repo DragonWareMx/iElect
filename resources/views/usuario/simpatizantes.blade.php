@@ -101,7 +101,7 @@ Simpatizantes
                     <div uk-grid>
                         <!-- Lado izquierdo -->
                         <div class="uk-width-1-2@m">
-                            <!-- Avatar -->
+                            {{--<!-- Avatar -->
                             <div class="avatar-wrapper uk-margin-bottom">
                                 <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="200"
                                     height="200" alt="Border circle" />
@@ -110,6 +110,7 @@ Simpatizantes
                                     <span class="uk-margin-small-left" uk-icon="upload"></span>
                                 </div>
                             </div>
+                            --}}
 
                             @if (!is_null($secciones) && count($secciones) > 0)
                                 <h6 class="uk-text-bold">Secciones</h6>
@@ -286,7 +287,8 @@ Simpatizantes
                         </div>
                         <!-- Lado derecho -->
                         <div class="uk-width-1-2@m">
-                            <p>Fotografías</p>
+                            <h6 class="uk-text-bold">Fotos</h6>
+                            {{--
                             <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
                                 <span class="uk-text-middle">Foto de credencial anverso</span>
                                 <span uk-icon="icon: cloud-upload"></span>
@@ -296,6 +298,8 @@ Simpatizantes
                                 </div>
                             </div>
 
+                            <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+
                             <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
                                 <span class="uk-text-middle">Foto de credencial inverso</span>
                                 <span uk-icon="icon: cloud-upload"></span>
@@ -303,6 +307,35 @@ Simpatizantes
                                     <input type="file" required name="foto_inverso"/>
                                     <span class="uk-link">Selecciona una</span>
                                 </div>
+                            </div>
+                            --}}
+                            <p>Foto de credencial anverso</p>
+                            <div class="omrs-input-group uk-margin">
+                                <label class="omrs-input-underlined input-outlined">
+                                    <input required name="foto_anverso" type="file"/>
+                                    <span class="omrs-input-label"></span>
+                                </label>
+                            </div>
+                            <p>Foto de credencial inverso</p>
+                            <div class="omrs-input-group uk-margin">
+                                <label class="omrs-input-underlined input-outlined">
+                                    <input required name="foto_inverso" type="file"/>
+                                    <span class="omrs-input-label"></span>
+                                </label>
+                            </div>
+                            <p>Foto de elector (opcional)</p>
+                            <div class="omrs-input-group uk-margin">
+                                <label class="omrs-input-underlined input-outlined">
+                                    <input name="foto_de_elector" type="file"/>
+                                    <span class="omrs-input-label"></span>
+                                </label>
+                            </div>
+                            <p>Foto de firma de elector (opcional)</p>
+                            <div class="omrs-input-group uk-margin">
+                                <label class="omrs-input-underlined input-outlined">
+                                    <input name="foto_de_firma" type="file"/>
+                                    <span class="omrs-input-label"></span>
+                                </label>
                             </div>
 
                         </div>
@@ -513,6 +546,71 @@ Simpatizantes
             return false;
         });
     </script>
+
+<script>
+
+    var bar = document.getElementById('js-progressbar');
+
+    UIkit.upload('.js-upload', {
+
+        url: '',
+        multiple: true,
+
+        beforeSend: function (environment) {
+            console.log('beforeSend', arguments);
+
+            // The environment object can still be modified here. 
+            // var {data, method, headers, xhr, responseType} = environment;
+
+        },
+        beforeAll: function () {
+            console.log('beforeAll', arguments);
+        },
+        load: function () {
+            console.log('load', arguments);
+        },
+        error: function () {
+            console.log('error', arguments);
+        },
+        complete: function () {
+            console.log('complete', arguments);
+        },
+
+        loadStart: function (e) {
+            console.log('loadStart', arguments);
+
+            bar.removeAttribute('hidden');
+            bar.max = e.total;
+            bar.value = e.loaded;
+        },
+
+        progress: function (e) {
+            console.log('progress', arguments);
+
+            bar.max = e.total;
+            bar.value = e.loaded;
+        },
+
+        loadEnd: function (e) {
+            console.log('loadEnd', arguments);
+
+            bar.max = e.total;
+            bar.value = e.loaded;
+        },
+
+        completeAll: function () {
+            console.log('completeAll', arguments);
+
+            setTimeout(function () {
+                bar.setAttribute('hidden', 'hidden');
+            }, 1000);
+
+            alert('Upload Completed');
+        }
+
+    });
+
+</script>
 </div>
 @endsection
 
