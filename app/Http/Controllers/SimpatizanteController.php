@@ -91,6 +91,8 @@ class SimpatizanteController extends Controller
             'twitter' => ['nullable', 'max:50', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
             'foto_anverso' => 'required|mimes:jpeg,jpg,png|image',
             'foto_inverso' => 'required|mimes:jpeg,jpg,png|image',
+            'foto_de_elector' => 'nullable|mimes:jpeg,jpg,png|image',
+            'foto_de_firma' => 'nullable|mimes:jpeg,jpg,png|image',
         ]);
 
         try {
@@ -157,6 +159,22 @@ class SimpatizanteController extends Controller
                     $extension = request('foto_inverso')->getClientOriginalExtension();
                     $newFileName = $fileName . '_' . time() . '.' . $extension;
                     $path = request('foto_inverso')->storeAs('/public/uploads/', $newFileName);
+                    $simpatizante->credencial_r = $newFileName;
+                }
+                if ($request->foto_de_elector) {
+                    $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                    $extension = request('foto_de_elector')->getClientOriginalExtension();
+                    $newFileName = $fileName . '_' . time() . '.' . $extension;
+                    $path = request('foto_de_elector')->storeAs('/public/uploads/', $newFileName);
+                    $simpatizante->credencial_r = $newFileName;
+                }
+                if ($request->foto_de_firma) {
+                    $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                    $extension = request('foto_de_firma')->getClientOriginalExtension();
+                    $newFileName = $fileName . '_' . time() . '.' . $extension;
+                    $path = request('foto_de_firma')->storeAs('/public/uploads/', $newFileName);
                     $simpatizante->credencial_r = $newFileName;
                 }
 

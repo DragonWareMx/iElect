@@ -341,15 +341,6 @@ Simpatizantes
                                 </label>
                             </div>
 
-                        <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                            <span class="uk-text-middle">Foto de credencial inverso</span>
-                            <span uk-icon="icon: cloud-upload"></span>
-                            <div uk-form-custom>
-                                <input type="file" required name="foto_inverso" />
-                                <span class="uk-link">Selecciona una</span>
-                            </div>
-                        </div>
-
                     </div>
                 </div>
         </form>
