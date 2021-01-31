@@ -23,7 +23,7 @@ Inicio
                   display: flex;
                   max-height: 55px !important;
                 " uk-toggle="target: #modal-agregar-user">
-                        Agregar agente
+                        Agregar usuario
                         <span uk-icon="icon: plus" class="uk-margin-left"></span>
                     </button>
                 </div>
@@ -34,7 +34,7 @@ Inicio
                         display: flex;
                         max-height: 55px !important;
                         " uk-toggle="target: #modal-agregar-user">
-                        Agregar agente
+                        Agregar usuario
                         <span uk-icon="icon: plus" class="uk-margin-left"></span>
                     </button>
                 </div>
@@ -175,11 +175,11 @@ Inicio
         <div class="uk-modal-dialog">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <div class="uk-modal-header">
-                <h2 class="uk-modal-title">Agregar agente</h2>
+                <h2 class="uk-modal-title">Agregar usuario</h2>
             </div>
             <div id="errors" class="uk-alert-danger" uk-alert style="display:none;">
             </div>
-            <form id="form-nuevo-usuario" class="uk-modal-body" action="{{ route('agregar-usuario')}}" method="POST" enctype="multipart/form-data">
+            <form id="form-nuevo-usuario" class="uk-modal-body" action="/admin/agregar/usuario" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div uk-grid>
                     <div class="uk-width-1">
@@ -253,10 +253,179 @@ Inicio
             </form>
         </div>
     </div>
+
+    <!-- Modal Agregar Campaña -->
+    <div id="modal-agregar-campana" class="uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">Agregar campana</h2>
+            </div>
+            <div id="errors-campana" class="uk-alert-danger" uk-alert style="display:none;">
+            </div>
+            <form id="form-nueva-campana" class="uk-modal-body" action="{{ route('agregar-campana')}}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div uk-grid>
+                    <div class="uk-width-1">
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">NOMBRE DE CAMPAÑA</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="name_camp" type="text" maxlength="100" />
+                                        <span class="omrs-input-label">Nombre de la campaña</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">NOMBRE DEL CANDIDATO</h6>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required type="text" name="name_cand" maxlength="255"/>
+                                        <span class="omrs-input-label">Nombre del candidato</span>
+                                    </label>
+                                </div>
+                            </div>
+                            {{-- INPUT DE PARTIDOS --}}
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">PARTIDOS</h6>
+                                <div id="agregar_partido" class="uk-flex uk-flex-middle uk-flex-right" style="cursor:pointer; margin-top:-15px;">
+                                    <img src="{{asset('/img/icons/add.png')}}" width="10px" style="margin-right:5px;di"/>
+                                    <div class="uk-text-primary" style="font-size: 12px;line-height: 15px;"> Agregar</div>
+                                </div>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input id="partido" list="partidos"type="text" name="parties" maxlength="10"/>
+                                        <datalist id="partidos">
+                                            @foreach ($parties as $partie)
+                                                <option value="{{$partie->siglas}}"></option>
+                                            @endforeach
+                                        </datalist>
+                                    </label>
+                                </div>
+                                <div id="lista_partidos" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
+                                    <input type="hidden" id="input_partidos" name="input_partidos" value="" />
+                                </div>
+                            </div>
+                            {{-- INPUT DE AGENTES --}}
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">AGENTES</h6>
+                                <div id="agregar_agente" class="uk-flex uk-flex-middle uk-flex-right" style="cursor:pointer; margin-top:-15px;">
+                                    <img src="{{asset('/img/icons/add.png')}}" width="10px" style="margin-right:5px;di"/>
+                                    <div class="uk-text-primary" style="font-size: 12px;line-height: 15px;"> Agregar</div>
+                                </div>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input id="agente" list="agentes"type="text" name="agentes" maxlength="255"/>
+                                        <datalist id="agentes">
+                                            @foreach ($agents as $agent)
+                                                <option value="{{$agent->name}}"></option>
+                                            @endforeach
+                                        </datalist>
+                                    </label>
+                                </div>
+                                <div id="lista_agentes" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
+                                    <input type="hidden" id="input_agentes" name="input_agentes" value="" />
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <h6 class="uk-margin-remove uk-text-bold">POSICIÓN</h6>
+                                <div class="uk-form-controls omrs-input-group uk-margin">
+                                    <select class="uk-select" required name="position">
+                                        @foreach ($positions as $position)
+                                            <option value="{{$position->id}}">{{$position->name}}</option> 
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">
+                        Cancelar
+                    </button>
+                    <button id="btnEnviar-campana" class="uk-button uk-button-primary" type="submit">
+                        Enviar
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
 </div>
 
 
 <script>
+
+    var arrPartidos=[];
+    var arrAgentes=[];
+
+    $('#agregar_partido').click(function(){
+        var input=$('#partido');
+        var partidos = JSON.parse('<?php echo empty($parties) ? '{}' : json_encode($parties) ?>');
+        for(var key in partidos){
+            var obj=partidos[key];
+            if(obj["siglas"] == input.val()){
+                input.val("").change();
+                if($.inArray(obj["id"],arrPartidos)==-1){
+                    $('#lista_partidos').append('<div id="'+obj['id']+'p" class="uk-flex uk-flex-middle"><img class="delete_partido" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["siglas"]+'</div></div>');
+                    $('#'+obj["id"]+'p').hide().show('normal');
+                    arrPartidos.push(obj["id"]);
+                    $('#input_partidos').val(arrPartidos);
+                }
+                break;
+            }
+        }
+    });
+    $(document.body).on('click','.delete_partido', function(e) {
+        var id=$(this).data('id');
+        arrPartidos = jQuery.grep(arrPartidos, function(value) {
+            return value != id;
+        });
+        $('#'+id+'p').hide('normal');
+        setTimeout(
+            function()
+            {
+                var div = document.getElementById(id+'p');
+                div.remove();
+            },
+        500);
+        $('#input_partidos').val(arrPartidos);
+    });
+
+    $('#agregar_agente').click(function(){
+        var input=$('#agente');
+        var agentes = JSON.parse('<?php echo empty($agents) ? '{}' : json_encode($agents) ?>');
+        for(var key in agentes){
+            var obj=agentes[key];
+            if(obj["name"] == input.val()){
+                input.val("").change();
+                if($.inArray(obj["id"],arrAgentes)==-1){
+                    $('#lista_agentes').append('<div id="'+obj['id']+'a" class="uk-flex uk-flex-middle"><img class="delete_agente" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["name"]+'</div></div>');
+                    $('#'+obj["id"]+'a').hide().show('normal');
+                    arrAgentes.push(obj["id"]);
+                    $('#input_agentes').val(arrAgentes);
+                }
+                break;
+            }
+        }
+    });
+    $(document.body).on('click','.delete_agente', function(e) {
+        var id=$(this).data('id');
+        arrAgentes = jQuery.grep(arrAgentes, function(value) {
+            return value != id;
+        });
+        $('#'+id+'a').hide('normal');
+        setTimeout(
+            function()
+            {
+                var div = document.getElementById(id+'a');
+                div.remove();
+            },
+        500);
+        $('#input_agentes').val(arrAgentes);
+    });
+
     var password = document.getElementById("password")
     , confirm_password = document.getElementById("password-confirm");
 
@@ -293,7 +462,7 @@ Inicio
         });
     });
 
-    //ajax del form de nuevo
+    //ajax del form de nuevo usuario
     $("#form-nuevo-usuario").bind("submit",function(){
         // Capturamnos el boton de envío
         var btnEnviar = $("#btnEnviar");
@@ -345,6 +514,85 @@ Inicio
                 $('#errors').css('display', 'block');
                 var errors = data.responseJSON.errors;
                 var errorsContainer = $('#errors');
+                errorsContainer.innerHTML = '';
+                var errorsList = '';
+                // for (var i = 0; i < errors.length; i++) {
+                // //     //if(errors[i].redirect)
+                // //         //window.location.href = window.location.origin + '/logout'
+                    
+                //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                // }
+                for(var key in errors){
+                    var obj=errors[key];
+                    console.log(obj);
+                    for(var yek in obj){
+                        var error=obj[yek];
+                        console.log(error);
+                        errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                    }
+                }
+                errorsContainer.html(errorsList);
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                    status: 'danger',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+            }
+        });
+        // Nos permite cancelar el envio del formulario
+        return false;
+    });
+
+    //ajax del form de nueva campaña
+    $("#form-nueva-campana").bind("submit",function(){
+        // Capturamnos el boton de envío
+        var btnEnviar = $("#btnEnviar-campana");
+
+        $.ajax({
+            type: $(this).attr("method"),
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
+            beforeSend: function(data){
+                /*
+                * Esta función se ejecuta durante el envió de la petición al
+                * servidor.
+                * */
+                // btnEnviar.text("Enviando"); Para button
+                btnEnviar.val("Enviando"); // Para input de tipo button
+                btnEnviar.attr("disabled","disabled");
+            },
+            complete:function(data){
+                /*
+                * Se ejecuta al termino de la petición
+                * */
+                btnEnviar.val("Enviar formulario");
+            },
+            success: function(data){
+                /*
+                * Se ejecuta cuando termina la petición y esta ha sido
+                * correcta
+                * */
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> Campaña creada con éxito!',
+                    status: 'success',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+                $('#errors-campana').css('display', 'none');
+                setTimeout(
+                function()
+                {
+                    window.location.reload(true);
+                }, 2000);
+            },
+            error: function(data){
+                console.log(data);
+                // $('#success').css('display', 'none');
+                btnEnviar.removeAttr("disabled");
+                $('#errors-campana').css('display', 'block');
+                var errors = data.responseJSON.errors;
+                var errorsContainer = $('#errors-campana');
                 errorsContainer.innerHTML = '';
                 var errorsList = '';
                 // for (var i = 0; i < errors.length; i++) {

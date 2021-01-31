@@ -186,7 +186,7 @@ Usuarios
                             <td>
                                 {{$brigadista->elector->count()}}
                             </td>
-                            <td>Activo</td>
+                            <td class="uk-text-capitalize">{{$brigadista->status}}</td>
                         </tr>
                     @endforeach
                 </tbody>

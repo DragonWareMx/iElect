@@ -12,6 +12,10 @@ use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Campaign;
 use App\Permission\Models\Role;
+use App\Models\Position;
+use App\Models\PoliticPartie;
+use App\Models\LocalDistrict;
+use App\Models\FederalDistrict;
 
 class adminController extends Controller
 {
@@ -27,19 +31,25 @@ class adminController extends Controller
         $totalAgents=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('role_user.role_id',2)->get()->count();
         $totalBrigadists=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('role_user.role_id',3)->get()->count();
         $totalCampanas=Campaign::get()->count();
+        $positions=Position::get();
+        $parties=PoliticPartie::get();
+        $agents=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('role_user.role_id',2)->get();
         return view('admin.inicio',[
             'totalUsers'=>$totalUsers,
             'totalAdmins'=>$totalAdmins,
             'totalAgents'=>$totalAgents,
             'totalBrigadists'=>$totalBrigadists,
-            'totalCampanas'=>$totalCampanas
+            'totalCampanas'=>$totalCampanas,
+            'positions'=>$positions,
+            'parties'=>$parties,
+            'agents'=>$agents
         ]);
     }
 
     public function agregarUsuario(Request $request){
         Gate::authorize('haveaccess', 'admin.perm');
         $data=request()->validate([
-            'name'=>'required | max:255 |',
+            'name'=>'required | max:255',
             'email'=>'required|max:255|unique:users,email',
             'password'=>'required|max:255|min:8|required_with:password-confirm|same:password-confirm',
             'password-confirm'=>'max:255|min:8',
@@ -92,7 +102,7 @@ class adminController extends Controller
     public function editarUsuario(Request $request , $id){
         Gate::authorize('haveaccess', 'admin.perm');
         $data=request()->validate([
-            'name'=>'required | max:255 |',
+            'name'=>'required | max:255 ',
             'email' => ['required','max:255', function ($attribute, $value, $fail) use ($id) {
                 $usuario=User::findOrFail($id);
                 if($usuario->email != $value){
@@ -158,6 +168,68 @@ class adminController extends Controller
         }
         catch(QueryException $ex){
            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+    }
+
+    public function agregarCampana(Request $request){
+        Gate::authorize('haveaccess', 'admin.perm');
+        $data=request()->validate([
+            'name_camp'=>'required | max:100 ',
+            'name_cand'=>'required|max:255',
+            'input_partidos' => [function ($attribute, $value, $fail) {
+                if(!$value){
+                    return $fail(__('Debe agregar al menos 1 partido (para agregar presione el botón agregar).')); 
+                }  
+            }],
+            'input_agentes' => [function ($attribute, $value, $fail) {
+                if(!$value){
+                    return $fail(__('Debe agregar al menos 1 agente (para agregar presione el botón agregar).')); 
+                }  
+            }],
+            'position'=>'required|numeric'
+        ]);
+        try{
+            DB::transaction(function () use ($request) {
+                $campana=new Campaign();
+                $campana->name=$request->name_camp;
+                $campana->candidato=$request->name_cand;
+                $campana->position_id=$request->position;
+
+                //Vamos a generar el código de la campaña
+                //primero se obtienen 3 caracteres al azar del nombre de la campaña
+                //es necesario hacer uppercase, quitar espacios y hacer trim
+                $str=$request->name_camp;
+                $str = str_replace(' ', '', $str);
+                $str = strtoupper($str);
+                $str = trim($str);
+                //String para generar el subfijo del código
+                $str2 = '0123456789';
+                //En do while generamos el código aleatoriamente hasta que no exista un código igual en la base de datos
+                do {
+                    $prefix= $str[rand(0, strlen($str)-1)].$str[rand(0, strlen($str)-1)].$str[rand(0, strlen($str)-1)].'-';
+                    $subfix=$str2[rand(0, strlen($str2)-1)].$str2[rand(0, strlen($str2)-1)].$str2[rand(0, strlen($str2)-1)].$str2[rand(0, strlen($str2)-1)];
+                    $codigo=$prefix.$subfix;
+                    $codigoExistente=Campaign::where('codigo',$codigo)->first();
+                } while($codigoExistente);
+                //Guardamos el código en la campaña
+                $campana->codigo=$codigo;
+                $partidos = explode(',', $request->input_partidos);
+                $agentes = explode (',',$request->input_agentes);
+
+
+                $campana->save();
+                $campana->politic_partie()->sync($partidos);
+                $campana->user()->sync($agentes);
+            });
+            if($request->ajax()){
+                session()->flash('status','Campaña creada con éxito!');
+                return 200;
+            }
+        }
+        catch(QueryException $ex){
+            if($request->ajax()){
+                return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+            }
         }
     }
 }
