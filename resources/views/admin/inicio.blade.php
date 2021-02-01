@@ -129,12 +129,14 @@ Inicio
                 </button>
             </div>
             <div uk-grid>
-                <div class="uk-width-1-4@m uk-text-center">
-                    <img src="{{asset('img/icons/admin.png')}}" style="max-width: 120px; width: 100%;" />
-                    <p class="uk-text-bold uk-margin-remove">Nombre de la campaña</p>
-                    <p class="uk-margin-remove">#Código</p>
-                    <p class="uk-margin-remove">Candidato</p>
-                </div>
+                @foreach ($campanas as $campana)
+                    <div class="uk-width-1-4@m uk-text-center">
+                        <img src="{{asset('storage/uploads/'.$campana->logo)}}" style="width:120px;height:120px; border-radius:50%;" />
+                        <p class="uk-text-bold uk-margin-remove">{{$campana->name}}</p>
+                        <p class="uk-margin-remove">#{{$campana->codigo}}</p>
+                        <p class="uk-margin-remove">{{$campana->candidato}}</p>
+                    </div>
+                @endforeach
             </div>
         </div>
     </div>
@@ -268,6 +270,17 @@ Inicio
                 <div uk-grid>
                     <div class="uk-width-1">
                         <div uk-grid>
+                            <div class="uk-width-1">
+                                <div class="avatar-wrapper uk-margin-bottom">
+                                    <img id="logo" class="profile-pic uk-border-circle uk-flex" style="margin-left:auto; margin-right:auto; background-size:cover; object-fit:cover; height:200px;" src="{{asset('/img/icons/globe.png')}}" width="200"
+                                        height="200" alt="Border circle" />
+                                    <div id="logob" class=" uk-text-center" style="cursor: pointer">
+                                        Agregar logo
+                                        <span class="uk-margin-small-left" uk-icon="upload"></span>
+                                    </div>
+                                    <input name="logo" type="file" id="fileLogo" style="visibility:hidden;height:2px;width:30px"/>
+                                </div>
+                            </div>
                             <div class="uk-width-1-2@m">
                                 <h6 class="uk-margin-remove uk-text-bold">NOMBRE DE CAMPAÑA</h6>
                                 <div class="omrs-input-group uk-margin">
@@ -332,62 +345,56 @@ Inicio
                             <div class="uk-width-1-2@m">
                                 <h6 class="uk-margin-remove uk-text-bold">SECCIONES</h6>
                                 <div class="uk-form-controls omrs-input-group uk-margin">
-                                    <select class="uk-select" id="secciones">
+                                    <select class="uk-select" id="secciones" name="secciones" required>
                                         <option value="" disabled selected>Seleccionar secciones por:</option> 
                                         <option value="1">Distrito local</option> 
                                         <option value="2">Distrito federal</option> 
-                                        <option value="3">Municipio</option> 
+                                        <option value="3">Municipio</option>
+                                        <option value="4">Todas las secciones</option>
                                     </select>
                                 </div>
                             </div>
                             <div id="locales"class="uk-width-1-2@m uk-margin-medium-top" style="display:none">
                                 <h6 class="uk-margin-remove uk-text-bold">POR DISTRITO LOCAL</h6>
                                 <div class="uk-form-controls omrs-input-group uk-margin">
-                                    <select class="uk-select" id="local">
+                                    <select class="uk-select" id="local" name="local">
                                         <option value="">Selecciona un distrito local</option>
                                         @foreach($locales as $local)
-                                            <option value="{{$local->id}}">{{$local->cabecera}}</option>
+                                            <option value="{{$local->id}}">{{$local->numero}}.- {{$local->cabecera}}</option>
                                         @endforeach
                                     </select>
-                                    <div id="lista_locales" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
-                                    </div>
-                                    <input type="hidden" id="input_locales" name="input_locales" value="" />
                                 </div>
                             </div>
                             <div id="federales" class="uk-width-1-2@m uk-margin-medium-top" style="display:none">
                                 <h6 class="uk-margin-remove uk-text-bold">POR DISTRITO FEDERAL</h6>
                                 <div class="uk-form-controls omrs-input-group uk-margin">
-                                    <select class="uk-select" id="federal">
+                                    <select class="uk-select" id="federal" name="federal">
                                         <option value="">Selecciona un distrito federal</option>
                                         @foreach($federales as $federal)
-                                            <option value="{{$federal->id}}">{{$federal->cabecera}}</option>
+                                            <option value="{{$federal->id}}">{{$federal->numero}}.- {{$federal->cabecera}}</option>
                                         @endforeach
                                     </select>
-                                    <div id="lista_federales" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
-                                    </div>
-                                    <input type="hidden" id="input_federales" name="input_federales" value="" />
                                 </div>
                             </div>
                             <div id="municipios" class="uk-width-1-2@m uk-margin-medium-top" style="display:none">
                                 <h6 class="uk-margin-remove uk-text-bold">POR MUNICIPIO</h6>
                                 <div class="uk-form-controls omrs-input-group uk-margin">
-                                    <select class="uk-select" id="municipio">
+                                    <select class="uk-select" id="municipio" name="municipio">
                                         <option value="">Selecciona un municipio</option>
                                         @foreach($municipios as $municipio)
                                             <option value="{{$municipio->id}}">{{$municipio->nombre}}</option>
                                         @endforeach
                                     </select>
-                                    <div id="lista_municipios" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
-                                    </div>
-                                    <input type="hidden" id="input_municipios" name="input_municipios" value="" />
                                 </div>
                             </div>
                             <div class="uk-width-1-2@m">
                                 <h6 class="uk-margin-remove uk-text-bold">POSICIÓN</h6>
                                 <div class="uk-form-controls omrs-input-group uk-margin">
-                                    <select class="uk-select" required name="position">
+                                    <select id="position" class="uk-select" required name="position" disabled>
                                         @foreach ($positions as $position)
-                                            <option value="{{$position->id}}">{{$position->name}}</option> 
+                                            @if ($position->id != 1 && $position->id != 6)
+                                                <option value="{{$position->id}}">{{$position->name}}</option> 
+                                            @endif
                                         @endforeach
                                     </select>
                                 </div>
@@ -413,137 +420,40 @@ Inicio
 
     var arrPartidos=[];
     var arrAgentes=[];
-    var arrLocales=[];
-    var arrFederales=[];
-    var arrMunicipios=[];
-
 
     //Script para manejar las secciones
     $('#secciones').on('change', function() {
-        arrLocales=[];
-        arrFederales=[];
-        arrMunicipios=[];
-        $('#input_federales').val(arrFederales);
-        $('#input_locales').val(arrLocales);
-        $('#input_municipios').val(arrMunicipios);
         $('#federales').css('display','none');
         $('#locales').css('display','none');
         $('#municipios').css('display','none');
-        $('#lista_locales').empty();
-        $('#lista_federales').empty();
-        $('#lista_municipios').empty();
+        $('#federal').prop('required',false);
+        $('#local').prop('required',false);
+        $('#municipio').prop('required',false);
+        $('#federal').val('');
+        $('#local').val('');
+        $('#municipio').val('');
         switch(this.value) {
         case '1':
             $('#locales').css('display','block').hide().show('normal');
+            $('#local').prop('required',true);
+            $('#position').val('5');
             break;
         case '2':
             $('#federales').css('display','block').hide().show('normal');
+            $('#federal').prop('required',true);
+            $('#position').val('4');
             break;
         case '3':
             $('#municipios').css('display','block').hide().show('normal');
+            $('#municipio').prop('required',true);
+            $('#position').val('3');
+            break;
+        case '4':
+            $('#position').val('2');
             break;
         }
     });
-    // ONCHANGES DEL SELECT DE LOCALES
-    $('#local').on('change', function(){
-        var input = $('#local').children("option:selected").val();
-        var locales = JSON.parse('<?php echo empty($locales) ? '{}' : json_encode($locales) ?>');
-        for(var key in locales){
-            var obj=locales[key];
-            if(obj["id"] == input){
-                $("#local").val('');
-                if($.inArray(obj["id"],arrLocales)==-1){
-                    $('#lista_locales').append('<div id="'+obj['id']+'l" class="uk-flex uk-flex-middle"><img class="delete_local" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["cabecera"]+'</div></div>');
-                    $('#'+obj["id"]+'l').hide().show('normal');
-                    arrLocales.push(obj["id"]);
-                    $('#input_locales').val(arrLocales);
-                }
-                break;
-            }
-        }
-    });
-    $(document.body).on('click','.delete_local', function(e) {
-        var id=$(this).data('id');
-        arrLocales = jQuery.grep(arrLocales, function(value) {
-            return value != id;
-        });
-        $('#'+id+'l').hide('normal');
-        setTimeout(
-            function()
-            {
-                var div = document.getElementById(id+'l');
-                div.remove();
-            },
-        500);
-        $('#input_locales').val(arrLocales);
-    });
-    // ONCHANGES DEL SELECT DE FEDERALES
-    $('#federal').on('change', function(){
-        var input = $('#federal').children("option:selected").val();
-        var federales = JSON.parse('<?php echo empty($federales) ? '{}' : json_encode($federales) ?>');
-        for(var key in federales){
-            var obj=federales[key];
-            if(obj["id"] == input){
-                $("#federal").val('');
-                if($.inArray(obj["id"],arrFederales)==-1){
-                    $('#lista_federales').append('<div id="'+obj['id']+'f" class="uk-flex uk-flex-middle"><img class="delete_federal" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["cabecera"]+'</div></div>');
-                    $('#'+obj["id"]+'f').hide().show('normal');
-                    arrFederales.push(obj["id"]);
-                    $('#input_federales').val(arrFederales);
-                }
-                break;
-            }
-        }
-    });
-    $(document.body).on('click','.delete_federal', function(e) {
-        var id=$(this).data('id');
-        arrFederales = jQuery.grep(arrFederales, function(value) {
-            return value != id;
-        });
-        $('#'+id+'f').hide('normal');
-        setTimeout(
-            function()
-            {
-                var div = document.getElementById(id+'f');
-                div.remove();
-            },
-        500);
-        $('#input_federales').val(arrFederales);
-    });
-    // ONCHANGES DEL SELECT DE MUNICIPIOS
-    $('#municipio').on('change', function(){
-        var input = $('#municipio').children("option:selected").val();
-        var municipios = JSON.parse('<?php echo empty($municipios) ? '{}' : json_encode($municipios) ?>');
-        for(var key in municipios){
-            var obj=municipios[key];
-            if(obj["id"] == input){
-                $("#municipio").val('');
-                if($.inArray(obj["id"],arrMunicipios)==-1){
-                    $('#lista_municipios').append('<div id="'+obj['id']+'m" class="uk-flex uk-flex-middle"><img class="delete_municipio" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["nombre"]+'</div></div>');
-                    $('#'+obj["id"]+'m').hide().show('normal');
-                    arrMunicipios.push(obj["id"]);
-                    $('#input_municipios').val(arrMunicipios);
-                }
-                break;
-            }
-        }
-    });
-    $(document.body).on('click','.delete_municipio', function(e) {
-        var id=$(this).data('id');
-        arrMunicipios = jQuery.grep(arrMunicipios, function(value) {
-            return value != id;
-        });
-        $('#'+id+'m').hide('normal');
-        setTimeout(
-            function()
-            {
-                var div = document.getElementById(id+'m');
-                div.remove();
-            },
-        500);
-        $('#input_municipios').val(arrMunicipios);
-    });
-
+    
     //AGREGAR PARTIDOS
     $('#agregar_partido').click(function(){
         var input=$('#partido');
@@ -578,6 +488,7 @@ Inicio
         $('#input_partidos').val(arrPartidos);
     });
 
+    //AGREGAR AGENTES
     $('#agregar_agente').click(function(){
         var input=$('#agente');
         var agentes = JSON.parse('<?php echo empty($agents) ? '{}' : json_encode($agents) ?>');
@@ -623,6 +534,7 @@ Inicio
             confirm_password.reportValidity();
         }
     }
+    //foto usuario
     jQuery(($) => {
         //esto es para la foto de perfil
         $('#foto').on('click', function() {
@@ -641,10 +553,32 @@ Inicio
                 reader.readAsDataURL(input.files[0]); // convert to base64 string
             }
         }
-
         $("#fileField").change(function() {
             readURL(this);
+        });   
+    });
+    //foto campaña
+    jQuery(($) => {
+        //esto es para la foto de campaña
+        $('#logob').on('click', function() {
+            $("#fileLogo").click();
         });
+
+        function readURL(input) {
+            $('#logo').attr('src', "/img/icons/globe.png");
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+
+                reader.onload = function(e) {
+                $('#logo').attr('src', e.target.result);
+                }
+
+                reader.readAsDataURL(input.files[0]); // convert to base64 string
+            }
+        }
+        $("#fileLogo").change(function() {
+            readURL(this);
+        });   
     });
 
     //ajax del form de nuevo usuario
@@ -730,14 +664,17 @@ Inicio
     });
 
     //ajax del form de nueva campaña
-    $("#form-nueva-campana").bind("submit",function(){
+    $("#form-nueva-campanas").bind("submit",function(){
         // Capturamnos el boton de envío
         var btnEnviar = $("#btnEnviar-campana");
 
         $.ajax({
             type: $(this).attr("method"),
             url: $(this).attr("action"),
-            data: $(this).serialize(),
+            data: new FormData(this),
+            dataType: "JSON",
+            processData: false,
+            contentType: false,
             beforeSend: function(data){
                 /*
                 * Esta función se ejecuta durante el envió de la petición al

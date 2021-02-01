@@ -17,6 +17,7 @@ use App\Models\PoliticPartie;
 use App\Models\LocalDistrict;
 use App\Models\FederalDistrict;
 use App\Models\Town;
+use App\Models\Section;
 
 class adminController extends Controller
 {
@@ -38,6 +39,7 @@ class adminController extends Controller
         $federales=FederalDistrict::get();
         $locales=LocalDistrict::get();
         $municipios=Town::get();
+        $campanas=Campaign::get();
         // dd($parties[0]->campaign[0]->elector);
         return view('admin.inicio',[
             'totalUsers'=>$totalUsers,
@@ -50,7 +52,8 @@ class adminController extends Controller
             'agents'=>$agents,
             'federales'=>$federales,
             'locales'=>$locales,
-            'municipios'=>$municipios
+            'municipios'=>$municipios,
+            'campanas'=>$campanas
         ]);
     }
 
@@ -184,6 +187,7 @@ class adminController extends Controller
         $data=request()->validate([
             'name_camp'=>'required | max:100 ',
             'name_cand'=>'required|max:255',
+            'secciones'=>'required|numeric',
             'input_partidos' => [function ($attribute, $value, $fail) {
                 if(!$value){
                     return $fail(__('Debe agregar al menos 1 partido (para agregar presione el botón agregar).')); 
@@ -194,15 +198,28 @@ class adminController extends Controller
                     return $fail(__('Debe agregar al menos 1 agente (para agregar presione el botón agregar).')); 
                 }  
             }],
-            'position'=>'required|numeric'
+            'fileLogo'=>'mimes:jpeg,jpg,png,gif|image'
         ]);
         try{
             DB::transaction(function () use ($request) {
                 $campana=new Campaign();
                 $campana->name=$request->name_camp;
                 $campana->candidato=$request->name_cand;
-                $campana->position_id=$request->position;
+                switch($request->secciones){
+                    case 1: $campana->position_id=5;break;
+                    case 2: $campana->position_id=4;break;
+                    case 3: $campana->position_id=3;break;
+                    case 4: $campana->position_id=2;break;
+                }
 
+                if($request->fileLogo){
+                    $fileNameWithTheExtension = request('fileLogo')->getClientOriginalName();
+                    $fileName = pathinfo( $fileNameWithTheExtension,PATHINFO_FILENAME);
+                    $extension = request('fileLogo')->getClientOriginalExtension();
+                    $newFileName=$fileName.'_'.time().'.'.$extension;
+                    $path = request('fileLogo')->storeAs('/public/uploads/',$newFileName);
+                    $campana->logo=$newFileName;
+                }
                 //Vamos a generar el código de la campaña
                 //primero se obtienen 3 caracteres al azar del nombre de la campaña
                 //es necesario hacer uppercase, quitar espacios y hacer trim
@@ -223,9 +240,35 @@ class adminController extends Controller
                 $campana->codigo=$codigo;
                 $partidos = explode(',', $request->input_partidos);
                 $agentes = explode (',',$request->input_agentes);
-
-
+                
+                if($request->secciones != 4){
+                    if($request->local){
+                        $secciones=[];
+                        $localId=LocalDistrict::find($request->local);
+                        foreach($localId->section as $section){
+                            $secciones[]=$section->id;
+                        }
+                    }
+                    elseif($request->federal){
+                        $secciones=[];
+                        $federalId=FederalDistrict::find($request->federal);
+                        foreach($federalId->section as $section){
+                            $secciones[]=$section->id;
+                        }
+                    }
+                    elseif($request->municipio){
+                        $secciones=[];
+                        $municipioId=Town::find($request->municipio);
+                        foreach($municipioId->section as $section){
+                            $secciones[]=$section->id;
+                        }
+                    }
+                }
+                else{
+                    $secciones=Section::pluck('id')->toArray();
+                }
                 $campana->save();
+                $campana->section()->sync($secciones);
                 $campana->politic_partie()->sync($partidos);
                 $campana->user()->sync($agentes);
             });
