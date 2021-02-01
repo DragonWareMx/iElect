@@ -99,8 +99,11 @@
             </ul>
         </div>
         <!-- Icono ajustes -->
+        @php
+        $fechaAct= \Carbon\Carbon::now();
+        @endphp
         <div class="uk-navbar-right uk-margin-right">
-            <div>28 October 2019</div>
+            <div>{{ $fechaAct->format('d').' de '.ucfirst($fechaAct->monthName).' del '.$fechaAct->format('Y') }}</div>
         </div>
     </div>
 

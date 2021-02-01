@@ -20,6 +20,10 @@ class CheckCamp
         $camp = session()->get('campana');
         $usuario = Auth::user();
         $rol = $usuario->roles[0]->name;
+        if ($rol == 'Brigadista') {
+            $campa = $usuario->campaign[0];
+            session()->put('campana', $campa);
+        }
         if (!$camp && $rol == 'Agente') {
             return redirect()->route('campana-select');
         }
