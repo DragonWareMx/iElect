@@ -13,12 +13,30 @@ if(!is_null($electores) && !is_null($campana)){
 $simpatizantes = 0;
 $porcentaje = 0;
 $countS = array_count_values($electores->pluck('sexo')->toArray());
+if(count($countS) != 0){
+if (isset($countS['h'])) {
 $hombres = $countS['h'];
-$mujeres = $countS['m'];
-$total = $hombres + $mujeres;
+}else{
+$hombres = 0;
+}
 
+if (isset($count['m'])) {
+$mujeres = $countS['m'];
+}else{
+$mujeres = 0;
+}
+
+$total = $hombres + $mujeres;
 $porcH = round(($hombres * 100)/$total, 2);
 $porcM = round(($mujeres * 100)/$total, 2);
+}else{
+$hombres = 0;
+$mujeres = 0;
+$total = 0;
+$porcH = 0;
+$porcM = 0;
+}
+
 }
 
 @endphp
