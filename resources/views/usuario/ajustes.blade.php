@@ -14,15 +14,19 @@ Ajustes
     <div class="uk-card uk-card-default uk-card-body uk-margin-top">
         <div class="uk-card-title">
             <h3 class="uk-text-bold">Cuenta</h3>
-            <a class="uk-position-right uk-padding" href="{{route('ajustes_cuenta')}}" uk-icon="cog"></a>
+            @if($agente == true || $brigadista)
+                <a class="uk-position-right uk-padding" href="{{route('ajustes_cuenta')}}" uk-icon="cog"></a>
+            @else
+            <a class="uk-position-right uk-padding" href="{{route('admin-cuenta')}}" uk-icon="cog"></a>
+            @endif
         </div>
 
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
             <div class="uk-width-auto uk-width-1-6@m">
                 <!-- Avatar circulo -->
-                <div>
+                <div class="avatar-wrapper">
                     @if(Auth::user()->avatar !=NULL)
-                        <img class="uk-border-circle" src="{{auth()->user()->avatar}}" width="200" height="200"
+                        <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" width="200" height="200"
                             alt="Foto" />
                     @else
                         <img class="uk-border-circle" src="{{asset('img/test/default.png')}}" width="200" height="200"

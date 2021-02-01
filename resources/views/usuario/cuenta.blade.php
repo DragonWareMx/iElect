@@ -16,7 +16,24 @@ Cuenta
         <h3 class="uk-card-title uk-text-bold">
             <a class="uk-margin-right" href="{{route('ajustes')}}" uk-icon="arrow-left"></a>Cuenta
         </h3>
-
+        @if (session()->get('status'))
+        <div class="uk-alert-success" uk-alert>
+            <a class="uk-alert-close" uk-close></a>
+            <ul>
+                <li>{{session()->get('status')}}</li>
+            </ul>
+        </div>
+        @endif
+        @if ($errors->any())
+            <div class="uk-alert-danger" uk-alert>
+                <a class="uk-alert-close" uk-close></a>
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form action="{{route('cuentaUpdate', ['id'=>auth()->user()->id])}}"  method="POST" id="formCheckPassword" enctype="multipart/form-data">
             @method("PATCH")
                     @csrf
@@ -25,8 +42,9 @@ Cuenta
                     <!-- Avatar circulo -->
                     <div class="avatar-wrapper">
                         @if(Auth::user()->avatar !=NULL)
-                            <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{auth()->user()->avatar}}" width="200" height="200"
+                            <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" width="200" height="200"
                                 alt="Foto" />
+                                
                         @else
                             <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('img/test/default.png')}}" width="200" height="200"
                                     alt="Foto" />
@@ -34,51 +52,67 @@ Cuenta
                         <div class="upload-text">
                             <a id="foto-edit" class="uk-link-reset uk-flex uk-flex-center uk-flex-middle uk-margin-auto uk-width-1 uk-flex-wrap uk-text-small" style="width:max-content;">
                             <span uk-icon="icon: upload; ratio: 0.8" style="margin-right:5px"></span>Editar foto</a>
-                            {{-- Editar foto
-                            <span class="uk-margin-small-left" uk-icon="upload"></span> --}}
-                            <input name="fileField" type="file" id="fileField_edit" style="visibility:hidden;height:2px;width:30px">
+                            <input name="fileField" type="file" id="fileField_edit" style="visibility:hidden;height:2px;width:30px" accept="image/*">
                         </div>
                     </div>  
                 </div>
                 <div class="uk-width-auto uk-width-1-4@m uk-text-left">
-                    {{-- @error('password')
-                        <span class="invalid-feedback" role="alert">
-                            <strong>{{ $message }}</strong>
-                        </span>
-                    @enderror --}}
-                    <div class="uk-text-primary">Cambiar contraseña</div>
-
-                    <div class="omrs-input-group uk-margin-bottom">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input type="password"  name="passActual" id="passActual" required onchange="this.setAttribute('value', this.value);" />
-                            <span class="omrs-input-label">Contraseña actual</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input type="password"  name="password" id="password" required onchange="this.setAttribute('value', this.value); validatePasswordEdit(); validatePasswordLength();"/>
-                            <span class="omrs-input-label">Nueva contraseña</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input type="password" name="cfmPassword" id="cfmPassword" required onchange="this.setAttribute('value', this.value);" onkeyup="validatePasswordEdit()"/>
-                            <span class="omrs-input-label">Confirmar contraseña</span>
-                        </label>
+                    <a class="uk-text-primary" href="javascript:editarPass();">Cambiar contraseña</a>
+                    <div id="chg_pass" class="uk-width-auto" style="display: none">
+                        <div class="omrs-input-group uk-margin-bottom">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input type="password"  name="passActual" id="passActual" onchange="this.setAttribute('value', this.value);" />
+                                <span class="omrs-input-label">Contraseña actual</span>
+                            </label>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input type="password"  name="password" id="password"  onchange="this.setAttribute('value', this.value); validatePasswordEdit(); validatePasswordLength();"/>
+                                <span class="omrs-input-label">Nueva contraseña</span>
+                            </label>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input type="password" name="cfmPassword" id="cfmPassword"  onchange="this.setAttribute('value', this.value);" onkeyup="validatePasswordEdit()"/>
+                                <span class="omrs-input-label">Confirmar contraseña</span>
+                            </label>
+                        </div>
                     </div>
                 </div>
             </div>
 
             <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
+                <a href="javascript:history.back(-1);" class="uk-button uk-button-default uk-modal-close" type="button">
                     Cancelar
-                </button>
+                </a>
                 <input class="uk-button uk-button-primary" type="submit" value="Guardar">
             </p>
         </form>
     </div>
 </div>
 <script>
+    div = document.getElementById('chg_pass');
+    passActual = document.getElementById('passActual');
+    password = document.getElementById('password');
+    cfmPassword = document.getElementById('cfmPassword');
+    function editarPass(){
+        if(div.style.display=='none'){
+            div.style.display='block';
+            passActual.required=true;
+            password.required=true;
+            cfmPassword.required=true;
+        }else{
+            div.style.display='none';
+            passActual.value='';
+            password.value='';
+            cfmPassword.value='';
+            passActual.required=false;
+            password.required=false;
+            cfmPassword.required=false;
+        }
+    }
+
+
     // Confirmar que las contraseñas sean iguales
     var password_edit = document.getElementById("password")
         , confirm_password_edit = document.getElementById("cfmPassword");
@@ -121,5 +155,5 @@ Cuenta
                 readURLEdit(this);
             });
     });
-  </script>
+</script>
 @endsection

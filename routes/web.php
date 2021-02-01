@@ -156,6 +156,9 @@ Route::patch('/admin/editar/usuario/{id}', 'adminController@editarUsuario')->nam
 //Admin | Cuenta
 Route::get('/admin/cuenta', 'CuentaController@cuentaAdmin')->name('admin-cuenta');
 
+// Admin  | Cuentas Update
+Route::patch('/admin/cuenta/{id}', 'CuentaController@cuentaUpdateAdmin')->name('cuentaUpdateAdmin');
+
 //Admin | Seccion
 Route::get('/admin/seccion', function () {
     return view('admin.seccion');

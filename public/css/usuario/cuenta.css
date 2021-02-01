@@ -6,6 +6,10 @@
     background-color: black;
     border-radius: 50%;
 }
+/* .avatar-wrapper img{
+    width: 200px !important;
+    height: 200px !important;
+} */
 
 .profile-pic { 
     height: 100%;
