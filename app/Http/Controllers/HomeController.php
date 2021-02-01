@@ -8,6 +8,7 @@ use App\Models\Elector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Redirect;
 
 class HomeController extends Controller
 {
@@ -38,5 +39,23 @@ class HomeController extends Controller
         }
 
         return view('usuario.home', ['campana' => $campana, 'electores' => $electors]);
+    }
+
+    public function campana()
+    {
+        $usuario = Auth::user();
+        $campanas = $usuario->campaign;
+        return view('usuario.campana_select', ['campanas' => $campanas]);
+    }
+
+    public function campSession(Request $request)
+    {
+        $camp = Campaign::findOrFail($request->campana);
+        if (!$camp) {
+            return Redirect::back()->withErrors(['msg', 'Algo inesperado ocurrió, por favor, intentalo de nuevo.']);
+        } else {
+            session()->put('campana', $camp);
+            return redirect()->route('home');
+        }
     }
 }

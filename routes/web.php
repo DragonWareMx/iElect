@@ -204,3 +204,8 @@ Route::get('/simpatizante/aviso', function () {
 Route::get('/simpatizante/baja/{uuid}', 'SimpatizanteController@index')->name('simpatizante-solicitud_baja');
 
 Route::delete('/simpatizante/baja/{uuid}', 'SimpatizanteController@delete')->name('solicitud_baja-delete');
+
+//Ruta para elegir campaña
+Route::get('/campana/elegir', 'HomeController@campana')->name('campana-select');
+
+Route::post('/campana/elegir', 'HomeController@campSession')->name('campana-select-post');
