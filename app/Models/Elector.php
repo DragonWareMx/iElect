@@ -171,58 +171,78 @@ class Elector extends Model
     }
     public function getCredencialAAttribute($value)
     {
-        try {
-            // in your Controller
-            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
-            $decryptedContent = decrypt($encryptedContent);
-            return "data:image/png;base64,".base64_encode($decryptedContent);
-        } catch (DecryptException $e) {
-            return 'Error';
+        if(!is_null($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
         }
-        catch (\Exception $e) {
-            return '';
+        else{
+            return null;
         }
     }
     public function getCredencialRAttribute($value)
     {
-        try {
-            // in your Controller
-            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
-            $decryptedContent = decrypt($encryptedContent);
-            return "data:image/png;base64,".base64_encode($decryptedContent);
-        } catch (DecryptException $e) {
-            return 'Error';
+        if(!is_null($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
         }
-        catch (\Exception $e) {
-            return '';
+        else{
+            return null;
         }
     }
     public function getFotoElectorAttribute($value)
     {
-        try {
-            // in your Controller
-            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
-            $decryptedContent = decrypt($encryptedContent);
-            return "data:image/png;base64,".base64_encode($decryptedContent);
-        } catch (DecryptException $e) {
-            return 'Error';
+        if(!empty($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
         }
-        catch (\Exception $e) {
-            return '';
+        else{
+            return null;
         }
     }
     public function getDocumentoAttribute($value)
     {
-        try {
-            // in your Controller
-            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
-            $decryptedContent = decrypt($encryptedContent);
-            return "data:image/png;base64,".base64_encode($decryptedContent);
-        } catch (DecryptException $e) {
-            return 'Error';
+        if(!empty($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
         }
-        catch (\Exception $e) {
-            return '';
+        else{
+            return null;
         }
     }
 

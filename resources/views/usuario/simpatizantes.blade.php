@@ -24,7 +24,7 @@ Simpatizantes
                 <div class="uk-width-1-2@m">
                     <!-- Avatar -->
                     <div class="avatar-wrapper uk-text-center">
-                        <img id="simp_edit_foto" class="profile-pic uk-border-circle" data-src="{{asset('img/test/avatar.jpg')}}" width="150" height="150" alt="Border circle" uk-img/>
+                        <img id="simp_edit_foto" class="profile-pic uk-border-circle" src="{{asset('img/icons/default.png')}}" width="150" height="150" alt="Border circle" uk-img/>
                     </div>
                     <div class="uk-text-bold">Nombre</div>
                     <div id="simp_edit_nombre">José Agustín Aguilar Solórzano</div>
@@ -71,10 +71,12 @@ Simpatizantes
                     </div>
                 </div>
                 <div class="uk-width-1-2@m">
-                    <img id="simp_edit_front" class="uk-margin-bottom" data-src="img/test/ine_front.jpg" width="75%" height="auto" alt="" uk-img />
-                    <img id="simp_edit_back" class="uk-margin-bottom" data-src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
-                    <img id="simp_edit_foto" class="uk-margin-bottom"data-src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
-                    <img id="simp_edit_firma" class="uk-margin-bottom"data-src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
+                    <div class="uk-text-bold" id="simp_edit_front_t">Foto de credencial anverso</div>
+                    <img id="simp_edit_front" class="uk-margin-bottom" src="img/test/ine_front.jpg" width="75%" height="auto" alt="" uk-img />
+                    <div class="uk-text-bold" id="simp_edit_back_t">Foto de credencial inverso</div>
+                    <img id="simp_edit_back" class="uk-margin-bottom" src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
+                    <div class="uk-text-bold" id="simp_edit_firma_t">Foto de firma</div>
+                    <img id="simp_edit_firma" class="uk-margin-bottom" src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
                 </div>
             </div>
             <p class="uk-text-right">
@@ -656,17 +658,39 @@ Simpatizantes
             //aqui falta lo del brigadista
 
             //aqui empieza lo de las fotos del ine
-            $("#simp_edit_front").attr("data-src",obj['credencial_a']);
-            $("#simp_edit_back").attr("data-src",obj['credencial_r']);
-
-            //aqui empieza lo de las fotos del simp
             if(obj['credencial_a']){
-                $("#simp_edit_foto").attr("data-src",obj['credencial_a']);
+                $("#simp_edit_front").attr("src",obj['credencial_a']);
+                $("#simp_edit_front_t").html('Foto de credencial anverso');
             }
             else{
-                $("#simp_edit_foto").attr("data-src","{{asset('img/test/avatar.jpg')}}");
+                $("#simp_edit_front").attr("src","");
+                $("#simp_edit_front_t").html('Sin foto de credencial anverso');
             }
-            $("#simp_edit_firma").attr("data-src",obj['credencial_r']);
+            if(obj['credencial_r']){
+                $("#simp_edit_back").attr("src",obj['credencial_r']);
+                $("#simp_edit_back_t").html('Foto de credencial inverso');
+            }
+            else{
+                $("#simp_edit_back").attr("src",obj['credencial_a']);
+                $("#simp_edit_back_t").html('Sin foto de credencial inverso');
+            }
+
+            //aqui empieza lo de las fotos del simp
+            if(obj['foto_elector']){
+                $("#simp_edit_foto").attr("src",obj['foto_elector']);
+            }
+            else{
+                $("#simp_edit_foto").attr("src","{{asset('img/icons/default.png')}}");
+            }
+            if(obj['documento']){
+                $("#simp_edit_firma").attr("src",obj['documento']);
+                $("#simp_edit_firma_t").html('Foto de firma');
+            }
+            else{
+                $("#simp_edit_firma").attr("src","");
+                $("#simp_edit_firma_t").html('Sin foto de firma');
+            }
+            console.log(obj)
             UIkit.modal("#modal-datos-simp").toggle();
         });
     });
