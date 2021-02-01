@@ -10,9 +10,6 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 
-use Illuminate\Support\Facades\Mail;
-use App\Mail\NewSimpMail;
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,10 +22,10 @@ use App\Mail\NewSimpMail;
 */
 
 //Ruta layou
-Route::get('/lays', function () {
-    Mail::to('lopez_lopez_daniel@hotmail.com')->send(new NewSimpMail(23));
-    return 'ya';
-})->name('lay');
+// Route::get('/lays', function () {
+//     Mail::to('lopez_lopez_daniel@hotmail.com')->send(new NewSimpMail(23));
+//     return 'ya';
+// })->name('lay');
 
 
 //esta ruta es de ejemplo para poner el gate pa checar el rol vaya :v
@@ -221,3 +218,6 @@ Route::delete('/simpatizante/baja/{uuid}', 'SimpatizanteController@delete')->nam
 Route::get('/campana/elegir', 'HomeController@campana')->name('campana-select');
 
 Route::post('/campana/elegir', 'HomeController@campSession')->name('campana-select-post');
+
+//Rutas para ver campañas
+Route::get('/admin/campanas', 'adminController@verCampanas')->name('ver.campanas');
