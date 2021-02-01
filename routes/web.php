@@ -161,7 +161,7 @@ Route::delete('/admin/eliminar/usuario/{id}', 'adminController@eliminarUsuario')
 Route::get('/admin/usuarios', 'adminController@verUsuarios')->name('admin-usuarios');  /////////////////////////////////////////////////
 
 //Admin | agregar campaña
-Route::post('/admin/agregar/campana', 'adminController@agregarCampana')->name('agregar-campana');
+Route::post('/admin/agregar/campana', 'adminController@agregarCampana')->name('agregar-campana'); ///////////////////////////////////////////////
 
 //Admin | Cuenta
 Route::get('/admin/cuenta', function () {
@@ -174,9 +174,7 @@ Route::get('/admin/seccion', function () {
 })->name('admin-seccion');
 
 //Admin | Usuario
-Route::get('/admin/usuarios/usuario', function () {
-    return view('admin.usuario');
-})->name('admin-usuario');
+Route::get('/admin/usuarios/usuario/{id}', 'adminController@verUsuario')->name('admin-usuario'); ////////////////////////////////////////////////
 
 //Admin | Editar usuario
 Route::get('/admin/usuarios/usuario/edit', function () {

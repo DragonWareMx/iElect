@@ -131,10 +131,14 @@ Inicio
             <div uk-grid>
                 @foreach ($campanas as $campana)
                     <div class="uk-width-1-4@m uk-text-center">
-                        <img src="{{asset('storage/uploads/'.$campana->logo)}}" style="width:120px;height:120px; border-radius:50%;" />
-                        <p class="uk-text-bold uk-margin-remove">{{$campana->name}}</p>
-                        <p class="uk-margin-remove">#{{$campana->codigo}}</p>
-                        <p class="uk-margin-remove">{{$campana->candidato}}</p>
+                        @if($campana->logo)
+                            <img src="{{asset('storage/uploads/'.$campana->logo)}}" style="width:120px;height:120px;background-size:cover; object-fit:cover; border-radius:50%;" /> 
+                        @else
+                            <img src="{{asset('img/icons/globe.png')}}" style="width:120px;height:120px;background-size:cover; object-fit:cover; border-radius:50%;" /> 
+                        @endif
+                        <p class="uk-text-bold uk-margin-remove uk-text-truncate">{{$campana->name}}</p>
+                        <p class="uk-margin-remove uk-text-truncate">{{$campana->codigo}}</p>
+                        <p class="uk-margin-remove uk-text-truncate">{{$campana->candidato}}</p>
                     </div>
                 @endforeach
             </div>
@@ -278,7 +282,7 @@ Inicio
                                         Agregar logo
                                         <span class="uk-margin-small-left" uk-icon="upload"></span>
                                     </div>
-                                    <input name="logo" type="file" id="fileLogo" style="visibility:hidden;height:2px;width:30px"/>
+                                    <input name="fileLogo" type="file" id="fileLogo" style="visibility:hidden;height:2px;width:30px"/>
                                 </div>
                             </div>
                             <div class="uk-width-1-2@m">
@@ -664,7 +668,7 @@ Inicio
     });
 
     //ajax del form de nueva campaña
-    $("#form-nueva-campanas").bind("submit",function(){
+    $("#form-nueva-campana").bind("submit",function(){
         // Capturamnos el boton de envío
         var btnEnviar = $("#btnEnviar-campana");
 

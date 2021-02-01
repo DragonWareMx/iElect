@@ -35,7 +35,7 @@ class adminController extends Controller
         $totalCampanas=Campaign::get()->count();
         $positions=Position::get();
         $parties=PoliticPartie::get();
-        $agents=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('role_user.role_id',2)->get();
+        $agents=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('status','activo')->where('role_user.role_id',2)->get();
         $federales=FederalDistrict::get();
         $locales=LocalDistrict::get();
         $municipios=Town::get();
@@ -108,6 +108,14 @@ class adminController extends Controller
             'agentes'=>$agentes,
             'brigadistas'=>$brigadistas
         ]);
+    }
+
+    public function verUsuario($id){
+        $usuario=User::findOrFail($id);
+        if($usuario->roles[0]->id==1 || $usuario->roles[0]->id==2)
+            return view('admin.usuario',['usuario'=>$usuario]);
+        else 
+            return redirect('/admin/usuarios');
     }
 
     public function editarUsuario(Request $request , $id){
