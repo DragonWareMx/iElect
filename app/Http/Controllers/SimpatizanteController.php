@@ -44,11 +44,12 @@ class SimpatizanteController extends Controller
 
     public function simpatizantes()
     {
+        \Gate::authorize('haveaccess', 'brig.perm');
         //$campana = session()->get('campana');
         $campana = Campaign::find(1);
 
         //Recibe todas las secciones
-        $simpatizantes = Elector::paginate(10);
+        $simpatizantes = Elector::select('users.name', 'electors.*')->join('users', 'users.id', '=', 'electors.user_id')->paginate(10);
 
         $ocupaciones = Job::all();
 
@@ -70,6 +71,8 @@ class SimpatizanteController extends Controller
 
     public function agregarSimpatizante(Request $request)
     {
+        \Gate::authorize('haveaccess', 'brig.perm');
+
         $data = request()->validate([
             'seccion' => 'required|exists:sections,id',
             'nombre' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
@@ -133,8 +136,7 @@ class SimpatizanteController extends Controller
                 $simpatizante->municipio = $seccion->town->numero;
                 $simpatizante->section_id = $seccion->id;
                 $simpatizante->campaign_id = $campana->id;
-                $simpatizante->user_id = 1;
-                //$simpatizante->user_id = auth()->user()->id;
+                $simpatizante->user_id = auth()->user()->id;
 
                 //OTROS DATOS
                 $simpatizante->facebook = $request->facebook;
@@ -146,7 +148,6 @@ class SimpatizanteController extends Controller
                 MUNICIPIO*
                 USERID*
                 CAMPAIGNID*
-                DOCUMENTO
                 */
 
                 if ($request->foto_anverso) {

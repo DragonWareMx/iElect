@@ -65,7 +65,7 @@ Simpatizantes
                             <div id="simp_edit_tw">link</div>
                             <br />
                             <div class="uk-text-bold">Brigadista</div>
-                            <div>#######</div>
+                            <div id="simp_edit_brigadista">#######</div>
                             <br />
                         </div>
                     </div>
@@ -420,8 +420,6 @@ Simpatizantes
                 </div>
             </div>
 
-            <a class="uk-padding-small" href="{{route('simpatizantes_eliminar')}}">Solicitudes de eliminación</a>
-
             @if ($simpatizantes && count($simpatizantes) > 0)
             <h5 class="uk-text-bold uk-padding-small" style="margin: 0">Información por sección</h5>
             <!-- Tabla -->
@@ -439,9 +437,12 @@ Simpatizantes
                         </tr>
                     </thead>
                     <tbody id="tabla-simps">
+                        @php
+                            $contador = 1;
+                        @endphp
                         @foreach ($simpatizantes as $simpatizante)
                         <tr data-id="{{$simpatizante->id}}">
-                            <td>#1</td>
+                            <td>#{{ $contador }}</td>
                             <td>{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
                             </td>
                             <td>{{ $simpatizante->sexo }}</td>
@@ -450,6 +451,9 @@ Simpatizantes
                             <td>{{ $simpatizante->job->nombre }}</td>
                             <td>{{ $simpatizante->section->num_seccion }}</td>
                             <td>{{ $simpatizante->clave_elector }}</td>
+                            @php
+                                $contador++;
+                            @endphp
                         </tr>
                         @endforeach
                     </tbody>
@@ -656,6 +660,7 @@ Simpatizantes
             $('#simp_edit_face').html(obj['facebook']);
             $('#simp_edit_tw').html(obj['twitter']);
             //aqui falta lo del brigadista
+            $('#simp_edit_brigadista').html(obj['name']);
 
             //aqui empieza lo de las fotos del ine
             if(obj['credencial_a']){
@@ -690,7 +695,6 @@ Simpatizantes
                 $("#simp_edit_firma").attr("src","");
                 $("#simp_edit_firma_t").html('Sin foto de firma');
             }
-            console.log(obj)
             UIkit.modal("#modal-datos-simp").toggle();
         });
     });
