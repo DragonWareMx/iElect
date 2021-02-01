@@ -119,7 +119,7 @@ Usuarios
                                 <th>#</th>
                                 <th>Nombre</th>
                                 <th>Correo electrónico</th>
-                                <th>Campaña</th>
+                                <th>Campañas</th>
                                 <th>Secciones</th>
                                 <th>Estatus</th>
                             </tr>
@@ -133,7 +133,11 @@ Usuarios
                                     <td>
                                         <a class="uk-text-muted" href="{{ route('admin-usuario', ['id'=>$agente->id]) }}" style="text-decoration:none;">
                                         @foreach($agente->campaign as $campana)
-                                            {{$campana->name}} ,
+                                            @if ($loop->index==0)
+                                            {{$campana->name}}
+                                            @else
+                                            , {{$campana->name}}
+                                            @endif
                                         @endforeach
                                         </a>
                                     </td>
@@ -184,7 +188,11 @@ Usuarios
                             <td>{{$brigadista->email}}</td>
                             <td>
                                 @foreach($brigadista->campaign as $campana)
-                                    {{$campana->name}} ,
+                                    @if ($loop->index==0)
+                                    {{$campana->name}}
+                                    @else
+                                    , {{$campana->name}}
+                                    @endif
                                 @endforeach
                             </td>
                             <td>

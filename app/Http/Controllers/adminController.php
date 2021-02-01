@@ -18,6 +18,7 @@ use App\Models\LocalDistrict;
 use App\Models\FederalDistrict;
 use App\Models\Town;
 use App\Models\Section;
+use App\Models\Elector;
 
 class adminController extends Controller
 {
@@ -39,8 +40,22 @@ class adminController extends Controller
         $federales=FederalDistrict::get();
         $locales=LocalDistrict::get();
         $municipios=Town::get();
-        $campanas=Campaign::get();
-        // dd($parties[0]->campaign[0]->elector);
+        $campanas=Campaign::orderBy('id','DESC')->limit(4)->get();
+        $graficaPastel=[];
+        $i=0;
+        foreach($parties as $partie){
+            $graficaPastel[$i]=0;
+            if($partie->campaign->count()>0){
+                foreach($partie->campaign as $campana){
+                    $graficaPastel[$i]+=$campana->elector->count();
+                }
+            }
+            else{
+                $graficaPastel[$i]+=0;
+            }
+            $i++;
+        }
+        $totalSimps=Elector::get()->count();
         return view('admin.inicio',[
             'totalUsers'=>$totalUsers,
             'totalAdmins'=>$totalAdmins,
@@ -53,7 +68,9 @@ class adminController extends Controller
             'federales'=>$federales,
             'locales'=>$locales,
             'municipios'=>$municipios,
-            'campanas'=>$campanas
+            'campanas'=>$campanas,
+            'graficaPastel'=>$graficaPastel,
+            'totalSimps'=>$totalSimps
         ]);
     }
 

@@ -62,11 +62,6 @@ Usuario
             </div>
             <div class="uk-width-auto uk-width-auto@m uk-text-left">
                 @if ($usuario->roles[0]->id==2)
-                    <div class="uk-text-bold">Total de brigadistas</div>
-                    <div>{{$usuario->elector->count()}}</div>
-                    <br />
-                @endif
-                @if ($usuario->roles[0]->id==2)
                     <div class="uk-text-bold">Campañas</div>
                     <div>{{$usuario->campaign->count()}}</div>
                 @endif
@@ -107,7 +102,11 @@ Usuario
                             <td>{{$campana->position->name}}</td>
                             <td>
                                 @foreach ($campana->politic_partie as $partido)
-                                    {{$partido->siglas}},
+                                    @if ($loop->index==0)
+                                    {{$partido->siglas}}
+                                    @else
+                                    , {{$partido->siglas}}
+                                    @endif
                                 @endforeach
                             </td>
                             <td>{{$campana->elector->count()}}</td>

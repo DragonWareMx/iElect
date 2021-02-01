@@ -14,7 +14,7 @@ Inicio
         <!-- Card de SECCIONES -->
         <div class="uk-width-expand@m">
             <div class="uk-card uk-card-default uk-padding-small uk-overflow-auto">
-                <h3 class="uk-card-title uk-text-bold uk-margin-remove">Usuarios</h3>
+                <a href="/admin/usuarios"><h3 class="uk-card-title uk-text-bold uk-margin-remove">Usuarios</h3></a>
                 <p class="uk-margin-remove-top">Total: {{$totalUsers}}</p>
                 <div>
                     <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom" style="
@@ -63,35 +63,63 @@ Inicio
                 <h3 class="uk-card-title uk-text-bold" style="margin: 0">
                     Simpatizantes
                 </h3>
-                <div>Total: 6</div>
+                <div>Total: {{$totalSimps}}</div>
                 <div class="uk-flex uk-flex-middle">
                     <div>
                         <canvas id="simpChart" width="auto" height="200"></canvas>
                     </div>
                     <div class="uk-flex-none">
                         <div>
-                            <span class="uk-badge" style="background-color: #FFD43A"></span>
-                            NDP
-                        </div>
-                        <div>
-                            <span class="uk-badge" style="background-color: #04BE65"></span>
+                            <span class="uk-badge" style="background-color: #FFD43A" uk-tooltip="title: {{$graficaPastel[0]}}; pos: left"></span>
                             PAN
                         </div>
                         <div>
-                            <span class="uk-badge" style="background-color: #2D9B94"></span>
+                            <span class="uk-badge" style="background-color: #04BE65" uk-tooltip="title: {{$graficaPastel[1]}}; pos: left"></span>
                             PRI
                         </div>
                         <div>
-                            <span class="uk-badge" style="background-color: #3201C8"></span>
+                            <span class="uk-badge" style="background-color: #2D9B94" uk-tooltip="title: {{$graficaPastel[2]}}; pos: left"></span>
                             PRD
                         </div>
                         <div>
-                            <span class="uk-badge" style="background-color: #C8194B"></span>
+                            <span class="uk-badge" style="background-color: #3201C8" uk-tooltip="title: {{$graficaPastel[3]}}; pos: left"></span>
                             PT
                         </div>
                         <div>
-                            <span class="uk-badge" style="background-color: #ADADAD"></span>
+                            <span class="uk-badge" style="background-color: #C8194B" uk-tooltip="title: {{$graficaPastel[4]}}; pos: left"></span>
+                            PVEM
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #ADADAD" uk-tooltip="title: {{$graficaPastel[5]}}; pos: left"></span>
+                            MC
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #ff1515" uk-tooltip="title: {{$graficaPastel[6]}}; pos: left"></span>
+                            MORENA
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #2ec707" uk-tooltip="title: {{$graficaPastel[7]}}; pos: left"></span>
                             PES
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #6e01c7" uk-tooltip="title: {{$graficaPastel[8]}}; pos: left"></span>
+                            FPM
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #8a810b" uk-tooltip="title: {{$graficaPastel[9]}}; pos: left"></span>
+                            RSP
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #9ff11c" uk-tooltip="title: {{$graficaPastel[10]}}; pos: left"></span>
+                            IND
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #f717a1" uk-tooltip="title: {{$graficaPastel[11]}}; pos: left"></span>
+                            NA
+                        </div>
+                        <div>
+                            <span class="uk-badge" style="background-color: #573c3c" uk-tooltip="title: {{$graficaPastel[12]}}; pos: left"></span>
+                            PH
                         </div>
                     </div>
                 </div>
@@ -752,16 +780,23 @@ Inicio
 
     //info para la gráfica de pastel
     var simpCanvas = document.getElementById("simpChart");
+    var data=JSON.parse('<?php echo empty($graficaPastel) ? '{}' : json_encode($graficaPastel) ?>');
     var simpData = {
+    labels: ['PAN', 'PRI', 'PRD', 'PT', 'PVEM', 'MC', 'MORENA', 'PES', 'FPM', 'RSP', 'IND', 'NA','PH'],
     datasets: [{
-        data: [13, 10, 1, 2, 10, 8],
-        backgroundColor: ["#C8194B", "#FFD43A", "#ADADAD", "#3201C8", "#2D9B94", "#04BE65"],
+        data: data,
+        backgroundColor: ["#FFD43A", "#04BE65", "#2D9B94", "#3201C8", "#C8194B", "#ADADAD","#ff1515","#2ec707","#6e01c7","#8a810b","#9ff11c","#f717a1","#573c3c"],
     },],
     };
 
     var pieChart = new Chart(simpCanvas, {
         type: "pie",
         data: simpData,
+        options: {
+            legend: {
+                display: false
+            }
+        }
     });
 </script>
 
