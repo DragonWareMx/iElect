@@ -3,11 +3,13 @@
 //use Illuminate\Support\Facades\Gate;
 
 use App\Http\Controllers\SeccionesController;
+use App\Http\Middleware\CheckCamp;
 use App\Models\Elector;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -21,10 +23,11 @@ use Illuminate\Support\Facades\Auth;
 */
 
 //Ruta layou
-/*Route::get('/lay', function () {
-    return view('layouts.layout');
-})->name('lay');
-*/
+// Route::get('/lay', function () {
+//     Mail::to('lopez_lopez_daniel@hotmail.com')->send(new NewSimpMail(1));
+//     return 'ya';
+// })->name('lay');
+
 
 //esta ruta es de ejemplo para poner el gate pa checar el rol vaya :v
 // Route::get('/test', function () {
@@ -77,7 +80,7 @@ Route::get('/registro/brigadista', function () {
 Route::post('/registro/brigadista', 'OrderController@brigadista')->name('registro.brig');
 
 //Home
-Route::get('/inicio', 'HomeController@index')->name('home');
+Route::get('/inicio', 'HomeController@index')->middleware(CheckCamp::class)->name('home');
 
 //Ruta Mapa Seccional
 Route::get('/mapa_seccional', 'mapaSeccionalController@index')->name('mapa_seccional');
@@ -200,3 +203,8 @@ Route::get('/simpatizante/aviso', function () {
 Route::get('/simpatizante/baja/{uuid}', 'SimpatizanteController@index')->name('simpatizante-solicitud_baja');
 
 Route::delete('/simpatizante/baja/{uuid}', 'SimpatizanteController@delete')->name('solicitud_baja-delete');
+
+//Ruta para elegir campaña
+Route::get('/campana/elegir', 'HomeController@campana')->name('campana-select');
+
+Route::post('/campana/elegir', 'HomeController@campSession')->name('campana-select-post');

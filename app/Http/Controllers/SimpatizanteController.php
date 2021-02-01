@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
 use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewSimpMail;
 
 class SimpatizanteController extends Controller
 {
@@ -164,8 +166,8 @@ class SimpatizanteController extends Controller
                     $newFileName = $fileName . '_' . time();
 
                     // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
-                    
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
                     $simpatizante->credencial_a = $newFileName;
                 }
                 if ($request->foto_inverso) {
@@ -182,8 +184,8 @@ class SimpatizanteController extends Controller
                     $newFileName = $fileName . '_' . time();
 
                     // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
-                    
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
                     $simpatizante->credencial_r = $newFileName;
                 }
                 if ($request->foto_de_elector) {
@@ -200,8 +202,8 @@ class SimpatizanteController extends Controller
                     $newFileName = $fileName . '_' . time();
 
                     // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
-                    
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
                     $simpatizante->foto_elector = $newFileName;
                 }
                 if ($request->foto_de_firma) {
@@ -218,12 +220,13 @@ class SimpatizanteController extends Controller
                     $newFileName = $fileName . '_' . time();
 
                     // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
-                    
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
                     $simpatizante->documento = $newFileName;
                 }
 
                 $simpatizante->save();
+                Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
             });
             if ($request->ajax()) {
                 session()->flash('status', 'Usuario creado con éxito!');
