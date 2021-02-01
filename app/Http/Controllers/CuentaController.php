@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
+use App\Models\Campaign;
+use App\Models\Section;
 use Exception;
 use Illuminate\Database\QueryException;
 
@@ -37,9 +39,10 @@ class CuentaController extends Controller
                 $userBrigadista = true;
             }
         }
-        
-
-        return view('usuario.ajustes',['agente' => $userAgente, 'brigadista' => $userBrigadista]);
+        // $campañas= Campaign::join('campaign_user', 'campaigns.id', '=', 'campaign_user.campaign_id')->where('campaign_user.user_id',$user->id)->orderBy('campaigns.created_at', 'desc')->get();
+        $campañas = Campaign::find(1);
+        // dd($campañas);
+        return view('usuario.ajustes',['agente' => $userAgente, 'brigadista' => $userBrigadista, 'campana' => $campañas]);
     }
 
     public function cuenta(){
@@ -154,7 +157,7 @@ class CuentaController extends Controller
                         $user->name=request('nombre');
                         $user->save();
                         // dd('Actualizando contraseña bien');
-                        \DB::commit();
+                        \DB::commit(); 
                         return redirect('admin/cuenta')->with('status', 'Se actualizaron los datos correctamente');
                     }
                     else{

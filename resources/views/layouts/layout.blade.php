@@ -7,7 +7,7 @@
     <title>@yield("title")</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     @include('subviews.imports')
-
+    {{-- <link rel="icon" href="../static/img/ureflectSmall.png"> --}}
     @yield("imports")
 </head>
 
@@ -19,14 +19,18 @@
                 <h1 class="uk-text-primary">iElect</h1>
             </a>
             <!-- Cuenta -->
-            <a class="uk-link-toggle" href="#">
+            <a class="uk-link-toggle" href="{{route('ajustes')}}">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-auto uk-margin-large-left">
-                        <img class="uk-border-circle" width="40" height="40" src="{{asset('img/test/avatar.jpg')}}" />
+                        @if(Auth::user()->avatar !=NULL)
+                            <img class="uk-border-circle" width="40" height="40" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" />
+                        @else
+                            <img class="uk-border-circle" width="40" height="40" src="{{asset('img/test/default.png')}}" />
+                        @endif
                     </div>
                     <div class="uk-width-expand">
                         <h3 class="uk-card-title uk-margin-remove-bottom">
-                            José Solórzano
+                            {{ Auth::user()->name }} 
                         </h3>
                         <p class="uk-text-meta uk-margin-remove-top">
                             Nombre del partido NDP
@@ -44,7 +48,7 @@
                         <li class="uk-dropdown-close"><a href="#modal-logout" uk-toggle><span uk-icon="sign-out"
                                     style="margin-right:10px" id="logout"></span>Cerrar
                                 Sesión</a></li>
-                        <li class="uk-dropdown-close"><a href="{{ route('ajustes') }}"><span uk-icon="settings"
+                        <li class="uk-dropdown-close"><a href="{{route('ajustes')}}"><span uk-icon="settings"
                                     style="margin-right:10px"></span>Configuración</a></li>
                     </ul>
                 </div>
@@ -109,11 +113,14 @@
             <div class="uk-navbar-left">
                 <ul data-uk-toggle="media: @m; cls: uk-navbar-nav uk-padding-remove; mode: media"
                     class="uk-nav uk-nav-primary uk-padding-small">
-                    <a class="uk-link-toggle" href="#">
+                    <a class="uk-link-toggle" href="{{route('ajustes')}}">
                         <div class="uk-grid-small uk-flex-middle" uk-grid>
                             <div class="uk-width-auto">
-                                <img class="uk-border-circle" width="40" height="40"
-                                    src="{{asset('img/test/avatar.jpg')}}" />
+                                @if(Auth::user()->avatar !=NULL)
+                                    <img class="uk-border-circle" width="40" height="40" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" />
+                                @else
+                                    <img class="uk-border-circle" width="40" height="40" src="{{asset('img/test/default.png')}}" />
+                                @endif
                             </div>
                             <div class="uk-width-expand">
                                 <h3 class="uk-card-title uk-margin-remove-bottom">
@@ -171,9 +178,9 @@
             <h2 class="uk-modal-title uk-text-danger">¿Seguro que quieres salir?</h2>
             <p>Selecciona "Cerrar sesión" si está listo para salir de iElect.</p>
             <p class="uk-text-right">
-                <form action="{{ route('logout') }}" method="post">
+                <form action="{{ route('logout') }}" method="post" class="uk-flex uk-flex-right">
                     @csrf
-                    <button class="uk-button uk-button-default uk-modal-close" type="button">Cancelar</button>
+                    <button class="uk-button uk-button-default uk-modal-close uk-margin-small-right" type="button">Cancelar</button>
                     <button class="uk-button uk-button-danger" type="submit">Cerrar sesión</button>
                 </form>
             </p>
