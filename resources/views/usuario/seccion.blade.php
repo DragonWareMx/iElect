@@ -12,35 +12,73 @@ Seccion
 @endsection
 
 @php
-$hombres = $datosSec->hombres;
-$mujeres = $datosSec->mujeres;
-$totalSimp = $hombres+$mujeres;
+if(!is_null($electores)){
 
-if($hombres > 0){
-$hPorc = round(($hombres * 100)/$totalSimp, 2);
-}else{
-$hPorc = 0;
+$simpatizantes = 0;
+$porcentaje = 0;
+$countS = array_count_values($electores->pluck('sexo')->toArray());
+$simp_ocup = array_count_values($electores->pluck('job.nombre')->toArray());
+$ocupaciones = array_keys($simp_ocup);
+$simp_ocup = array_values($simp_ocup);
+
+//Metodo para obtener colores Random
+$rand = array('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f');
+$colores = [];
+foreach ($ocupaciones as $key) {
+$color ='#'.$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)].$rand[rand(0,15)];
+array_push($colores, $color);
 }
 
-if($mujeres > 0){
-$mPorc = round(($mujeres * 100)/$totalSimp, 2);
+if(isset($countS['h'])){
+$hombres = $countS['h'];
 }else{
-$mPorc = 0;
+$hombres = 0;
 }
 
+if(isset($countS['m'])){
+$mujeres = $countS['m'];
+}else{
+$mujeres = 0;
+}
 
-$g18 = $datosSec->{18};
-$g19 = $datosSec->{19};
-$g20 = $datosSec->{'20_24'};
-$g25 = $datosSec->{'25_29'};
-$g30 = $datosSec->{'30_34'};
-$g35 = $datosSec->{'35_39'};
-$g40 = $datosSec->{'40_44'};
-$g45 = $datosSec->{'45_49'};
-$g50 = $datosSec->{'50_54'};
-$g55 = $datosSec->{'55_59'};
-$g60 = $datosSec->{'60_64'};
-$g65 = $datosSec->{'65_mas'};
+$total = $hombres + $mujeres;
+
+$porcH = round(($hombres * 100)/$total, 2);
+$porcM = round(($mujeres * 100)/$total, 2);
+
+$g18 = $rangos['18'];
+$g19 = $rangos['19'];
+$g20 = $rangos['20_24'];
+$g25 = $rangos['25_29'];
+$g30 = $rangos['30_34'];
+$g35 = $rangos['35_39'];
+$g40 = $rangos['40_44'];
+$g45 = $rangos['45_49'];
+$g50 = $rangos['50_54'];
+$g55 = $rangos['55_59'];
+$g60 = $rangos['60_64'];
+$g65 = $rangos['65_mas'];
+}else{
+$hombres = 0;
+$mujeres = 0;
+$total = 0;
+$porcH = 0;
+$porcM = 0;
+
+$g18 = 0;
+$g19 = 0;
+$g20 = 0;
+$g25 = 0;
+$g30 = 0;
+$g35 = 0;
+$g40 = 0;
+$g45 = 0;
+$g50 = 0;
+$g55 = 0;
+$g60 = 0;
+$g65 = 0;
+}
+
 @endphp
 
 @section('body')
@@ -93,7 +131,7 @@ $g65 = $datosSec->{'65_mas'};
     <div class="uk-modal-dialog">
         <button class="uk-modal-close-default" type="button" uk-close></button>
         <div class="uk-modal-header">
-            <h2 class="uk-modal-title">Simpatizante #</h2>
+            <h2 class="uk-modal-title" id="simp_edit_id">Simpatizante #</h2>
         </div>
         <div class="uk-modal-body">
             <div uk-grid>
@@ -104,42 +142,42 @@ $g65 = $datosSec->{'65_mas'};
                             height="150" alt="Border circle" />
                     </div>
                     <div class="uk-text-bold">Nombre</div>
-                    <div>José Agustín Aguilar Solórzano</div>
+                    <div id="simp_edit_nombre">José Agustín Aguilar Solórzano</div>
                     <br />
                     <div class="uk-text-bold">Domicilio</div>
-                    <div>Morelia, Centro #442</div>
+                    <div id="simp_edit_domicilio">Morelia, Centro #442</div>
                     <br />
                     <!--Grid DATOS-->
                     <div uk-grid>
                         <div class="uk-width-expand@m">
                             <div class="uk-text-bold">Edad</div>
-                            <div>32</div>
+                            <div id="simp_edit_edad">32</div>
                             <br />
                             <div class="uk-text-bold">Ocupación</div>
-                            <div>Escritor</div>
+                            <div id="simp_edit_job">Escritor</div>
                             <br />
                             <div class="uk-text-bold">Correo electrónico</div>
-                            <div>correo@ejemplo.com</div>
+                            <div id="simp_edit_email">correo@ejemplo.com</div>
                             <br />
                             <div class="uk-text-bold">Sección electoral</div>
-                            <div>#</div>
+                            <div id="simp_edit_section">#</div>
                             <br />
                             <div class="uk-text-bold">Clave de elector</div>
-                            <div>#########</div>
+                            <div id="simp_edit_celector">#########</div>
                             <br />
                         </div>
                         <div class="uk-width-1-2@m">
                             <div class="uk-text-bold">Sexo</div>
-                            <div>Masculino</div>
+                            <div id="simp_edit_genero">Masculino</div>
                             <br />
                             <div class="uk-text-bold">Teléfono</div>
-                            <div>1234567891</div>
+                            <div id="simp_edit_tel">1234567891</div>
                             <br />
                             <div class="uk-text-bold">Facebook</div>
-                            <div>link</div>
+                            <div id="simp_edit_face">link</div>
                             <br />
                             <div class="uk-text-bold">Twitter</div>
-                            <div>link</div>
+                            <div id="simp_edit_tw">link</div>
                             <br />
                             <div class="uk-text-bold">Brigadista</div>
                             <div>#######</div>
@@ -148,9 +186,9 @@ $g65 = $datosSec->{'65_mas'};
                     </div>
                 </div>
                 <div class="uk-width-1-2@m">
-                    <img class="uk-margin-bottom" data-src="{{asset('img/test/ine_front.jpg')}}" width="75%"
+                    <img id="simp_edit_front" class="uk-margin-bottom" data-src="img/test/ine_front.jpg" width="75%"
                         height="auto" alt="" uk-img />
-                    <img data-src="{{asset('img/test/ine_back.jpg')}}" width="75%" height="auto" alt="" uk-img />
+                    <img id="simp_edit_back" data-src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
                 </div>
             </div>
             <p class="uk-text-right">
@@ -345,6 +383,7 @@ $g65 = $datosSec->{'65_mas'};
             <!-- Graficas -->
             <div uk-grid class="uk-padding-small">
                 <div class="uk-width-1-4@m">
+                    @if (!is_null($electores))
                     <h5 class="uk-text-bold uk-padding-small" style="padding-top: 0">
                         Sexo
                     </h5>
@@ -355,83 +394,78 @@ $g65 = $datosSec->{'65_mas'};
                         <div class="uk-flex-none">
                             <div>
                                 <span class="uk-badge" style="background-color: #9b51e0"></span>
-                                Hombres {{$hPorc}}%
+                                Hombres {{$porcH}}%
                             </div>
                             <div>
                                 <span class="uk-badge" style="background-color: #fb8832"></span>
-                                Mujeres {{$mPorc}}%
+                                Mujeres {{$porcM}}%
                             </div>
                         </div>
                     </div>
+                    @else
+                    <h5 class="uk-text-bold uk-padding-small" style="padding-top: 0">
+                        Sexo
+                    </h5>
+                    @endif
+
                 </div>
                 <!-- Grafica de barras -->
                 <div class="uk-width-expand@m">
-                    <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
+                    @if (!is_null($electores))
                     <canvas id="barChart" width="auto" height="200"></canvas>
+                    @endif
+                    <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
                 </div>
                 <!-- Grafica de pastel -->
                 <div class="uk-width-1-4@m">
+                    @if (!is_null($electores))
                     <h5 class="uk-text-bold uk-padding-small">Ocupaciones</h5>
                     <div class="uk-flex uk-flex-middle">
                         <div>
                             <canvas id="ocupChart" width="auto" height="200"></canvas>
                         </div>
                         <div class="uk-flex-none">
-                            <div>
-                                <span class="uk-badge" style="background-color: #ffd43a"></span>
-                                Estudiantes 25%
-                            </div>
-                            <div>
-                                <span class="uk-badge" style="background-color: #04be65"></span>
-                                Vigilantes 3%
-                            </div>
-                            <div>
-                                <span class="uk-badge" style="background-color: #2d9b94"></span>
-                                Contratistas 10%
-                            </div>
-                            <div>
-                                <span class="uk-badge" style="background-color: #007aff"></span>
-                                Hogar 4%
-                            </div>
-                            <div>
-                                <span class="uk-badge" style="background-color: #c8194b"></span>
-                                Profesores 56%
-                            </div>
-                            <div>
-                                <span class="uk-badge" style="background-color: #adadad"></span>
-                                Otros 2%
-                            </div>
+                            @for ($i = 0; $i < count($ocupaciones); $i++) <div>
+                                <span class="uk-badge" style="background-color: {{$colores[$i]}}"></span>
+                                {{$ocupaciones[$i]}} {{round(($simp_ocup[0]*100)/$electores->count(), 0)}}%
                         </div>
+                        @endfor
                     </div>
+                    @else
+                    <h5 class="uk-text-bold uk-padding-small">Ocupaciones</h5>
+                    @endif
+
                 </div>
             </div>
+        </div>
 
-            <hr />
+        <hr />
 
-            <!-- Card Datos de la sección -->
-            <div class="uk-padding-small">
-                <a class="uk-position-right uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog"></a>
-                <div uk-grid>
-                    <div class="uk-width-auto uk-width-1-4@m uk-text-left">
-                        <div class="uk-text-bold">Entidad federativa</div>
-                        <div>{{$datosSec->town->federal_entitie->nombre}} - {{$datosSec->town->federal_entitie->id}}
-                        </div>
-                        <br />
-                        <div class="uk-text-bold">Distrito federal</div>
-                        <div>{{$datosSec->federal_district->cabecera}}</div>
-                        <br />
-                        <div class="uk-text-bold">Distrito local</div>
-                        <div>Distrito Local {{$datosSec->local_district->numero}}</div>
-                        <br />
-                        <div class="uk-text-bold">Cabecera distrito local</div>
-                        <div>{{$datosSec->local_district->cabecera}}</div>
-                        <br />
-                        <div class="uk-text-bold">Municipio</div>
-                        <div>{{$datosSec->town->nombre}}</div>
+        <!-- Card Datos de la sección -->
+        <div class="uk-padding-small">
+            <a class="uk-position-right uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog"></a>
+            @if (!is_null($electores))
+            <div uk-grid>
+                <div class="uk-width-auto uk-width-1-4@m uk-text-left">
+                    <div class="uk-text-bold">Entidad federativa</div>
+                    <div>{{$datosSec->town->federal_entitie->nombre}} - {{$datosSec->town->federal_entitie->id}}
                     </div>
-                    <div class="uk-width-auto uk-width-1-2@m uk-text-left">
-                        <div class="uk-text-bold">Prioridad</div>
-                        <div class="@switch($datosSec->prioridad)
+                    <br />
+                    <div class="uk-text-bold">Distrito federal</div>
+                    <div>{{$datosSec->federal_district->cabecera}}</div>
+                    <br />
+                    <div class="uk-text-bold">Distrito local</div>
+                    <div>Distrito Local {{$datosSec->local_district->numero}}</div>
+                    <br />
+                    <div class="uk-text-bold">Cabecera distrito local</div>
+                    <div>{{$datosSec->local_district->cabecera}}</div>
+                    <br />
+                    <div class="uk-text-bold">Municipio</div>
+                    <div>{{$datosSec->town->nombre}}</div>
+                </div>
+                <div class="uk-width-auto uk-width-1-2@m uk-text-left">
+                    <div class="uk-text-bold">Prioridad</div>
+                    <div class="@switch($datosSec->campaign[0]->pivot->prioridad)
                             @case('Alta')
                                 uk-text-danger
                                 @break
@@ -441,173 +475,145 @@ $g65 = $datosSec->{'65_mas'};
                             @case('Baja')
                                 uk-text-success
                             @default
-                                
-                        @endswitch">{{$datosSec->prioridad}}</div>
-                        <br />
-                        <div class="uk-text-bold">Estatus</div>
-                        <div style="display: flex">
-                            <progress class="uk-progress uk-margin-right" value="50" max="100"
-                                style="margin-bottom: 0"></progress>
-                            <div>50%</div>
-                            <div class="uk-margin-left uk-hidden@m">
-                                n simpatizantes faltantes para alcanzar la meta
-                            </div>
-                            <div class="uk-margin-left uk-text-nowrap uk-visible@m">
-                                n simpatizantes faltantes para alcanzar la meta
-                            </div>
+                        @endswitch">{{$datosSec->campaign[0]->pivot->prioridad}}</div>
+                    <br />
+                    <div class="uk-text-bold">Estatus</div>
+                    <div style="display: flex">
+                        @php
+                        $status = round(($electores->count()*100)/$datosSec->campaign[0]->pivot->meta, 1)
+                        @endphp
+                        <progress class="uk-progress uk-margin-right" value="{{$status}}" max="100"
+                            style="margin-bottom: 0"></progress>
+                        <div>{{$status}}%</div>
+                        <div class="uk-margin-left uk-hidden@m">
+                            @php
+                            $restantes = $datosSec->campaign[0]->pivot->meta - $electores->count();
+                            echo($restantes);
+                            @endphp simpatizantes faltantes para alcanzar la meta
                         </div>
-                        <br />
-                        <div class="uk-text-bold"># Simpatizantes</div>
-                        <div>@php
-                            echo($totalSimp);
-                            @endphp</div>
-                        <br />
-                        <div class="uk-text-bold">Meta final</div>
-                        <div>485 simpatizantes</div>
-                        <br />
-                        <div class="uk-text-bold">Ganador elecciones 2018</div>
-                        <div class="uk-text-middle">
-                            <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="50" height="50"
-                                alt="Border circle" />
-                            <span class="uk-text-middle">Nombre del partido NDP</span>
+                        <div class="uk-margin-left uk-text-nowrap uk-visible@m">
+                            @php
+                            $restantes = $datosSec->campaign[0]->pivot->meta - $electores->count();
+                            echo($restantes);
+                            @endphp simpatizantes faltantes para alcanzar la meta
                         </div>
+                    </div>
+                    <br />
+                    <div class="uk-text-bold"># Simpatizantes</div>
+                    <div>@php
+                        echo($electores->count());
+                        @endphp</div>
+                    <br />
+                    <div class="uk-text-bold">Meta final</div>
+                    <div>{{$datosSec->campaign[0]->pivot->meta}} simpatizantes</div>
+                    <br />
+                    <div class="uk-text-bold">Ganador elecciones 2018</div>
+                    <div class="uk-text-middle">
+                        <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="50" height="50"
+                            alt="Border circle" />
+                        <span class="uk-text-middle">Nombre del partido NDP</span>
                     </div>
                 </div>
             </div>
+            @endif
+        </div>
 
-            <hr />
+        <hr />
 
-            <!-- Card de SIMPATIZANTES -->
-            <div class="uk-padding-small">
-                <div class="uk-card-title">
-                    <h5 class="uk-text-bold">Información por sección</h5>
-                </div>
-                <!-- Tabla -->
-                <div class="uk-overflow-auto">
-                    <table class="uk-table uk-table-small uk-table-divider">
-                        <thead class="uk-background-muted">
-                            <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>Sexo</th>
-                                <th>Edad</th>
-                                <th>Ocupación</th>
-                                <th>Sección electoral</th>
-                                <th>Clave de elecetor</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr onclick="myFunction(this)">
-                                <td>#1</td>
-                                <td>José Agustín Aguilar Solórzano</td>
-                                <td>Masculino</td>
-                                <td>32</td>
-                                <td>Escritor</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#2</td>
-                                <td>Leonardo Daniel López López</td>
-                                <td>Masculino</td>
-                                <td>21</td>
-                                <td>Profesor</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#3</td>
-                                <td>Fernando Adrián García Sánchez</td>
-                                <td>Masculino</td>
-                                <td>18</td>
-                                <td>Estudiante</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#4</td>
-                                <td>Oscar André Huerta García</td>
-                                <td>Masculino</td>
-                                <td>57</td>
-                                <td>Estudiante</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#5</td>
-                                <td>Dulce Gabriela Marín Rendón</td>
-                                <td>Femenino</td>
-                                <td>47</td>
-                                <td>Contratista</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#1</td>
-                                <td>José Agustín Aguilar Solórzano</td>
-                                <td>Masculino</td>
-                                <td>32</td>
-                                <td>Escritor</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#2</td>
-                                <td>Leonardo Daniel López López</td>
-                                <td>Masculino</td>
-                                <td>21</td>
-                                <td>Profesor</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#3</td>
-                                <td>Fernando Adrián García Sánchez</td>
-                                <td>Masculino</td>
-                                <td>18</td>
-                                <td>Estudiante</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#4</td>
-                                <td>Oscar André Huerta García</td>
-                                <td>Masculino</td>
-                                <td>57</td>
-                                <td>Estudiante</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                            <tr onclick="myFunction(this)">
-                                <td>#5</td>
-                                <td>Dulce Gabriela Marín Rendón</td>
-                                <td>Femenino</td>
-                                <td>47</td>
-                                <td>Contratista</td>
-                                <td>#</td>
-                                <td>#########</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <ul class="uk-pagination uk-flex-center" uk-margin>
-                        <li>
-                            <a href="#"><span uk-pagination-previous></span></a>
-                        </li>
-                        <li><a href="#">1</a></li>
-                        <li class="uk-disabled"><span>...</span></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#">6</a></li>
-                        <li class="uk-active"><span>7</span></li>
-                        <li><a href="#">8</a></li>
-                        <li>
-                            <a href="#"><span uk-pagination-next></span></a>
-                        </li>
-                    </ul>
-                </div>
+        <!-- Card de SIMPATIZANTES -->
+        <div class="uk-padding-small">
+            @if (!is_null($electores))
+            <div class="uk-card-title">
+                <h5 class="uk-text-bold">Información por sección</h5>
             </div>
+            <!-- Tabla -->
+            <div class="uk-overflow-auto">
+                <table class="uk-table uk-table-small uk-table-divider">
+                    <thead class="uk-background-muted">
+                        <tr>
+                            <th>#</th>
+                            <th>Nombre</th>
+                            <th>Sexo</th>
+                            <th>Edad</th>
+                            <th>Ocupación</th>
+                            <th>Sección electoral</th>
+                            <th>Clave de elecetor</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-simps">
+                        @foreach ($electores as $elector)
+
+                        <tr data-id="{{$elector->id}}">
+                            <td>#{{$elector->id}}</td>
+                            <td>{{$elector->nombre}} {{$elector->apellido_p}} {{$elector->apellido_m}}</td>
+                            <td>{{$elector->sexo}}</td>
+                            <td>{{\Carbon\Carbon::parse($elector->fecha_nac)->diff(Carbon\Carbon::now())->format('%y')}}
+                                Años
+                            </td>
+                            <td>{{$elector->job->nombre}}</td>
+                            <td>{{$elector->section->num_seccion}}</td>
+                            <td>{{$elector->clave_elector}}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                {!!$electores->links()!!}
+            </div>
+            @else
+            <div class="uk-card-title">
+                <h5 class="uk-text-bold">Información por sección</h5>
+            </div>
+            @endif
+
         </div>
     </div>
 </div>
+</div>
+
+<script>
+    function _calculateAge(birthday) { // birthday is a date
+        var ageDifMs = Date.now() - birthday.getTime();
+        var ageDate = new Date(ageDifMs); // miliseconds from epoch
+        return Math.abs(ageDate.getUTCFullYear() - 1970);
+    }
+
+    $(document).ready(function () {
+        var simps={!! json_encode($electores); !!};
+        var simps=simps['data'];
+
+        $('#tabla-simps tr').click(function(){
+            var id = $(this).data('id');
+            for(var key in simps){
+                var obj=simps[key];
+                if(obj["id"] == id){
+                    break;
+                }
+            }
+            //console.log(obj);
+            //falta la foto principal
+            $('#simp_edit_id').html('Simpatizante ' + obj['id']);
+            $('#simp_edit_nombre').html(obj['nombre']+ " " + obj['apellido_p']+ " " + obj['apellido_m']);
+            $('#simp_edit_domicilio').html(obj['calle']+ " " + obj['ext_num']+ " " + obj['int_num']+ " " + obj['colonia']+ " " + obj['cp']);
+            var d = new Date(obj['fecha_nac']);
+            $('#simp_edit_edad').html(_calculateAge(d));
+            $('#simp_edit_job').html(obj['job']['nombre']);
+            $('#simp_edit_email').html(obj['email']);
+            $('#simp_edit_section').html(obj['section']['num_seccion']);
+            $('#simp_edit_celector').html(obj['clave_elector']);
+            $('#simp_edit_genero').html(obj['sexo'] == 'h' ? "Masculino" : "Femenino" );
+            $('#simp_edit_tel').html(obj['telefono']);
+            $('#simp_edit_face').html(obj['facebook']);
+            $('#simp_edit_tw').html(obj['twitter']);
+            //aqui falta lo del brigadista
+
+            //aqui empieza lo de las fotos del ine
+            $("#simp_edit_front").attr("data-src","storage/uploads/"+obj['credencial_a']);
+            $("#simp_edit_back").attr("data-src","storage/uploads/"+obj['credencial_r']);
+            UIkit.modal("#modal-datos-simp").toggle();
+        });
+    });
+</script>
+
 @endsection
 
 @section('scripts')
@@ -728,6 +734,7 @@ maintainAspectRatio: false,
 
 //Grafica de pastel Ocupaciones
 //Grafica de pastel
+@if (!is_null($electores))
 var ocupCanvas = document.getElementById("ocupChart");
 
 Chart.defaults.global.defaultFontFamily = "Lato";
@@ -735,25 +742,11 @@ Chart.defaults.global.defaultFontSize = 18;
 Chart.defaults.global.legend.display = false;
 
 var ocupData = {
-labels: [
-"Estudiantes",
-"Vigilantes",
-"Contratistas",
-"Hogar",
-"Profesores",
-"Otros",
-],
+labels: {!!json_encode($ocupaciones)!!},
 datasets: [
 {
-data: [25, 3, 10, 4, 56, 2],
-backgroundColor: [
-"#FFD43A",
-"#04BE65",
-"#2D9B94",
-"#007AFF",
-"#C8194B",
-"#ADADAD",
-],
+data: {!!json_encode(array_values($simp_ocup))!!},
+backgroundColor: {!! json_encode(array_values($colores)) !!},
 },
 ],
 };
@@ -762,4 +755,6 @@ var ocupChart = new Chart(ocupCanvas, {
 type: "pie",
 data: ocupData,
 });
+@endif
+
 @endsection

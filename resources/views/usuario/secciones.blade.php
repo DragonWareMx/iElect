@@ -16,6 +16,7 @@ $porcentaje = 0;
 $countS = array_count_values($electores->pluck('sexo')->toArray());
 
 if(count($countS) != 0){
+
 if(isset($countS['h'])){
 $hombres = $countS['h'];
 }else{
