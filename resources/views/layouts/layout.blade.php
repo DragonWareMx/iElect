@@ -56,6 +56,13 @@
     <div class="uk-navbar-container uk-visible@m" uk-navbar>
         <div class="uk-navbar-left">
             <ul class="uk-navbar-nav">
+                @if (Auth::user()->roles[0]->name == 'Brigadista')
+                <li>
+                    <a href="{{route('home')}}">
+                        <span class="uk-margin-small-right" uk-icon="home"></span>Inicio
+                    </a>
+                </li>
+                @elseif(Auth::user()->roles[0]->name == 'Administrador' || Auth::user()->roles[0]->name == 'Agente')
                 <li>
                     <a href="{{route('home')}}">
                         <span class="uk-margin-small-right" uk-icon="home"></span>Inicio
@@ -87,6 +94,8 @@
                         <span class="uk-margin-small-right" uk-icon="lifesaver"></span>Brigadistas
                     </a>
                 </li>
+                @else
+                @endif
             </ul>
         </div>
         <!-- Icono ajustes -->

@@ -15,6 +15,7 @@ use Illuminate\Validation\Rule;
 use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewSimpMail;
+use Illuminate\Support\Facades\Auth;
 
 class SimpatizanteController extends Controller
 {
@@ -46,29 +47,29 @@ class SimpatizanteController extends Controller
 
     public function simpatizantes()
     {
-        \Gate::authorize('haveaccess', 'brig.perm');
-        //$campana = session()->get('campana');
-        $campana = Campaign::find(1);
+        if(Auth::user()->roles[0]->name == 'Brigadista' || Auth::user()->roles[0]->name == 'Agente'){
+            $campana = session()->get('campana');
 
-        //Recibe todas las secciones
-        $simpatizantes = Elector::select('users.name', 'electors.*')->join('users', 'users.id', '=', 'electors.user_id')->paginate(10);
+            //Recibe todas las secciones
+            $simpatizantes = Elector::select('users.name', 'electors.*')->join('users', 'users.id', '=', 'electors.user_id')->paginate(10);
 
-        $ocupaciones = Job::all();
+            $ocupaciones = Job::all();
 
-        if (!is_null($campana)) {
-            $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
-                $query->where('campaigns.id', '=', $campana->id);
-            })->get();
-        } else {
-            $secciones = null;
+            if (!is_null($campana)) {
+                $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
+                    $query->where('campaigns.id', '=', $campana->id);
+                })->get();
+            } else {
+                $secciones = null;
+            }
+
+            /*
+            $localidades = LocalDistrict::whereHas('section', function (Builder $query) use ($campana) {
+                $query->where('section.id', '=', $campana->id);
+            })->get();*/
+
+            return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
         }
-
-        /*
-        $localidades = LocalDistrict::whereHas('section', function (Builder $query) use ($campana) {
-            $query->where('section.id', '=', $campana->id);
-        })->get();*/
-
-        return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
     }
 
     public function agregarSimpatizante(Request $request)
@@ -129,11 +130,12 @@ class SimpatizanteController extends Controller
                 $simpatizante->int_num = $request->num_interior;
                 $simpatizante->cp = $request->CP;
                 //se obtiene la campana
-                $campana = Campaign::find(1);
+                $campana = session()->get('campana');
                 //se obtiene la seccion
                 $seccion = Section::find($request->seccion);
 
                 //FALTA: Que se verifique que la seccion sea de la campana
+
                 $simpatizante->localidad = $seccion->local_district->numero;
                 $simpatizante->municipio = $seccion->town->numero;
                 $simpatizante->section_id = $seccion->id;
@@ -143,14 +145,6 @@ class SimpatizanteController extends Controller
                 //OTROS DATOS
                 $simpatizante->facebook = $request->facebook;
                 $simpatizante->twitter = $request->twitter;
-
-                /*
-                FALTA:
-                LOCALIDAD*
-                MUNICIPIO*
-                USERID*
-                CAMPAIGNID*
-                */
 
                 if ($request->foto_anverso) {
                     $file = $request->file('foto_anverso');
@@ -229,7 +223,7 @@ class SimpatizanteController extends Controller
                 Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
             });
             if ($request->ajax()) {
-                session()->flash('status', 'Usuario creado con éxito!');
+                session()->flash('status', 'Simpatizante creado con éxito!');
                 return 200;
             }
         } catch (QueryException $ex) {
