@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,10 +22,11 @@ use Illuminate\Support\Facades\Auth;
 */
 
 //Ruta layou
-/*Route::get('/lay', function () {
-    return view('layouts.layout');
-})->name('lay');
-*/
+// Route::get('/lay', function () {
+//     Mail::to('lopez_lopez_daniel@hotmail.com')->send(new NewSimpMail(1));
+//     return 'ya';
+// })->name('lay');
+
 
 //esta ruta es de ejemplo para poner el gate pa checar el rol vaya :v
 // Route::get('/test', function () {
