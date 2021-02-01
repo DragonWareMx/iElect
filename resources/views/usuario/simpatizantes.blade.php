@@ -443,7 +443,7 @@ Simpatizantes
                             <td>{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
                             </td>
                             <td>{{ $simpatizante->sexo }}</td>
-                            <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años, %m meses y %d dias') }}
+                            <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años') }}
                             </td>
                             <td>{{ $simpatizante->job->nombre }}</td>
                             <td>{{ $simpatizante->section->num_seccion }}</td>
@@ -656,8 +656,8 @@ Simpatizantes
             //aqui falta lo del brigadista
 
             //aqui empieza lo de las fotos del ine
-            $("#simp_edit_front").attr("data-src","storage/uploads/"+obj['credencial_a']);
-            $("#simp_edit_back").attr("data-src","storage/uploads/"+obj['credencial_r']);
+            $("#simp_edit_front").attr("data-src",obj['credencial_a']);
+            $("#simp_edit_back").attr("data-src",obj['credencial_r']);
             UIkit.modal("#modal-datos-simp").toggle();
         });
     });

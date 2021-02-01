@@ -123,12 +123,16 @@ class SimpatizanteController extends Controller
                 $simpatizante->ext_num = $request->num_exterior;
                 $simpatizante->int_num = $request->num_interior;
                 $simpatizante->cp = $request->CP;
+                //se obtiene la campana
+                $campana = Campaign::find(1);
                 //se obtiene la seccion
                 $seccion = Section::find($request->seccion);
+
+                //FALTA: Que se verifique que la seccion sea de la campana
                 $simpatizante->localidad = $seccion->local_district->numero;
                 $simpatizante->municipio = $seccion->town->numero;
                 $simpatizante->section_id = $seccion->id;
-                $simpatizante->campaign_id = 1;
+                $simpatizante->campaign_id = $campana->id;
                 $simpatizante->user_id = 1;
                 //$simpatizante->user_id = auth()->user()->id;
 
@@ -146,37 +150,76 @@ class SimpatizanteController extends Controller
                 */
 
                 if ($request->foto_anverso) {
+                    $file = $request->file('foto_anverso');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_anverso')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_anverso')->storeAs('/public/uploads/', $newFileName);
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
+                    
                     $simpatizante->credencial_a = $newFileName;
                 }
-
                 if ($request->foto_inverso) {
+                    $file = $request->file('foto_inverso');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_inverso')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_inverso')->storeAs('/public/uploads/', $newFileName);
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
+                    
                     $simpatizante->credencial_r = $newFileName;
                 }
                 if ($request->foto_de_elector) {
+                    $file = $request->file('foto_de_elector');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_de_elector')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_de_elector')->storeAs('/public/uploads/', $newFileName);
-                    $simpatizante->credencial_r = $newFileName;
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
+                    
+                    $simpatizante->foto_elector = $newFileName;
                 }
                 if ($request->foto_de_firma) {
+                    $file = $request->file('foto_de_firma');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_de_firma')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_de_firma')->storeAs('/public/uploads/', $newFileName);
-                    $simpatizante->credencial_r = $newFileName;
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id .'/'. $newFileName . '.dat', $encryptedContent);
+                    
+                    $simpatizante->documento = $newFileName;
                 }
 
                 $simpatizante->save();

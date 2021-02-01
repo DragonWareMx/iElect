@@ -169,6 +169,62 @@ class Elector extends Model
             return 'Error';
         }
     }
+    public function getCredencialAAttribute($value)
+    {
+        try {
+            // in your Controller
+            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
+            $decryptedContent = decrypt($encryptedContent);
+            return "data:image/png;base64,".base64_encode($decryptedContent);
+        } catch (DecryptException $e) {
+            return 'Error';
+        }
+        catch (\Exception $e) {
+            return '';
+        }
+    }
+    public function getCredencialRAttribute($value)
+    {
+        try {
+            // in your Controller
+            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
+            $decryptedContent = decrypt($encryptedContent);
+            return "data:image/png;base64,".base64_encode($decryptedContent);
+        } catch (DecryptException $e) {
+            return 'Error';
+        }
+        catch (\Exception $e) {
+            return '';
+        }
+    }
+    public function getFotoElectorAttribute($value)
+    {
+        try {
+            // in your Controller
+            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
+            $decryptedContent = decrypt($encryptedContent);
+            return "data:image/png;base64,".base64_encode($decryptedContent);
+        } catch (DecryptException $e) {
+            return 'Error';
+        }
+        catch (\Exception $e) {
+            return '';
+        }
+    }
+    public function getDocumentoAttribute($value)
+    {
+        try {
+            // in your Controller
+            $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'].'/'.$value.'.dat');
+            $decryptedContent = decrypt($encryptedContent);
+            return "data:image/png;base64,".base64_encode($decryptedContent);
+        } catch (DecryptException $e) {
+            return 'Error';
+        }
+        catch (\Exception $e) {
+            return '';
+        }
+    }
 
     //SETTER
     public function setNombreAttribute($value)
