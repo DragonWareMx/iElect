@@ -3,6 +3,7 @@
 //use Illuminate\Support\Facades\Gate;
 
 use App\Http\Controllers\SeccionesController;
+use App\Http\Middleware\CheckCamp;
 use App\Models\Elector;
 
 use Illuminate\Support\Facades\Route;
@@ -79,7 +80,7 @@ Route::get('/registro/brigadista', function () {
 Route::post('/registro/brigadista', 'OrderController@brigadista')->name('registro.brig');
 
 //Home
-Route::get('/inicio', 'HomeController@index')->name('home');
+Route::get('/inicio', 'HomeController@index')->middleware(CheckCamp::class)->name('home');
 
 //Ruta Mapa Seccional
 Route::get('/mapa_seccional', 'mapaSeccionalController@index')->name('mapa_seccional');

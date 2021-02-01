@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-Ajustes
+Seleccionar campaña
 @endsection
 
 @section('imports')
