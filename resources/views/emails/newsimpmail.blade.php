@@ -177,10 +177,19 @@
 			padding-top: 25px;
 			color: #000000;
 			font-family: sans-serif; text-align: justify;" class="paragraph">
-                            El candidato Nombre del Candidato agradece que apoyes su campaña por la candidatura a
-                            Nombredelpuestodelacampaña. Los datos que proporcionaste al brigadista Nombredelbrigadista
-                            serán usados exclusivamente para los motivos especificados en el Aviso de Privacidad y en
-                            los Términos y Condiciones que puedes revisar en cualquier momento.
+                            Hola {{$elector->nombre}}! El candidato <strong>{{$elector->campaign->candidato}}</strong>
+                            agradece que
+                            apoyes su
+                            campaña
+                            por la candidatura a
+                            <strong>{{$elector->campaign->position->name}}</strong>. Los datos que proporcionaste al
+                            brigadista
+                            {{$elector->user->name}}
+                            serán usados exclusivamente para los motivos especificados en el
+                            <a href="{{ route('avisoprivacidad') }}" target="_blank">Aviso de Privacidad</a> y en
+                            los <a href="{{ route('terminoscondiciones') }}" target="_blank">Términos y Condiciones</a>
+                            que puedes
+                            revisar en cualquier momento.
                         </td>
                     </tr>
 
@@ -210,7 +219,8 @@
                     <tr>
                         <td align="center" valign="top" style="border-collapse: collapse; border-spacing: 0; margin: 0; padding: 0; padding-left: 6.25%; padding-right: 6.25%; width: 87.5%;
                         padding-top: 25px;
-                        padding-bottom: 5px;" class="button"><a href="https://github.com/konsav/email-templates/"
+                        padding-bottom: 5px;" class="button"><a
+                                href="{{ route('simpatizante-solicitud_baja', ['uuid'=> $elector->uuid]) }}"
                                 target="_blank" style="text-decoration: underline;">
                                 <table border="0" cellpadding="0" cellspacing="0" align="center"
                                     style="max-width: 240px; min-width: 120px; border-collapse: collapse; border-spacing: 0; padding: 0;">
@@ -219,7 +229,7 @@
                                             style="padding: 12px 24px; margin: 0; text-decoration: underline; border-collapse: collapse; border-spacing: 0; border-radius: 4px; -webkit-border-radius: 4px; -moz-border-radius: 4px; -khtml-border-radius: 4px;"
                                             bgcolor="#1e87f0"><a target="_blank" style="text-decoration: underline;
 					    color: #FFFFFF; font-family: sans-serif; font-size: 17px; font-weight: 400; line-height: 120%;"
-                                                href="https://github.com/konsav/email-templates/">
+                                                href="{{ route('simpatizante-solicitud_baja', ['uuid'=> $elector->uuid]) }}">
                                                 Eliminar mis datos
                                             </a>
                                         </td>
@@ -249,8 +259,10 @@
 			font-family: sans-serif;text-align: justify;  word-break: break-all;" class="paragraph">
 
                             Si estás teniendo problemas para dar clic al botón de "Eliminar mis datos" , copia y pega
-                            este enlace URL en tu navegador web: <a href="mailto:support@ourteam.com" target="_blank"
-                                style="color: #127DB3; font-family: sans-serif; font-size: 12px; font-weight: 400; line-height: 160%;">http://127.0.0.1:8000/password/reset/af854b7e51edf8fbd445840ec2f79d592714c4e17ca78d71e5064bcffcba4703?email=lopez_lopez_daniel%40hotmail.com</a>
+                            este enlace URL en tu navegador web: <a
+                                href="{{ route('simpatizante-solicitud_baja', ['uuid'=> $elector->uuid]) }}"
+                                target="_blank"
+                                style="color: #127DB3; font-family: sans-serif; font-size: 12px; font-weight: 400; line-height: 160%;">{{ route('simpatizante-solicitud_baja', ['uuid'=> $elector->uuid]) }}</a>
                         </td>
                     </tr>
 

@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Elector;
 
 class NewSimpMail extends Mailable
 {
@@ -30,6 +31,7 @@ class NewSimpMail extends Mailable
      */
     public function build()
     {
-        return $this->subject('Gracias por participar en iElect')->view('emails.newsimpmail');
+        $elector = Elector::findOrFail($this->idElector);
+        return $this->subject('Gracias por participar en iElect')->view('emails.newsimpmail', ['elector' => $elector]);
     }
 }

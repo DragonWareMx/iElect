@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Auth;
 
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewSimpMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,10 +25,10 @@ use Illuminate\Support\Facades\Auth;
 */
 
 //Ruta layou
-// Route::get('/lay', function () {
-//     Mail::to('lopez_lopez_daniel@hotmail.com')->send(new NewSimpMail(1));
-//     return 'ya';
-// })->name('lay');
+Route::get('/lays', function () {
+    Mail::to('lopez_lopez_daniel@hotmail.com')->send(new NewSimpMail(23));
+    return 'ya';
+})->name('lay');
 
 
 //esta ruta es de ejemplo para poner el gate pa checar el rol vaya :v
@@ -201,6 +203,14 @@ Route::post('/simpatizantes/agregar', 'simpatizanteController@agregarSimpatizant
 Route::get('/simpatizante/aviso', function () {
     return view('simpatizante.aviso_datos');
 })->name('simpatizante-aviso');
+
+Route::get('/aviso-de-privacidad', function () {
+    return view('simpatizante.aviso_privacidad');
+})->name('avisoprivacidad');
+
+Route::get('/terminos-y-condiciones', function () {
+    return view('simpatizante.aviso_terminos');
+})->name('terminoscondiciones');
 
 //Simpatizante | Solicitud de baja
 Route::get('/simpatizante/baja/{uuid}', 'SimpatizanteController@index')->name('simpatizante-solicitud_baja');
