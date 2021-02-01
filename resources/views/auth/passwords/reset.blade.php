@@ -26,6 +26,12 @@
                         <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
                             Recuperar Contraseña
                         </h3>
+                        @error('email')
+                        <div class="uk-alert-danger" uk-alert>
+                            <a class="uk-alert-close" uk-close></a>
+                            <p>{{$message}}</p>
+                        </div>
+                        @enderror
                         <!--Input correo electronico-->
                         <div class="uk-margin">
                             <div class="omrs-input-group">
@@ -36,12 +42,6 @@
                                     <span class="uk-form-icon" uk-icon="icon: mail"></span>
                                 </label>
                             </div>
-                            @error('email')
-                            <div class="uk-alert-danger" uk-alert>
-                                <a class="uk-alert-close" uk-close></a>
-                                <p>{{$message}}</p>
-                            </div>
-                            @enderror
                         </div>
                         <!--Input contraseña-->
                         <div class="uk-margin">

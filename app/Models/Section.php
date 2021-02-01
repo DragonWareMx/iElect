@@ -8,23 +8,29 @@ use Illuminate\Database\Eloquent\Model;
 class Section extends Model
 {
     use HasFactory;
-    public function vote(){
+    public function vote()
+    {
         return $this->hasMany('App\Models\Vote');
-    }    
-    public function federal_district(){
+    }
+    public function federal_district()
+    {
         return $this->belongsTo('App\Models\FederalDistrict');
     }
-    public function town(){
+    public function town()
+    {
         return $this->belongsTo('App\Models\Town');
     }
-    
-    public function local_district(){
+
+    public function local_district()
+    {
         return $this->belongsTo('App\Models\LocalDistrict');
     }
-    public function elector(){
+    public function elector()
+    {
         return $this->hasMany('App\Models\Elector');
     }
-    public function campaign(){
-        return $this->belongsToMany('App\Models\Campaign');
+    public function campaign()
+    {
+        return $this->belongsToMany('App\Models\Campaign')->withPivot('meta', 'prioridad');
     }
 }
