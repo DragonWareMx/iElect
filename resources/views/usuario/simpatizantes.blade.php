@@ -115,30 +115,30 @@ Simpatizantes
                     <div class="uk-width-1-2@m">
                         {{--<!-- Avatar -->
                             <div class="avatar-wrapper uk-margin-bottom">
-                                <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}"
-                        width="200"
-                        height="200" alt="Border circle" />
-                        <div class="upload-text">
-                            Editar foto
-                            <span class="uk-margin-small-left" uk-icon="upload"></span>
-                        </div>
-                    </div>
-                    --}}
+                                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}"
+                                width="200"
+                                height="200" alt="Border circle" />
+                                <div class="upload-text">
+                                    Editar foto
+                                    <span class="uk-margin-small-left" uk-icon="upload"></span>
+                                </div>
+                            </div>
+                            --}}
 
                     @if (!is_null($secciones) && count($secciones) > 0)
-                    <h6 class="uk-text-bold">Secciones</h6>
-                    <div class="select">
-                        <select class="select-text" required name="seccion">
-                            @foreach ($secciones as $seccion)
-                            <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option>
-                            @endforeach
-                        </select>
-                        <span class="select-highlight"></span>
-                        <span class="select-bar"></span>
-                        <label class="select-label">Sección</label>
-                    </div>
+                        <h6 class="uk-text-bold">Secciones</h6>
+                        <div class="select">
+                            <select class="select-text" required name="seccion">
+                                @foreach ($secciones as $seccion)
+                                <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option>
+                                @endforeach
+                            </select>
+                            <span class="select-highlight"></span>
+                            <span class="select-bar"></span>
+                            <label class="select-label">Sección</label>
+                        </div>
                     @else
-                    <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
+                        <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
                     @endif
 
                     <h6 class="uk-text-bold">Datos personales</h6>
@@ -214,7 +214,7 @@ Simpatizantes
                                 {{-- pattern="[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}" title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número sin espacios." --}}
                                 <label class="omrs-input-underlined input-outlined">
                                     <input name="telefono" type="text" maxlength="15"
-                                        pattern="[0-9]{3}[ -]*[0-9]{3}[ -]*[0-9]{4}"
+                                        pattern="[0-9]{3}[ -]{0,3}[0-9]{3}[ -]{0,3}[0-9]{4}"
                                         title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número de 10 dígitos sin espacios." />
                                     <span class="omrs-input-label">Teléfono</span>
                                 </label>
@@ -355,27 +355,27 @@ Simpatizantes
 
                 </div>
             </div>
+            </div>
+            <p class="uk-text-muted">
+                El ciudadano involucrado será notificado sobre la carga de su
+                información personal al sistema iElect brindandole transparencia
+                total y la posibilidad de solicitud de eliminación de la misma.
+            </p>
+            <p class="uk-position-medium uk-position-bottom-left">
+                <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
+                    Eliminar
+                </button>
+            </p>
+            <p class="uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">
+                    Cancelar
+                </button>
+                <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
+                    Enviar
+                </button>
+            </p>
+        </form>
     </div>
-    </form>
-    <p class="uk-text-muted">
-        El ciudadano involucrado será notificado sobre la carga de su
-        información personal al sistema iElect brindandole transparencia
-        total y la posibilidad de solicitud de eliminación de la misma.
-    </p>
-    <p class="uk-position-medium uk-position-bottom-left">
-        <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
-            Eliminar
-        </button>
-    </p>
-    <p class="uk-text-right">
-        <button class="uk-button uk-button-default uk-modal-close" type="button">
-            Cancelar
-        </button>
-        <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
-            Enviar
-        </button>
-    </p>
-</div>
 </div>
 @endif
 
@@ -425,10 +425,12 @@ Simpatizantes
                 @if (Auth::user()->roles[0]->name == 'Agente')
                 <div class="uk-visible@m">
                     <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
-                        </label>
+                        <form id="form-buscador" class="uk-modal-body" action="{{ route('simpatizantes') }}" method="get">
+                            <label class="omrs-input-underlined input-outlined input-trail-icon">
+                                <input name="busc" type="text" maxlength="100"/>
+                                <span class="input-trail-icon" uk-icon="search"></span>
+                            </label>
+                        </form>
                     </div>
                 </div>
                 @endif

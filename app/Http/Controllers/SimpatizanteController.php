@@ -16,10 +16,14 @@ use Webpatser\Uuid\Uuid;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\NewSimpMail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class SimpatizanteController extends Controller
 {
     //
+    protected $perPage = 10;
+
     public function index($uuid)
     {
         $elector = Elector::where('uuid', '=', $uuid)->first();
@@ -45,13 +49,18 @@ class SimpatizanteController extends Controller
         }
     }
 
-    public function simpatizantes()
+    public function simpatizantes(Request $request)
     {
-        if(Auth::user()->roles[0]->name == 'Brigadista' || Auth::user()->roles[0]->name == 'Agente'){
+        if(Auth::user()->roles[0]->name == 'Brigadista'){
             $campana = session()->get('campana');
 
             //Recibe todas las secciones
-            $simpatizantes = Elector::select('users.name', 'electors.*')->join('users', 'users.id', '=', 'electors.user_id')->paginate(10);
+            $simpatizantes = Elector::select('users.name', 'electors.*')
+                                    ->join('users', 'users.id', '=', 'electors.user_id')
+                                    ->where('campaign_id','=',$campana->id)
+                                    ->where('electors.user_id','=',Auth::user()->id)
+                                    ->where('aprobado',1)
+                                    ->paginate(10);
 
             $ocupaciones = Job::all();
 
@@ -69,6 +78,98 @@ class SimpatizanteController extends Controller
             })->get();*/
 
             return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
+        }
+        else if(Auth::user()->roles[0]->name == 'Agente'){
+            //si no hay request se muestran todas las propiedades
+            if(!$request->page && !$request->busc){
+                $campana = session()->get('campana');
+
+                //Recibe todas las secciones
+                $simpatizantes = Elector::select('users.name', 'electors.*')
+                                        ->join('users', 'users.id', '=', 'electors.user_id')
+                                        ->where('campaign_id','=',$campana->id)
+                                        ->where('aprobado',1)
+                                        ->paginate(10);
+
+                $ocupaciones = Job::all();
+
+                if (!is_null($campana)) {
+                    $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
+                        $query->where('campaigns.id', '=', $campana->id);
+                    })->get();
+                } else {
+                    $secciones = null;
+                }
+
+                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
+            }
+            //si no...
+            else{
+                $campana = session()->get('campana');
+
+                //Recibe todas las secciones
+                $simpatizantes = Elector::select('users.name', 'electors.*')
+                                        ->join('users', 'users.id', '=', 'electors.user_id')
+                                        ->where('campaign_id','=',$campana->id)
+                                        ->where('aprobado',1);
+
+                $ocupaciones = Job::all();
+
+                if (!is_null($campana)) {
+                    $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
+                        $query->where('campaigns.id', '=', $campana->id);
+                    })->get();
+                } else {
+                    $secciones = null;
+                }
+
+                //si hay request de la busqueda deal se obtienen solo los simpatizantes que coinciden
+                if(isset($request->busc)){
+                    $simpatizantes = $simpatizantes->get()->filter(function($record) use($request) {
+                        $normalizeChars = array(
+                            'Š'=>'S', 'š'=>'s', 'Ð'=>'Dj','Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A',
+                            'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E', 'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I',
+                            'Ï'=>'I', 'Ñ'=>'N', 'Ń'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U',
+                            'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss','à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a',
+                            'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i',
+                            'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ń'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u',
+                            'ú'=>'u', 'û'=>'u', 'ü'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y', 'ƒ'=>'f',
+                            'ă'=>'a', 'î'=>'i', 'â'=>'a', 'ș'=>'s', 'ț'=>'t', 'Ă'=>'A', 'Î'=>'I', 'Â'=>'A', 'Ș'=>'S', 'Ț'=>'T',
+                        );
+                        $nombre = strtr( $record->nombre, $normalizeChars );
+                        $nombre = strtolower ($nombre);
+                        $busqueda = strtr( $request->busc, $normalizeChars );
+                        $busqueda = strtolower ($busqueda);
+                        $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($busqueda);
+                        if(str_contains($nombre, $busqueda)) {
+                            return $record;
+                        }
+                    });
+
+                    //this code simulates: ->paginate(5)
+                    $path = route('simpatizantes').'?busc='.$request->busc;
+                    $simpatizantes = new LengthAwarePaginator(
+                        $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
+                        $this->perPage)-$this->perPage,
+                        $this->perPage)->all(), count($simpatizantes),
+                        $this->perPage, null, ['path' => $path]);
+                    /*
+                    ->where('nombre','like','%'.Crypt::encryptString($request->busc).'%')
+                    ->orWhere('apellido_p','like','%'.Crypt::encryptString($request->busc).'%')
+                    ->orWhere('apellido_m','like','%'.Crypt::encryptString($request->busc).'%')
+                    ->orWhere('edo_civil','like','%'.Crypt::encryptString($request->busc).'%')
+                    ->orWhere('fecha_nac','like','%'.Crypt::encryptString($request->busc).'%')
+                    ->orWhere('electors.email','like','%'.Crypt::encryptString($request->busc).'%')
+                    ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
+                }
+                else{
+                    $simpatizantes = $simpatizantes->paginate(2)->appends(request()->except('page'));
+                }
+
+                //se manda la vista
+                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
+            }
         }
         else{
             abort(403);

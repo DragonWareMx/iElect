@@ -35,7 +35,11 @@ class HomeController extends Controller
             $campana = session()->get('campana');
     
             //Recibe todas las secciones
-            $simpatizantes = Elector::select('users.name', 'electors.*')->join('users', 'users.id', '=', 'electors.user_id')->where('campaign_id','=',$campana->id)->paginate(10);
+            $simpatizantes = Elector::select('users.name', 'electors.*')
+                                    ->join('users', 'users.id', '=', 'electors.user_id')
+                                    ->where('campaign_id','=',$campana->id)
+                                    ->where('electors.user_id','=',Auth::user()->id)
+                                    ->paginate(10);
     
             $ocupaciones = Job::all();
     
