@@ -70,6 +70,9 @@ class SimpatizanteController extends Controller
 
             return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
         }
+        else{
+            abort(403);
+        }
     }
 
     public function agregarSimpatizante(Request $request)
