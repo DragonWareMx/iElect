@@ -69,58 +69,84 @@ Inicio
                         <canvas id="simpChart" width="auto" height="200"></canvas>
                     </div>
                     <div class="uk-flex-none">
+                        @if($graficaPastel[0]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #FFD43A" uk-tooltip="title: {{$graficaPastel[0]}}; pos: left"></span>
                             PAN
                         </div>
+                        @endif
+                        @if($graficaPastel[1]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #04BE65" uk-tooltip="title: {{$graficaPastel[1]}}; pos: left"></span>
                             PRI
                         </div>
+                        @endif
+                        @if($graficaPastel[2]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #2D9B94" uk-tooltip="title: {{$graficaPastel[2]}}; pos: left"></span>
                             PRD
                         </div>
+                        @endif
+                        @if($graficaPastel[3]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #3201C8" uk-tooltip="title: {{$graficaPastel[3]}}; pos: left"></span>
                             PT
                         </div>
+                        @endif
+                        @if($graficaPastel[4]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #C8194B" uk-tooltip="title: {{$graficaPastel[4]}}; pos: left"></span>
                             PVEM
                         </div>
+                        @endif
+                        @if($graficaPastel[5]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #ADADAD" uk-tooltip="title: {{$graficaPastel[5]}}; pos: left"></span>
                             MC
                         </div>
+                        @endif
+                        @if($graficaPastel[6]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #ff1515" uk-tooltip="title: {{$graficaPastel[6]}}; pos: left"></span>
                             MORENA
                         </div>
+                        @endif
+                        @if($graficaPastel[7]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #2ec707" uk-tooltip="title: {{$graficaPastel[7]}}; pos: left"></span>
                             PES
                         </div>
+                        @endif
+                        @if($graficaPastel[8]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #6e01c7" uk-tooltip="title: {{$graficaPastel[8]}}; pos: left"></span>
                             FPM
                         </div>
+                        @endif
+                        @if($graficaPastel[9]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #8a810b" uk-tooltip="title: {{$graficaPastel[9]}}; pos: left"></span>
                             RSP
                         </div>
+                        @endif
+                        @if($graficaPastel[10]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #9ff11c" uk-tooltip="title: {{$graficaPastel[10]}}; pos: left"></span>
                             IND
                         </div>
+                        @endif
+                        @if($graficaPastel[11]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #f717a1" uk-tooltip="title: {{$graficaPastel[11]}}; pos: left"></span>
                             NA
                         </div>
+                        @endif
+                        @if($graficaPastel[12]>0)
                         <div>
                             <span class="uk-badge" style="background-color: #573c3c" uk-tooltip="title: {{$graficaPastel[12]}}; pos: left"></span>
                             PH
                         </div>
+                        @endif
                     </div>
                 </div>
                 <p>
@@ -185,17 +211,17 @@ Inicio
                 <div>5 entidades cubiertas</div>
                 <br />
                 <div class="uk-text-bold">Distritos federales</div>
-                <div>24 distritos cubiertos</div>
+                <div>{{$federalesCubiertos}} distritos cubiertos</div>
                 <br />
                 <div class="uk-text-bold">Distritos locales</div>
-                <div>53 distritos cubierto</div>
+                <div>{{$localesCubiertos}} distritos cubiertos</div>
                 <br />
                 <div class="uk-text-bold">Municipios</div>
-                <div>89 municipios cubiertos</div>
+                <div>{{$municipiosCubiertos}} municipios cubiertos</div>
             </div>
             <div class="uk-width-auto@m uk-text-left">
                 <div class="uk-text-bold">Secciones</div>
-                <div>2578 secciones cubiertas</div>
+                <div>{{$seccionesCubiertas}} secciones cubiertas</div>
             </div>
             <div class="uk-width-1-3@m">
                 <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
