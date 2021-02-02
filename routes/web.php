@@ -145,16 +145,22 @@ Route::get('/admin/404', function () {
 })->name('admin-404');
 
 //Admin | Inicio
-Route::get('/admin/inicio', 'adminController@inicio')->name('admin-inicio');
+Route::get('/admin/inicio', 'adminController@inicio')->name('admin-inicio');  /////////////////////////////////////////////////////////////////
 
 //Admin | agregar usuario
-Route::post('/admin/agregar/usuario', 'adminController@agregarUsuario')->name('agregar-usuario');
+Route::post('/admin/agregar/usuario', 'adminController@agregarUsuario')->name('agregar-usuario');  /////////////////////////////////////////////////
 
 //Admin | editar usuario
-Route::patch('/admin/editar/usuario/{id}', 'adminController@editarUsuario')->name('editar-usuario');
+Route::patch('/admin/editar/usuario/{id}', 'adminController@editarUsuario')->name('editar-usuario');  ////////////////////////////////////////////////
 
 //Admin | eliminar usuario
-Route::delete('/admin/eliminar/usuario/{id}', 'adminController@eliminarUsuario')->name('eliminar-usuario');
+Route::delete('/admin/eliminar/usuario/{id}', 'adminController@eliminarUsuario')->name('eliminar-usuario');  /////////////////////////////////////////
+
+//Admin | Usuarios
+Route::get('/admin/usuarios', 'adminController@verUsuarios')->name('admin-usuarios');  /////////////////////////////////////////////////
+
+//Admin | agregar campaña
+Route::post('/admin/agregar/campana', 'adminController@agregarCampana')->name('agregar-campana'); ///////////////////////////////////////////////
 
 //Admin | Cuenta
 Route::get('/admin/cuenta', function () {
@@ -166,13 +172,8 @@ Route::get('/admin/seccion', function () {
     return view('admin.seccion');
 })->name('admin-seccion');
 
-//Admin | Usuarios
-Route::get('/admin/usuarios', 'adminController@verUsuarios')->name('admin-usuarios');
-
 //Admin | Usuario
-Route::get('/admin/usuarios/usuario', function () {
-    return view('admin.usuario');
-})->name('admin-usuario');
+Route::get('/admin/usuarios/usuario/{id}', 'adminController@verUsuario')->name('admin-usuario'); ////////////////////////////////////////////////
 
 //Admin | Editar usuario
 Route::get('/admin/usuarios/usuario/edit', function () {
