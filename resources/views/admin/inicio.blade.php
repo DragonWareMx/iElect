@@ -158,7 +158,7 @@ Inicio
     <!-- Card de CAMPAÑAS -->
     <div class="uk-width-expand@m uk-margin-top">
         <div class="uk-card uk-card-default uk-padding-small uk-overflow-auto">
-            <h3 class="uk-card-title uk-text-bold uk-margin-remove">Campañas</h3>
+            <a href="/admin/campanas"><h3 class="uk-card-title uk-text-bold uk-margin-remove">Campañas</h3></a>
             <p class="uk-margin-remove-top">Total: {{$totalCampanas}}</p>
             <div>
                 <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom" style="
@@ -184,7 +184,7 @@ Inicio
             </div>
             <div uk-grid>
                 @foreach ($campanas as $campana)
-                    <div class="uk-width-1-4@m uk-text-center">
+                    <a class="uk-width-1-4@m uk-text-center uk-text-muted" href="/admin/campana/{{$campana->id}}" style="text-decoration:none;">
                         @if($campana->logo)
                             <img src="{{asset('storage/uploads/'.$campana->logo)}}" style="width:120px;height:120px;background-size:cover; object-fit:cover; border-radius:50%;" /> 
                         @else
@@ -193,7 +193,7 @@ Inicio
                         <p class="uk-text-bold uk-margin-remove uk-text-truncate">{{$campana->name}}</p>
                         <p class="uk-margin-remove uk-text-truncate">{{$campana->codigo}}</p>
                         <p class="uk-margin-remove uk-text-truncate">{{$campana->candidato}}</p>
-                    </div>
+                    </a>
                 @endforeach
             </div>
         </div>
@@ -202,7 +202,6 @@ Inicio
     <div class="uk-card uk-card-default uk-padding-small uk-margin-top">
         <div class="uk-card-title">
             <h3 class="uk-text-bold">Zonas cubiertas</h3>
-            <a class="uk-position-right uk-padding" href="" uk-icon="cog"></a>
         </div>
 
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>

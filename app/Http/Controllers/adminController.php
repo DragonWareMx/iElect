@@ -48,7 +48,7 @@ class adminController extends Controller
             $graficaPastel[$i]=0;
             if($partie->campaign->count()>0){
                 foreach($partie->campaign as $campana){
-                    $graficaPastel[$i]+=$campana->elector->count();
+                    $graficaPastel[$i]+=$campana->elector->where('aprobado',1)->count();
                 }
             }
             else{
@@ -56,7 +56,7 @@ class adminController extends Controller
             }
             $i++;
         }
-        $totalSimps=Elector::get()->count();
+        $totalSimps=Elector::where('aprobado',1)->get()->count();
         $seccionesCubiertas=Section::join('campaign_section','sections.id','=','campaign_section.section_id')->get()->count();
         $federalesCubiertos=Section::select('federal_district_id')->join('campaign_section','sections.id','=','campaign_section.section_id')->groupBy('sections.federal_district_id')->get()->count();
         $localesCubiertos=Section::select('local_district_id')->join('campaign_section','sections.id','=','campaign_section.section_id')->groupBy('sections.local_district_id')->get()->count();
@@ -339,5 +339,23 @@ class adminController extends Controller
         $municipios = Town::get();
         $positions = Position::get();
         return view('admin.campanas', ['campanas' => $campanas, 'parties' => $parties, 'agents' => $agents, 'locales' => $locales, 'federales' => $federales, 'municipios' => $municipios, 'positions' => $positions, 'numcamp' => $numcamp]);
+    }
+
+    public function eliminarCampana($id){
+        DB::beginTransaction();
+        try{
+            $campana=Campaign::findOrFail($id);
+            $oldFile=public_path().'/storage/uploads/'.$campana->logo;
+            if(file_exists($oldFile)){
+                unlink($oldFile);
+            }
+            $campana->delete();
+            DB::commit();
+            return response()->json(200);
+        }
+        catch (\Exception $ex) {
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
     }
 }

@@ -89,18 +89,18 @@ Usuario
                     <tbody>
                         @foreach ($usuario->campaign as $campana)
                         <tr>
-                            <td>
+                            <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">
                                 @if($campana->logo)
                                     <img src="{{asset('storage/uploads/'.$campana->logo)}}" style="width:30px;height:30px;background-size:cover; object-fit:cover; border-radius:50%;" /> 
                                 @else
                                     <img src="{{asset('img/icons/globe.png')}}" style="width:30px;height:30px;background-size:cover; object-fit:cover; border-radius:50%;" /> 
                                 @endif
-                            </td>
-                            <td>{{$campana->codigo}}</td>
-                            <td>{{$campana->name}}</td>
-                            <td>{{$campana->candidato}}</td>
-                            <td>{{$campana->position->name}}</td>
-                            <td>
+                            </a></td>
+                            <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">{{$campana->codigo}}</a></td>
+                            <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">{{$campana->name}}</a></td>
+                            <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">{{$campana->candidato}}</a></td>
+                            <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">{{$campana->position->name}}</a></td>
+                            <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">
                                 @foreach ($campana->politic_partie as $partido)
                                     @if ($loop->index==0)
                                     {{$partido->siglas}}
@@ -108,8 +108,8 @@ Usuario
                                     , {{$partido->siglas}}
                                     @endif
                                 @endforeach
-                            </td>
-                            <td>{{$campana->elector->count()}}</td>
+                            </a></td>
+                            <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">{{$campana->elector->count()}}</a></td>
                         </tr>
                         @endforeach
                     </tbody>

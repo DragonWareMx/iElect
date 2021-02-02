@@ -56,15 +56,33 @@ Campañas
                     </div>
                 </div>
             </div>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-danger uk-modal-close" type="button">
+            <p class="uk-text-right uk-flex uk-flex-between">
+                <button class="uk-button uk-button-danger" type="submit" uk-toggle="target: #modal-delete">
                     Eliminar
                 </button>
+                <a id="ver-href" href="" class="uk-button uk-button-primary" type="button">
+                    Ver secciones
+                </a>
             </p>
         </div>
     </div>
 </div>
 
+
+<div id="modal-delete" uk-modal>
+    <div class="uk-modal-dialog uk-modal-body">
+        <h2 class="uk-modal-title">Eliminar campaña</h2>
+        <div id="errors-campanaDelete" class="uk-alert-danger" uk-alert style="display:none;">
+        </div>
+        <p>Los datos de la campaña y los electores relacionados a ésta se eliminarán de forma permanente.</p>
+        <form id="form-eliminar-campana" class="uk-text-right" action="" method="post">
+            @csrf
+            @method("DELETE")
+            <button class="uk-button uk-button-default uk-modal-close" type="button">Cancelar</button>
+            <button type="submit" class="uk-button uk-button-danger" type="button" id="btnEnviar-deleteCampana">Eliminar</button>
+        </form>
+    </div>
+</div>
 
 
 <!-- Contenido de la página -->
@@ -364,17 +382,19 @@ Campañas
             obj['user'].forEach(element => {
                 if(element['avatar']){
                     agentes+='<li>'+
-                    '<img class="profile-pic uk-border-circle" src="/storage/uploads' +element['avatar']+'" width="25" height="25" style="object-fit:cover; margin-right:10px" />'
+                    '<img class="profile-pic uk-border-circle" src="/storage/uploads/' +element['avatar']+'" width="25" height="25" style="height:25px;object-fit:cover; margin-right:10px" />'
                 +element['name']+'</li>';
                 }
                 else{
                     agentes+='<li>'+
-                    '<img class="profile-pic uk-border-circle" src="/img/icons/default.png" width="25" height="25" style="object-fit:cover; margin-right:10px" />'
+                    '<img class="profile-pic uk-border-circle" src="/img/icons/default.png" width="25" height="25" style="height:25px;object-fit:cover; margin-right:10px" />'
                 +element['name']+'</li>';
                 }
             });
             $('#info-agentes').html(agentes);
             UIkit.modal("#modal-datos-camp").toggle();
+            $('#ver-href').attr("href", '/admin/campana/'+id);
+            $('#form-eliminar-campana').attr('action', '/admin/eliminar/campana/'+id);
         });
     });
 </script>
@@ -560,6 +580,86 @@ Campañas
                 $('#errors-campana').css('display', 'block');
                 var errors = data.responseJSON.errors;
                 var errorsContainer = $('#errors-campana');
+                errorsContainer.innerHTML = '';
+                var errorsList = '';
+                // for (var i = 0; i < errors.length; i++) {
+                // //     //if(errors[i].redirect)
+                // //         //window.location.href = window.location.origin + '/logout'
+
+                //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                // }
+                for(var key in errors){
+                    var obj=errors[key];
+                    console.log(obj);
+                    for(var yek in obj){
+                        var error=obj[yek];
+                        console.log(error);
+                        errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                    }
+                }
+                errorsContainer.html(errorsList);
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                    status: 'danger',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+            }
+        });
+        // Nos permite cancelar el envio del formulario
+        return false;
+    });
+
+
+    //ajax del form de delete campaña
+    $("#form-eliminar-campana").bind("submit",function(){
+        // Capturamnos el boton de envío
+        var btnEnviar = $("#btnEnviar-deleteCampana");
+
+        $.ajax({
+            type: $(this).attr("method"),
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
+            beforeSend: function(data){
+                /*
+                * Esta función se ejecuta durante el envió de la petición al
+                * servidor.
+                * */
+                // btnEnviar.text("Enviando"); Para button
+                btnEnviar.val("Enviando"); // Para input de tipo button
+                btnEnviar.attr("disabled","disabled");
+            },
+            complete:function(data){
+                /*
+                * Se ejecuta al termino de la petición
+                * */
+                btnEnviar.val("Enviar formulario");
+            },
+            success: function(data){
+                /*
+                * Se ejecuta cuando termina la petición y esta ha sido
+                * correcta
+                * */
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> Campaña eliminada con éxito!',
+                    status: 'success',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+                $('#errors-campanaDelete').css('display', 'none');
+                setTimeout(
+                function()
+                {
+                    window.location.reload(true);
+                }, 2000);
+            },
+            error: function(data){
+                console.log(data);
+                // $('#success').css('display', 'none');
+                btnEnviar.removeAttr("disabled");
+                $('#errors-campanaDelete').css('display', 'block');
+                var errors = data.responseJSON.errors;
+                var errorsContainer = $('#errors-campanaDelete');
                 errorsContainer.innerHTML = '';
                 var errorsList = '';
                 // for (var i = 0; i < errors.length; i++) {

@@ -222,3 +222,6 @@ Route::post('/campana/elegir', 'HomeController@campSession')->name('campana-sele
 
 //Rutas para ver campañas
 Route::get('/admin/campanas', 'adminController@verCampanas')->name('ver.campanas');
+
+//Rutas para ver campañas
+Route::delete('/admin/eliminar/campana/{id}', 'adminController@eliminarCampana')->name('eliminar-campana');
