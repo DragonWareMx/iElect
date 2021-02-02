@@ -16,16 +16,17 @@
 <body>
 
     <!-- This is the modal with the default close button -->
-    <div id="modal-close-default" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body">
+    <div id="modal-close-default" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <h2 class="uk-modal-title uk-text-primary">iElect</h2>
-            <h3 class="uk-text-center">
-                Solicitud de eliminación de datos enviada correctamente
+            <h3 class="uk-text-center uk-text-large">
+                Tus datos personales han sido eliminados con éxito de iElect.
             </h3>
             <p>
-                Su solicitud fue enviada exitosamente, y será recibida por el coordinador de la campaña, usted será
-                notificado mediante un mensaje cuando la eleminación de su información se haya efectuado correctamente
+                Si tienes alguna duda sobre el uso que se le dio a tu información durante este tiempo puedes leer los
+                Términos y Condiciones y el Aviso de privacidad de nuestra aplicación, también puedes comunicarte al
+                número: (ahí iría un número que no tenemos).
             </p>
         </div>
     </div>
@@ -38,7 +39,7 @@
                     <div class="uk-child-width-expand uk-padding-large" uk-grid>
                         <div class="uk-width-expand@m uk-width-xlarge">
                             <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
-                                Solicitud de eliminación de datos
+                                ¿Quieres eliminar tus datos personales de iElect?
                             </h3>
                             <div class="uk-alert-danger" uk-alert id="errors" style="display: none">
                                 <a class="uk-alert-close" uk-close></a>
@@ -47,8 +48,12 @@
                             </div>
                             <!--Input correo electronico-->
                             <div class="uk-margin">
-                                <div class="uk-text">
-                                    Texto que diga que se van a eliminar los datos de forma chida
+                                <div class="uk-text uk-text-justify" id="texto">
+                                    Si das clic en Enviar, la información personal que brindaste al brigadista para la
+                                    campaña {{$campaign}} será eliminada de nuestra base de datos
+                                    definitivamente. Si quieres seguir apoyando la campaña da clic en cancelar. Recuerda
+                                    que la información personal que nos compartiste se usa sólo para los fines
+                                    establecidos en el documento de Términos y condiciones y en el aviso de privacidad.
                                 </div>
                             </div>
                             <!--Div grid-->
@@ -61,6 +66,10 @@
                                     <input type="hidden" value="{{$uuid}}" name="uuid">
                                     <button class="uk-button uk-button-primary" id="btnEnviar">
                                         Enviar
+                                    </button>
+                                    <button class="uk-button uk-button-secundary" type="button"
+                                        style="margin-left: 10px" id="btnCancelar">
+                                        Cancelar
                                     </button>
                                 </form>
                             </div>
@@ -96,6 +105,11 @@
 
 <script>
     $(document).ready(function(){
+            $('#btnCancelar').click(function() {
+                $('#btnCancelar').hide('fast');
+                $('#btnEnviar').hide('fast');
+                $('#texto').hide().html('Tus datos siguen con iElect. Gracias por tu confianza.').fadeIn(2000);
+            });
             //ajax del form de eliminar
             $("#form-delete-datos").bind("submit",function(){
                 // Capturamnos el boton de envío

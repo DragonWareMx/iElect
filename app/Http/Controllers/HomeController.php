@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Campaign;
 use App\Models\Section;
+use App\Models\Elector;
+use App\Models\Job;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Redirect;
 
 class HomeController extends Controller
 {
@@ -27,14 +30,57 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $user = Auth::user();
-        //$campana = session()->get('campana');
-        $campana = Campaign::find(1);
+        if(Auth::user()->roles[0]->name == 'Brigadista'){
+            \Gate::authorize('haveaccess', 'brig.perm');
+            $campana = session()->get('campana');
+    
+            //Recibe todas las secciones
+            $simpatizantes = Elector::select('users.name', 'electors.*')->join('users', 'users.id', '=', 'electors.user_id')->where('campaign_id','=',$campana->id)->paginate(10);
+    
+            $ocupaciones = Job::all();
+    
+            if (!is_null($campana)) {
+                $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
+                    $query->where('campaigns.id', '=', $campana->id);
+                })->get();
+            } else {
+                $secciones = null;
+            }
+    
+            return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
+        }
+        else if (Auth::user()->roles[0]->name == 'Administrador' || Auth::user()->roles[0]->name == 'Agente'){
+            $user = Auth::user();
+            //$campana = session()->get('campana');
+            $campana = Campaign::find(1);
+            if (!is_null($campana)) {
+                $electors = Elector::where('campaign_id', $campana->id)->get();
+            } else {
+                $electors = null;
+            }
 
-        $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
-            $query->where('campaigns.id', '=', $campana->id);
-        })->get();
+            return view('usuario.home', ['campana' => $campana, 'electores' => $electors]);
+        }
+        else{
+            abort(403);
+        }
+    }
 
-        return view('usuario.home', ['campana' => $campana]);
+    public function campana()
+    {
+        $usuario = Auth::user();
+        $campanas = $usuario->campaign;
+        return view('usuario.campana_select', ['campanas' => $campanas]);
+    }
+
+    public function campSession(Request $request)
+    {
+        $camp = Campaign::findOrFail($request->campana);
+        if (!$camp) {
+            return Redirect::back()->withErrors(['msg', 'Algo inesperado ocurrió, por favor, intentalo de nuevo.']);
+        } else {
+            session()->put('campana', $camp);
+            return redirect()->route('home');
+        }
     }
 }

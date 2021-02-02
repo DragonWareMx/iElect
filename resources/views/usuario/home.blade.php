@@ -8,12 +8,46 @@ Inicio
 @extends('subviews.chartjs')
 @endsection
 
+@php
+if(!is_null($electores) && !is_null($campana)){
+$simpatizantes = 0;
+$porcentaje = 0;
+$countS = array_count_values($electores->pluck('sexo')->toArray());
+if(count($countS) != 0){
+if (isset($countS['h'])) {
+$hombres = $countS['h'];
+}else{
+$hombres = 0;
+}
+
+if (isset($count['m'])) {
+$mujeres = $countS['m'];
+}else{
+$mujeres = 0;
+}
+
+$total = $hombres + $mujeres;
+$porcH = round(($hombres * 100)/$total, 2);
+$porcM = round(($mujeres * 100)/$total, 2);
+}else{
+$hombres = 0;
+$mujeres = 0;
+$total = 0;
+$porcH = 0;
+$porcM = 0;
+}
+
+}
+
+@endphp
+
 @section('body')
 <div class="uk-margin uk-margin-left uk-margin-right">
     <div class="uk-grid uk-grid-match">
         <!-- Card de SECCIONES -->
         <div class="uk-width-expand@m">
             <div class="uk-card uk-card-default uk-card-body uk-overflow-auto">
+                @if (!is_null($electores) && !is_null($campana))
                 <h3 class="uk-card-title uk-text-bold">Secciones</h3>
                 <div class="uk-overflow-auto">
                     <table class="uk-table uk-table-small uk-table-divider">
@@ -27,51 +61,43 @@ Inicio
                             </tr>
                         </thead>
                         <tbody>
+                            @foreach ($campana->section as $seccion)
+                            @php
+                            $simpatizantes = $electores->where('section_id', $seccion->id)->count();
+                            $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1)
+                            @endphp
                             <tr>
-                                <td>#2458</td>
-                                <td>Michoacán</td>
+                                <td>{{$seccion->num_seccion}}</td>
+                                <td>{{$seccion->town->federal_entitie->nombre}}</td>
                                 <td>
-                                    <progress class="uk-progress" value="52" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">52%</div>
+                                    <progress class="uk-progress" value="{{$porcentaje}}" max="100"
+                                        style="margin: 0"></progress>
+                                    <div class="uk-align-right">{{$porcentaje}}%</div>
                                 </td>
-                                <td>257</td>
-                                <td>458</td>
+                                <td>{{$simpatizantes}}</td>
+                                <td>{{$seccion->pivot->meta}}</td>
                             </tr>
-                            <tr>
-                                <td>#3530</td>
-                                <td>Michoacán</td>
-                                <td>
-                                    <progress class="uk-progress" value="100" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">100%</div>
-                                </td>
-                                <td>325</td>
-                                <td>325</td>
-                            </tr>
-                            <tr>
-                                <td>#4540</td>
-                                <td>Michoacán</td>
-                                <td>
-                                    <progress class="uk-progress" value="23" max="100" style="margin: 0"></progress>
-                                    <div class="uk-align-right">23%</div>
-                                </td>
-                                <td>178</td>
-                                <td>578</td>
-                            </tr>
+                            @endforeach
                         </tbody>
                     </table>
                     <p class="uk-text-right">
-                        <a>Ver todo</a>
+                        <a href="{{route('secciones')}}">Ver todo</a>
                     </p>
                 </div>
+                @else
+                <h3 class="uk-card-title uk-text-bold">Sin Secciones</h3>
+                @endif
+
             </div>
         </div>
         <!-- Card de SIMPATIZANTES -->
         <div class="uk-width-1-3@m">
             <div class="uk-card uk-card-default uk-card-body">
+                @if (!is_null($electores) && !is_null($campana))
                 <h3 class="uk-card-title uk-text-bold" style="margin: 0">
                     Simpatizantes
                 </h3>
-                <div>Total: 760</div>
+                <div>Total: {{$total}}</div>
                 <div class="uk-flex uk-flex-middle">
                     <div>
                         <canvas id="simpChart" width="auto" height="200"></canvas>
@@ -79,14 +105,19 @@ Inicio
                     <div class="uk-flex-none">
                         <div>
                             <span class="uk-badge" style="background-color: #9b51e0"></span>
-                            Hombres 47%
+                            Hombres {{$porcH}}%
                         </div>
                         <div>
                             <span class="uk-badge" style="background-color: #fb8832"></span>
-                            Mujeres 53%
+                            Mujeres {{$porcM}}%
                         </div>
                     </div>
                 </div>
+                @else
+                <h3 class="uk-card-title uk-text-bold" style="margin: 0">
+                    Sin Simpatizantes
+                </h3>
+                @endif
             </div>
         </div>
     </div>
@@ -167,7 +198,11 @@ var simpData = {
 labels: ["Hombres", "Mujeres"],
 datasets: [
 {
-data: [47, 53],
+@if (!is_null($electores) && !is_null($campana))
+data: [{{$hombres}}, {{$mujeres}}],
+@else
+
+@endif
 backgroundColor: ["#9B51E0", "#FB8832"],
 },
 ],

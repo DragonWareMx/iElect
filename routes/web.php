@@ -3,6 +3,7 @@
 //use Illuminate\Support\Facades\Gate;
 
 use App\Http\Controllers\SeccionesController;
+use App\Http\Middleware\CheckCamp;
 use App\Models\Elector;
 
 use Illuminate\Support\Facades\Route;
@@ -21,45 +22,46 @@ use Illuminate\Support\Facades\Auth;
 */
 
 //Ruta layou
-/*Route::get('/lay', function () {
-    return view('layouts.layout');
-})->name('lay');
-*/
+// Route::get('/lays', function () {
+//     Mail::to('lopez_lopez_daniel@hotmail.com')->send(new NewSimpMail(23));
+//     return 'ya';
+// })->name('lay');
+
 
 //esta ruta es de ejemplo para poner el gate pa checar el rol vaya :v
 // Route::get('/test', function () {
 //     Gate::authorize('haveaccess', 'admin.perm');
 //     return 'hola we';
 // })->name('lay')->middleware('auth');
-Route::get('/crear/elector', function () {
-    $elector = new Elector();
-    $elector->uuid = Uuid::generate()->string;
-    $elector->nombre = 'Leonardo';
-    $elector->apellido_p = 'Lopez';
-    $elector->apellido_m = 'Lopez';
-    $elector->job_id = '1';
-    $elector->edo_civil = 'soltero';
-    $elector->fecha_nac = '1999-04-12';
-    $elector->telefono = '4433998915';
-    $elector->email = 'lopez_lopez_daniel@hotmail.com';
-    $elector->red_social = '@LeoLopez';
-    $elector->calle = 'Antono Alzate';
-    $elector->ext_num = '142';
-    $elector->int_num = 'A';
-    $elector->colonia = 'Centro';
-    $elector->localidad = 'Morelia';
-    $elector->municipio = 'Morelia';
-    $elector->cp = '58000';
-    $elector->section_id = '1';
-    $elector->campaign_id = '1';
-    $elector->user_id = '1';
-    $elector->clave_elector = 'LASOASDASLD';
-    $elector->foto_elector = 'foto.jpg';
-    $elector->credencial_a = 'foto1.jpg';
-    $elector->credencial_r = 'foto2.jpg';
-    $elector->save();
-    return 'se hizo';
-});
+// Route::get('/crear/elector', function () {
+//     $elector = new Elector();
+//     $elector->uuid = Uuid::generate()->string;
+//     $elector->nombre = 'Leonardo';
+//     $elector->apellido_p = 'Lopez';
+//     $elector->apellido_m = 'Lopez';
+//     $elector->job_id = '1';
+//     $elector->edo_civil = 'soltero';
+//     $elector->fecha_nac = '1999-04-12';
+//     $elector->telefono = '4433998915';
+//     $elector->email = 'lopez_lopez_daniel@hotmail.com';
+//     $elector->red_social = '@LeoLopez';
+//     $elector->calle = 'Antono Alzate';
+//     $elector->ext_num = '142';
+//     $elector->int_num = 'A';
+//     $elector->colonia = 'Centro';
+//     $elector->localidad = 'Morelia';
+//     $elector->municipio = 'Morelia';
+//     $elector->cp = '58000';
+//     $elector->section_id = '1';
+//     $elector->campaign_id = '1';
+//     $elector->user_id = '1';
+//     $elector->clave_elector = 'LASOASDASLD';
+//     $elector->foto_elector = 'foto.jpg';
+//     $elector->credencial_a = 'foto1.jpg';
+//     $elector->credencial_r = 'foto2.jpg';
+//     $elector->save();
+//     return 'se hizo';
+// });
 
 
 //Ruta principal
@@ -77,7 +79,7 @@ Route::get('/registro/brigadista', function () {
 Route::post('/registro/brigadista', 'OrderController@brigadista')->name('registro.brig');
 
 //Home
-Route::get('/inicio', 'HomeController@index')->name('home');
+Route::get('/inicio', 'HomeController@index')->middleware(CheckCamp::class)->name('home');
 
 //Ruta Mapa Seccional
 Route::get('/mapa_seccional', 'mapaSeccionalController@index')->name('mapa_seccional');
@@ -120,15 +122,12 @@ Route::get('/brigadistas/solicitudes', function () {
 
 /****** SIMPATIZANTES ******/
 //Simpatizantes
-Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simpatizantes');
-
-//agregar simpatizante
-Route::post('/simpatizantes/agregar', 'simpatizanteController@agregarSimpatizante')->name('agregar-simpatizante');
+Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simpatizantes')->middleware('auth')->middleware(CheckCamp::class);
 
 //Simpatizantes
 Route::get('/simpatizantes/solicitudes', function () {
     return view('usuario.simpatizantes_eliminar');
-})->name('simpatizantes_eliminar');
+})->name('simpatizantes_eliminar')->middleware('auth');
 
 /****** HISTORICO ******/
 //Historico
@@ -186,9 +185,13 @@ Route::get('/admin/usuarios/usuario/edit', function () {
 /*******************/
 
 //Brigadistas | Simpatizantes
-Route::get('/brigadistas/inicio', function () {
-    return view('brigadista.simpatizantes');
-})->name('brigadistas-inicio');
+
+//RUTA OBSOLETA--------------------------------------------
+
+//Route::get('/brigadistas/inicio', 'simpatizanteController@simpatizantes')->name('brigadistas-inicio')->middleware('auth');
+
+//agregar simpatizante
+Route::post('/simpatizantes/agregar', 'simpatizanteController@agregarSimpatizante')->name('agregar-simpatizante');
 
 /********************/
 /**  SIMPATIZANTE  **/
@@ -199,7 +202,23 @@ Route::get('/simpatizante/aviso', function () {
     return view('simpatizante.aviso_datos');
 })->name('simpatizante-aviso');
 
+Route::get('/aviso-de-privacidad', function () {
+    return view('simpatizante.aviso_privacidad');
+})->name('avisoprivacidad');
+
+Route::get('/terminos-y-condiciones', function () {
+    return view('simpatizante.aviso_terminos');
+})->name('terminoscondiciones');
+
 //Simpatizante | Solicitud de baja
 Route::get('/simpatizante/baja/{uuid}', 'SimpatizanteController@index')->name('simpatizante-solicitud_baja');
 
 Route::delete('/simpatizante/baja/{uuid}', 'SimpatizanteController@delete')->name('solicitud_baja-delete');
+
+//Ruta para elegir campaña
+Route::get('/campana/elegir', 'HomeController@campana')->name('campana-select');
+
+Route::post('/campana/elegir', 'HomeController@campSession')->name('campana-select-post');
+
+//Rutas para ver campañas
+Route::get('/admin/campanas', 'adminController@verCampanas')->name('ver.campanas');
