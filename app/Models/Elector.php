@@ -169,6 +169,82 @@ class Elector extends Model
             return 'Error';
         }
     }
+    public function getCredencialAAttribute($value)
+    {
+        if(!is_null($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+    public function getCredencialRAttribute($value)
+    {
+        if(!is_null($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+    public function getFotoElectorAttribute($value)
+    {
+        if(!empty($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
+    public function getDocumentoAttribute($value)
+    {
+        if(!empty($value)){
+            try {
+                // in your Controller
+                $encryptedContent = \Storage::get('public/files/'.$this->attributes['campaign_id'] .'/'.$value.'.dat');
+                $decryptedContent = decrypt($encryptedContent);
+                return "data:image/png;base64,".base64_encode($decryptedContent);
+            } catch (DecryptException $e) {
+                return 'Error';
+            }
+            catch (\Exception $e) {
+                return null;
+            }
+        }
+        else{
+            return null;
+        }
+    }
 
     //SETTER
     public function setNombreAttribute($value)

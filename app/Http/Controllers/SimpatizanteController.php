@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rule;
 use Webpatser\Uuid\Uuid;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewSimpMail;
+use Illuminate\Support\Facades\Auth;
 
 class SimpatizanteController extends Controller
 {
@@ -44,32 +47,35 @@ class SimpatizanteController extends Controller
 
     public function simpatizantes()
     {
-        //$campana = session()->get('campana');
-        $campana = Campaign::find(1);
+        if(Auth::user()->roles[0]->name == 'Brigadista' || Auth::user()->roles[0]->name == 'Agente'){
+            $campana = session()->get('campana');
 
-        //Recibe todas las secciones
-        $simpatizantes = Elector::paginate(10);
+            //Recibe todas las secciones
+            $simpatizantes = Elector::select('users.name', 'electors.*')->join('users', 'users.id', '=', 'electors.user_id')->paginate(10);
 
-        $ocupaciones = Job::all();
+            $ocupaciones = Job::all();
 
-        if (!is_null($campana)) {
-            $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
-                $query->where('campaigns.id', '=', $campana->id);
-            })->get();
-        } else {
-            $secciones = null;
+            if (!is_null($campana)) {
+                $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
+                    $query->where('campaigns.id', '=', $campana->id);
+                })->get();
+            } else {
+                $secciones = null;
+            }
+
+            /*
+            $localidades = LocalDistrict::whereHas('section', function (Builder $query) use ($campana) {
+                $query->where('section.id', '=', $campana->id);
+            })->get();*/
+
+            return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
         }
-
-        /*
-        $localidades = LocalDistrict::whereHas('section', function (Builder $query) use ($campana) {
-            $query->where('section.id', '=', $campana->id);
-        })->get();*/
-
-        return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
     }
 
     public function agregarSimpatizante(Request $request)
     {
+        \Gate::authorize('haveaccess', 'brig.perm');
+
         $data = request()->validate([
             'seccion' => 'required|exists:sections,id',
             'nombre' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
@@ -123,66 +129,101 @@ class SimpatizanteController extends Controller
                 $simpatizante->ext_num = $request->num_exterior;
                 $simpatizante->int_num = $request->num_interior;
                 $simpatizante->cp = $request->CP;
+                //se obtiene la campana
+                $campana = session()->get('campana');
                 //se obtiene la seccion
                 $seccion = Section::find($request->seccion);
+
+                //FALTA: Que se verifique que la seccion sea de la campana
+
                 $simpatizante->localidad = $seccion->local_district->numero;
                 $simpatizante->municipio = $seccion->town->numero;
                 $simpatizante->section_id = $seccion->id;
-                $simpatizante->campaign_id = 1;
-                $simpatizante->user_id = 1;
-                //$simpatizante->user_id = auth()->user()->id;
+                $simpatizante->campaign_id = $campana->id;
+                $simpatizante->user_id = auth()->user()->id;
 
                 //OTROS DATOS
                 $simpatizante->facebook = $request->facebook;
                 $simpatizante->twitter = $request->twitter;
 
-                /*
-                FALTA:
-                LOCALIDAD*
-                MUNICIPIO*
-                USERID*
-                CAMPAIGNID*
-                DOCUMENTO
-                */
-
                 if ($request->foto_anverso) {
+                    $file = $request->file('foto_anverso');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_anverso')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_anverso')->storeAs('/public/uploads/', $newFileName);
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
                     $simpatizante->credencial_a = $newFileName;
                 }
-
                 if ($request->foto_inverso) {
+                    $file = $request->file('foto_inverso');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_inverso')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_inverso')->storeAs('/public/uploads/', $newFileName);
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
                     $simpatizante->credencial_r = $newFileName;
                 }
                 if ($request->foto_de_elector) {
+                    $file = $request->file('foto_de_elector');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_de_elector')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_de_elector')->storeAs('/public/uploads/', $newFileName);
-                    $simpatizante->credencial_r = $newFileName;
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                    $simpatizante->foto_elector = $newFileName;
                 }
                 if ($request->foto_de_firma) {
+                    $file = $request->file('foto_de_firma');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
                     $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $extension = request('foto_de_firma')->getClientOriginalExtension();
-                    $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('foto_de_firma')->storeAs('/public/uploads/', $newFileName);
-                    $simpatizante->credencial_r = $newFileName;
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                    $simpatizante->documento = $newFileName;
                 }
 
                 $simpatizante->save();
+                Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
             });
             if ($request->ajax()) {
-                session()->flash('status', 'Usuario creado con éxito!');
+                session()->flash('status', 'Simpatizante creado con éxito!');
                 return 200;
             }
         } catch (QueryException $ex) {

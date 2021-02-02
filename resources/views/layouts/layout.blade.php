@@ -30,7 +30,7 @@
                     </div>
                     <div class="uk-width-expand">
                         <h3 class="uk-card-title uk-margin-remove-bottom">
-                            {{ Auth::user()->name }} 
+                            {{Auth::user()->name}}
                         </h3>
                         <p class="uk-text-meta uk-margin-remove-top">
                             Nombre del partido NDP
@@ -60,6 +60,13 @@
     <div class="uk-navbar-container uk-visible@m" uk-navbar>
         <div class="uk-navbar-left">
             <ul class="uk-navbar-nav">
+                @if (Auth::user()->roles[0]->name == 'Brigadista')
+                <li>
+                    <a href="{{route('home')}}">
+                        <span class="uk-margin-small-right" uk-icon="home"></span>Inicio
+                    </a>
+                </li>
+                @elseif(Auth::user()->roles[0]->name == 'Administrador' || Auth::user()->roles[0]->name == 'Agente')
                 <li>
                     <a href="{{route('home')}}">
                         <span class="uk-margin-small-right" uk-icon="home"></span>Inicio
@@ -91,11 +98,16 @@
                         <span class="uk-margin-small-right" uk-icon="lifesaver"></span>Brigadistas
                     </a>
                 </li>
+                @else
+                @endif
             </ul>
         </div>
         <!-- Icono ajustes -->
+        @php
+        $fechaAct= \Carbon\Carbon::now();
+        @endphp
         <div class="uk-navbar-right uk-margin-right">
-            <div>28 October 2019</div>
+            <div>{{ $fechaAct->format('d').' de '.ucfirst($fechaAct->monthName).' del '.$fechaAct->format('Y') }}</div>
         </div>
     </div>
 

@@ -43,8 +43,13 @@ $mujeres = 0;
 
 $total = $hombres + $mujeres;
 
+if($total != 0){
 $porcH = round(($hombres * 100)/$total, 2);
 $porcM = round(($mujeres * 100)/$total, 2);
+}else{
+$porcH = 0;
+$porcM = 0;
+}
 
 $g18 = $rangos['18'];
 $g19 = $rangos['19'];
@@ -93,10 +98,19 @@ $g65 = 0;
             <div class="uk-margin">
                 <div class="select">
                     <select class="select-text" required>
-                        <option value="" disabled selected></option>
-                        <option value="1">Alta</option>
-                        <option value="2">Media</option>
-                        <option value="3">Baja</option>
+                        <option value="" disabled></option>
+                        <option value="1" @php if($datosSec->campaign[0]->pivot->prioridad=="Alta"){
+                            echo('selected');
+                            }
+                            @endphp>Alta</option>
+                        <option value="2" @php if($datosSec->campaign[0]->pivot->prioridad=="Media"){
+                            echo('selected');
+                            }
+                            @endphp>Media</option>
+                        <option value="3" @php if($datosSec->campaign[0]->pivot->prioridad=="Baja"){
+                            echo('selected');
+                            }
+                            @endphp>Baja</option>
                     </select>
                     <span class="select-highlight"></span>
                     <span class="select-bar"></span>
@@ -107,7 +121,7 @@ $g65 = 0;
                 <div class="uk-form-controls">
                     <div class="omrs-input-group">
                         <label class="omrs-input-underlined input-outlined">
-                            <input required />
+                            <input required value="{{$datosSec->campaign[0]->pivot->meta}}" />
                             <span class="omrs-input-label">Meta final de simpatizantes</span>
                         </label>
                     </div>
@@ -443,7 +457,9 @@ $g65 = 0;
 
         <!-- Card Datos de la sección -->
         <div class="uk-padding-small">
-            <a class="uk-position-right uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog"></a>
+            <div class="uk-width-expand uk-text-right">
+                <a class="uk-padding" href="#modal-datos-seccion" uk-toggle uk-icon="cog" style="padding: 0"></a>
+            </div>
             @if (!is_null($electores))
             <div uk-grid>
                 <div class="uk-width-auto uk-width-1-4@m uk-text-left">

@@ -29,4 +29,8 @@ class Campaign extends Model
     {
         return $this->belongsToMany('App\Models\Section')->withPivot('meta', 'prioridad');
     }
+    public function elector()
+    {
+        return $this->hasMany('App\Models\Elector');
+    }
 }
