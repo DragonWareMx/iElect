@@ -141,6 +141,7 @@ class adminController extends Controller
 
     public function verUsuario($id)
     {
+        Gate::authorize('haveaccess', 'admin.perm');
         $usuario = User::findOrFail($id);
         if ($usuario->roles[0]->id == 1 || $usuario->roles[0]->id == 2)
             return view('admin.usuario', ['usuario' => $usuario]);
@@ -342,12 +343,15 @@ class adminController extends Controller
     }
 
     public function eliminarCampana($id){
+        Gate::authorize('haveaccess', 'admin.perm');
         DB::beginTransaction();
         try{
             $campana=Campaign::findOrFail($id);
-            $oldFile=public_path().'/storage/uploads/'.$campana->logo;
-            if(file_exists($oldFile)){
-                unlink($oldFile);
+            if($campana->logo){
+                $oldFile=public_path().'/storage/uploads/'.$campana->logo;
+                if(file_exists($oldFile)){
+                    unlink($oldFile);
+                }
             }
             $campana->delete();
             DB::commit();
@@ -357,5 +361,12 @@ class adminController extends Controller
             DB::rollBack();
             return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         }
+    }
+
+    public function verCampana($id)
+    {
+        Gate::authorize('haveaccess', 'admin.perm');
+        $campana = Campaign::findOrFail($id);
+        return view('admin.campana', ['campana' => $campana]);
     }
 }

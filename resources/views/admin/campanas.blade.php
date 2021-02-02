@@ -9,7 +9,7 @@ Campañas
 @endsection
 
 @section('body')
-<!-- Modal Datos Simpatizante -->
+<!-- Modal Datos campaña -->
 <div id="modal-datos-camp" class="uk-modal-container" uk-modal>
     <div class="uk-modal-dialog">
         <button class="uk-modal-close-default" type="button" uk-close></button>
