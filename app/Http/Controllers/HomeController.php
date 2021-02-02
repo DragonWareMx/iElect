@@ -30,19 +30,19 @@ class HomeController extends Controller
      */
     public function index()
     {
-        if(Auth::user()->roles[0]->name == 'Brigadista'){
+        if (Auth::user()->roles[0]->name == 'Brigadista') {
             \Gate::authorize('haveaccess', 'brig.perm');
             $campana = session()->get('campana');
-    
+
             //Recibe todas las secciones
             $simpatizantes = Elector::select('users.name', 'electors.*')
-                                    ->join('users', 'users.id', '=', 'electors.user_id')
-                                    ->where('campaign_id','=',$campana->id)
-                                    ->where('electors.user_id','=',Auth::user()->id)
-                                    ->paginate(10);
-    
+                ->join('users', 'users.id', '=', 'electors.user_id')
+                ->where('campaign_id', '=', $campana->id)
+                ->where('electors.user_id', '=', Auth::user()->id)
+                ->paginate(10);
+
             $ocupaciones = Job::all();
-    
+
             if (!is_null($campana)) {
                 $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
                     $query->where('campaigns.id', '=', $campana->id);
@@ -50,10 +50,9 @@ class HomeController extends Controller
             } else {
                 $secciones = null;
             }
-    
+
             return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
-        }
-        else if (Auth::user()->roles[0]->name == 'Administrador' || Auth::user()->roles[0]->name == 'Agente'){
+        } else if (Auth::user()->roles[0]->name == 'Agente') {
             $user = Auth::user();
             //$campana = session()->get('campana');
             $campana = Campaign::find(1);
@@ -64,8 +63,9 @@ class HomeController extends Controller
             }
 
             return view('usuario.home', ['campana' => $campana, 'electores' => $electors]);
-        }
-        else{
+        } elseif (Auth::user()->roles[0]->name == 'Administrador') {
+            return redirect()->route('admin-inicio');
+        } else {
             abort(403);
         }
     }
