@@ -60,7 +60,7 @@ class adminController extends Controller
         $federalesCubiertos=Section::select('federal_district_id')->join('campaign_section','sections.id','=','campaign_section.section_id')->groupBy('sections.federal_district_id')->get()->count();
         $localesCubiertos=Section::select('local_district_id')->join('campaign_section','sections.id','=','campaign_section.section_id')->groupBy('sections.local_district_id')->get()->count();
         $municipiosCubiertos=Section::select('town_id')->join('campaign_section','sections.id','=','campaign_section.section_id')->groupBy('sections.town_id')->get()->count();
-        // dd($federalesCubiertos);
+        $entidadesCubiertas=Section::select('federal_entitie_id')->join('campaign_section','sections.id','=','campaign_section.section_id')->join('towns','sections.town_id','=','towns.id')->groupBy('towns.federal_entitie_id')->get()->count();
         return view('admin.inicio',[
             'totalUsers'=>$totalUsers,
             'totalAdmins'=>$totalAdmins,
@@ -79,7 +79,8 @@ class adminController extends Controller
             'seccionesCubiertas'=>$seccionesCubiertas,
             'federalesCubiertos'=>$federalesCubiertos,
             'localesCubiertos'=>$localesCubiertos,
-            'municipiosCubiertos'=>$municipiosCubiertos
+            'municipiosCubiertos'=>$municipiosCubiertos,
+            'entidadesCubiertas'=>$entidadesCubiertas
         ]);
     }
 

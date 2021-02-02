@@ -208,7 +208,7 @@ Inicio
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
             <div class="uk-width-auto@m uk-text-left">
                 <div class="uk-text-bold">Entidades federativas</div>
-                <div>5 entidades cubiertas</div>
+                <div>{{$entidadesCubiertas}} entidades cubiertas</div>
                 <br />
                 <div class="uk-text-bold">Distritos federales</div>
                 <div>{{$federalesCubiertos}} distritos cubiertos</div>
@@ -225,7 +225,7 @@ Inicio
             </div>
             <div class="uk-width-1-3@m">
                 <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
-                <canvas id="barChart" width="auto" height="200"></canvas>
+                {{-- <canvas id="barChart" width="auto" height="200"></canvas> --}}
             </div>
         </div>
     </div>
