@@ -303,7 +303,14 @@ class adminController extends Controller
     public function verCampanas()
     {
         Gate::authorize('haveaccess', 'admin.perm');
-        $campanas = Campaign::get();
-        return view('admin.campanas', ['campanas' => $campanas]);
+        $campanas = Campaign::with('user')->paginate(10);
+        $numcamp = Campaign::count();
+        $parties = PoliticPartie::get();
+        $agents = User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('status', 'activo')->where('role_user.role_id', 2)->get();
+        $locales = LocalDistrict::get();
+        $federales = FederalDistrict::get();
+        $municipios = Town::get();
+        $positions = Position::get();
+        return view('admin.campanas', ['campanas' => $campanas, 'parties' => $parties, 'agents' => $agents, 'locales' => $locales, 'federales' => $federales, 'municipios' => $municipios, 'positions' => $positions, 'numcamp' => $numcamp]);
     }
 }
