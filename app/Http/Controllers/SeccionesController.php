@@ -13,12 +13,13 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 class SeccionesController extends Controller
 {
-    function verSecciones()
+    protected $perPage = 10;
+
+    function verSecciones(Request $request)
     {
         //Recibe todas las secciones
 
-        //$campana = session()->get('campana');
-        $campana = Campaign::find(1);
+        $campana = session()->get('campana');
 
         $seccionesTabla = Section::paginate(10);
         $seccionesComp = Section::all();
@@ -59,7 +60,43 @@ class SeccionesController extends Controller
                 '60_64' => $rango60,
                 '65_mas' => $rango65
             ];
-            $secciones = $this->paginate($campana->section);
+            if (isset($request->busc)) {
+                $secciones = $campana->section->filter(function ($record) use ($request) {
+                    $normalizeChars = array(
+                        'Š' => 'S', 'š' => 's', 'Ð' => 'Dj', 'Ž' => 'Z', 'ž' => 'z', 'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A',
+                        'Å' => 'A', 'Æ' => 'A', 'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I',
+                        'Ï' => 'I', 'Ñ' => 'N', 'Ń' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U',
+                        'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'B', 'ß' => 'Ss', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
+                        'å' => 'a', 'æ' => 'a', 'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i',
+                        'ï' => 'i', 'ð' => 'o', 'ñ' => 'n', 'ń' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u',
+                        'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y', 'ƒ' => 'f',
+                        'ă' => 'a', 'î' => 'i', 'â' => 'a', 'ș' => 's', 'ț' => 't', 'Ă' => 'A', 'Î' => 'I', 'Â' => 'A', 'Ș' => 'S', 'Ț' => 'T',
+                    );
+                    $seccion = strtr($record->num_seccion, $normalizeChars);
+                    $seccion = strtolower($seccion);
+                    $busqueda = strtr($request->busc, $normalizeChars);
+                    $busqueda = strtolower($busqueda);
+                    $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+                    $out->writeln($busqueda);
+                    if (str_contains($seccion, $busqueda)) {
+                        return $record;
+                    }
+                });
+
+                $path = route('secciones') . '?busc=' . $request->busc;
+                $secciones = new LengthAwarePaginator(
+                    $secciones->slice((LengthAwarePaginator::resolveCurrentPage() *
+                            $this->perPage) - $this->perPage,
+                        $this->perPage
+                    )->all(),
+                    count($secciones),
+                    $this->perPage,
+                    null,
+                    ['path' => $path]
+                );
+            } else {
+                $secciones = $this->paginate($campana->section)->appends(request()->except('page'));
+            }
         } else {
             $rangos = null;
             $electors = null;
@@ -70,10 +107,10 @@ class SeccionesController extends Controller
         return view('usuario.secciones', ['datos' => $secciones, 'electores' => $electors, 'rangos' => $rangos]);
     }
 
-    function verSeccion($id)
+    function verSeccion($id, Request $request)
     {
         //$seccion = Section::where('id', $id)->get();
-        $campana = Campaign::find(1);
+        $campana = session()->get('campana');
 
         if (!is_null($campana)) {
             $electores = Elector::where('section_id', $id)->where('campaign_id', $campana->id)->get();
@@ -110,14 +147,50 @@ class SeccionesController extends Controller
                 '65_mas' => $rango65
             ];
 
-            $electores = $this->paginate($electores);
+            if (isset($request->busc)) {
+                $electores = $electores->filter(function ($record) use ($request) {
+                    $normalizeChars = array(
+                        'Š' => 'S', 'š' => 's', 'Ð' => 'Dj', 'Ž' => 'Z', 'ž' => 'z', 'À' => 'A', 'Á' => 'A', 'Â' => 'A', 'Ã' => 'A', 'Ä' => 'A',
+                        'Å' => 'A', 'Æ' => 'A', 'Ç' => 'C', 'È' => 'E', 'É' => 'E', 'Ê' => 'E', 'Ë' => 'E', 'Ì' => 'I', 'Í' => 'I', 'Î' => 'I',
+                        'Ï' => 'I', 'Ñ' => 'N', 'Ń' => 'N', 'Ò' => 'O', 'Ó' => 'O', 'Ô' => 'O', 'Õ' => 'O', 'Ö' => 'O', 'Ø' => 'O', 'Ù' => 'U', 'Ú' => 'U',
+                        'Û' => 'U', 'Ü' => 'U', 'Ý' => 'Y', 'Þ' => 'B', 'ß' => 'Ss', 'à' => 'a', 'á' => 'a', 'â' => 'a', 'ã' => 'a', 'ä' => 'a',
+                        'å' => 'a', 'æ' => 'a', 'ç' => 'c', 'è' => 'e', 'é' => 'e', 'ê' => 'e', 'ë' => 'e', 'ì' => 'i', 'í' => 'i', 'î' => 'i',
+                        'ï' => 'i', 'ð' => 'o', 'ñ' => 'n', 'ń' => 'n', 'ò' => 'o', 'ó' => 'o', 'ô' => 'o', 'õ' => 'o', 'ö' => 'o', 'ø' => 'o', 'ù' => 'u',
+                        'ú' => 'u', 'û' => 'u', 'ü' => 'u', 'ý' => 'y', 'ý' => 'y', 'þ' => 'b', 'ÿ' => 'y', 'ƒ' => 'f',
+                        'ă' => 'a', 'î' => 'i', 'â' => 'a', 'ș' => 's', 'ț' => 't', 'Ă' => 'A', 'Î' => 'I', 'Â' => 'A', 'Ș' => 'S', 'Ț' => 'T',
+                    );
+                    $elector = strtr($record->nombre, $normalizeChars);
+                    $elector = strtolower($elector);
+                    $busqueda = strtr($request->busc, $normalizeChars);
+                    $busqueda = strtolower($busqueda);
+                    $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+                    $out->writeln($busqueda);
+                    if (str_contains($elector, $busqueda)) {
+                        return $record;
+                    }
+                });
+
+                $path = route('seccion', ['id' => $id]) . '?busc=' . $request->busc;
+                $electores = new LengthAwarePaginator(
+                    $electores->slice((LengthAwarePaginator::resolveCurrentPage() *
+                            $this->perPage) - $this->perPage,
+                        $this->perPage
+                    )->all(),
+                    count($electores),
+                    $this->perPage,
+                    null,
+                    ['path' => $path]
+                );
+            } else {
+                $electores = $this->paginate($electores)->appends(request()->except('page'));
+            }
         } else {
             $electores = null;
             $rangos = null;
         }
 
         $seccion = Section::find($id);
-        return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores, 'rangos' => $rangos]);
+        return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores, 'rangos' => $rangos, 'id' => $id]);
     }
 
     /**

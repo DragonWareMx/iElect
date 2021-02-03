@@ -68,17 +68,23 @@ $g65 = $rangos['65_mas'];
                     <h3 class="uk-text-bold">Secciones</h3>
                 </div>
                 <div class="omrs-input-group uk-hidden@m">
-                    <label class="omrs-input-underlined input-outlined input-trail-icon">
-                        <input required />
-                        <span class="input-trail-icon" uk-icon="search"></span>
-                    </label>
+                    <form id="form-buscador" class="uk-modal-body" action="{{route('secciones')}}" method="get"
+                        style="padding: 0">
+                        <label class="omrs-input-underlined input-outlined input-trail-icon">
+                            <input name="busc" type="text" maxlength="100" />
+                            <span class="input-trail-icon" uk-icon="search"></span>
+                        </label>
+                    </form>
                 </div>
                 <div class="uk-position-small uk-position-top-right uk-visible@m">
                     <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
-                        </label>
+                        <form id="form-buscador" class="uk-modal-body" action="{{route('secciones')}}" method="get"
+                            style="padding: 0">
+                            <label class="omrs-input-underlined input-outlined input-trail-icon">
+                                <input name="busc" type="text" maxlength="100" required />
+                                <span class="input-trail-icon" uk-icon="search"></span>
+                            </label>
+                        </form>
                     </div>
                 </div>
             </div>
