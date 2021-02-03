@@ -51,35 +51,8 @@ class SimpatizanteController extends Controller
 
     public function simpatizantes(Request $request)
     {
-        if(Auth::user()->roles[0]->name == 'Brigadista'){
-            $campana = session()->get('campana');
 
-            //Recibe todas las secciones
-            $simpatizantes = Elector::select('users.name', 'electors.*')
-                                    ->join('users', 'users.id', '=', 'electors.user_id')
-                                    ->where('campaign_id','=',$campana->id)
-                                    ->where('electors.user_id','=',Auth::user()->id)
-                                    ->where('aprobado',1)
-                                    ->paginate(10);
-
-            $ocupaciones = Job::all();
-
-            if (!is_null($campana)) {
-                $secciones = Section::whereHas('campaign', function (Builder $query) use ($campana) {
-                    $query->where('campaigns.id', '=', $campana->id);
-                })->get();
-            } else {
-                $secciones = null;
-            }
-
-            /*
-            $localidades = LocalDistrict::whereHas('section', function (Builder $query) use ($campana) {
-                $query->where('section.id', '=', $campana->id);
-            })->get();*/
-
-            return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
-        }
-        else if(Auth::user()->roles[0]->name == 'Agente'){
+        if(Auth::user()->roles[0]->name == 'Agente' || Auth::user()->roles[0]->name == 'Admin'){
             //si no hay request se muestran todas las propiedades
             if(!$request->page && !$request->busc){
                 $campana = session()->get('campana');
@@ -94,7 +67,7 @@ class SimpatizanteController extends Controller
                 $total = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
                                 ->where('campaign_id','=',$campana->id)
-                                ->where('aprobado',1)->get()->count();
+                                ->get()->count();
                 $totalNA = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
                                 ->where('campaign_id','=',$campana->id)
@@ -233,6 +206,7 @@ class SimpatizanteController extends Controller
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('campaign_id','=',$campana->id)
                                         ->where('aprobado',0)
+                                        ->orderBy('created_at', 'ASC')
                                         ->paginate(10);
 
                 $totalNA = Elector::select('users.name', 'electors.*')
@@ -262,7 +236,8 @@ class SimpatizanteController extends Controller
                 $simpatizantes = Elector::select('users.name', 'electors.*')
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('campaign_id','=',$campana->id)
-                                        ->where('aprobado',1);
+                                        ->where('aprobado',0)
+                                        ->orderBy('created_at', 'ASC');
 
                 $total = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
@@ -324,6 +299,9 @@ class SimpatizanteController extends Controller
                         if(str_contains($apellido_m, $busqueda)) {
                             return $record;
                         }
+                        if(str_contains($nombre." ".$apellido_p." ".$apellido_m, $busqueda)) {
+                            return $record;
+                        }
                         if(str_contains($clave_elector, $busqueda)) {
                             return $record;
                         }
@@ -353,7 +331,7 @@ class SimpatizanteController extends Controller
                 }
 
                 //se manda la vista
-                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA]);
+                return view('usuario.simpatizantes_no_aprobados', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA]);
             }
         }
         else{
@@ -390,149 +368,201 @@ class SimpatizanteController extends Controller
             'foto_de_firma' => 'nullable|mimes:jpeg,jpg,png|image',
         ]);
 
+        if(intval(\Carbon\Carbon::parse($request->fecha_de_nacimiento)->diff(\Carbon\Carbon::now())->format('%y')) < 17){
+            return response()->json(['errors' => ['catch' => [0 => 'La fecha de nacimiento debe ser de una persona de 17 años o más.']]], 422);
+        }
+
+        DB::beginTransaction();
         try {
-            DB::transaction(function () use ($request) {
-                //SE CREA EL ELECTOR
-                $simpatizante = new Elector();
+            //SE CREA EL ELECTOR
+            $simpatizante = new Elector();
 
-                //UUID
-                $simpatizante->uuid = Uuid::generate()->string;
+            //UUID
+            $simpatizante->uuid = Uuid::generate()->string;
 
-                //DATOS PERSONALES
-                $simpatizante->nombre = $request->nombre;
-                $simpatizante->apellido_p = $request->apellido_paterno;
-                $simpatizante->apellido_m = $request->apellido_materno;
-                $simpatizante->email = $request->correo_electronico;
-                $simpatizante->sexo = $request->sexo;
-                //encuentra el trabajo
-                $trabajo = Job::where('nombre', '=', $request->trabajo)->first();
-                $simpatizante->job_id = $trabajo->id;
-                $simpatizante->telefono = $request->telefono;
-                $simpatizante->edo_civil = $request->estado_civil;
-                $simpatizante->fecha_nac = $request->fecha_de_nacimiento;
-                $simpatizante->clave_elector = $request->clave_elector;
+            //DATOS PERSONALES
+            $simpatizante->nombre = $request->nombre;
+            $simpatizante->apellido_p = $request->apellido_paterno;
+            $simpatizante->apellido_m = $request->apellido_materno;
+            $simpatizante->email = $request->correo_electronico;
+            $simpatizante->sexo = $request->sexo;
+            //encuentra el trabajo
+            $trabajo = Job::where('nombre', '=', $request->trabajo)->first();
+            $simpatizante->job_id = $trabajo->id;
+            $simpatizante->telefono = $request->telefono;
+            $simpatizante->edo_civil = $request->estado_civil;
+            $simpatizante->fecha_nac = $request->fecha_de_nacimiento;
+            $simpatizante->clave_elector = $request->clave_elector;
 
-                //DATOS DOMICILIO
-                $simpatizante->colonia = $request->colonia;
-                $simpatizante->calle = $request->calle;
-                $simpatizante->ext_num = $request->num_exterior;
-                $simpatizante->int_num = $request->num_interior;
-                $simpatizante->cp = $request->CP;
-                //se obtiene la campana
-                $campana = session()->get('campana');
-                //se obtiene la seccion
-                $seccion = Section::find($request->seccion);
+            //DATOS DOMICILIO
+            $simpatizante->colonia = $request->colonia;
+            $simpatizante->calle = $request->calle;
+            $simpatizante->ext_num = $request->num_exterior;
+            $simpatizante->int_num = $request->num_interior;
+            $simpatizante->cp = $request->CP;
+            //se obtiene la campana
+            $campana = session()->get('campana');
+            //se obtiene la seccion
+            $seccion = Section::find($request->seccion);
 
-                //FALTA: Que se verifique que la seccion sea de la campana
+            //FALTA: Que se verifique que la seccion sea de la campana
 
-                $simpatizante->localidad = $seccion->local_district->numero;
-                $simpatizante->municipio = $seccion->town->numero;
-                $simpatizante->section_id = $seccion->id;
-                $simpatizante->campaign_id = $campana->id;
-                $simpatizante->user_id = auth()->user()->id;
+            $simpatizante->localidad = $seccion->local_district->numero;
+            $simpatizante->municipio = $seccion->town->numero;
+            $simpatizante->section_id = $seccion->id;
+            $simpatizante->campaign_id = $campana->id;
+            $simpatizante->user_id = auth()->user()->id;
 
-                //OTROS DATOS
-                $simpatizante->facebook = $request->facebook;
-                $simpatizante->twitter = $request->twitter;
+            //OTROS DATOS
+            $simpatizante->facebook = $request->facebook;
+            $simpatizante->twitter = $request->twitter;
 
-                if ($request->foto_anverso) {
-                    $file = $request->file('foto_anverso');
+            if ($request->foto_anverso) {
+                $file = $request->file('foto_anverso');
 
-                    // Get File Content
-                    $fileContent = $file->get();
+                // Get File Content
+                $fileContent = $file->get();
 
-                    // Encrypt the Content
-                    $encryptedContent = encrypt($fileContent);
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
 
-                    $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
-                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $newFileName = $fileName . '_' . time();
+                $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
 
-                    // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
 
-                    $simpatizante->credencial_a = $newFileName;
-                }
-                if ($request->foto_inverso) {
-                    $file = $request->file('foto_inverso');
-
-                    // Get File Content
-                    $fileContent = $file->get();
-
-                    // Encrypt the Content
-                    $encryptedContent = encrypt($fileContent);
-
-                    $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
-                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $newFileName = $fileName . '_' . time();
-
-                    // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
-
-                    $simpatizante->credencial_r = $newFileName;
-                }
-                if ($request->foto_de_elector) {
-                    $file = $request->file('foto_de_elector');
-
-                    // Get File Content
-                    $fileContent = $file->get();
-
-                    // Encrypt the Content
-                    $encryptedContent = encrypt($fileContent);
-
-                    $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
-                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $newFileName = $fileName . '_' . time();
-
-                    // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
-
-                    $simpatizante->foto_elector = $newFileName;
-                }
-                if ($request->foto_de_firma) {
-                    $file = $request->file('foto_de_firma');
-
-                    // Get File Content
-                    $fileContent = $file->get();
-
-                    // Encrypt the Content
-                    $encryptedContent = encrypt($fileContent);
-
-                    $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
-                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                    $newFileName = $fileName . '_' . time();
-
-                    // Store the encrypted Content
-                    \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
-
-                    $simpatizante->documento = $newFileName;
-
-                    $simpatizante->save();
-                    Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
-                }
-            });
-            if ($request->ajax()) {
-                session()->flash('status', 'Simpatizante creado con éxito!');
-                return 200;
+                $simpatizante->credencial_a = $newFileName;
             }
+            if ($request->foto_inverso) {
+                $file = $request->file('foto_inverso');
+
+                // Get File Content
+                $fileContent = $file->get();
+
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
+
+                $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
+
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                $simpatizante->credencial_r = $newFileName;
+            }
+            if ($request->foto_de_elector) {
+                $file = $request->file('foto_de_elector');
+
+                // Get File Content
+                $fileContent = $file->get();
+
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
+
+                $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
+
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                $simpatizante->foto_elector = $newFileName;
+            }
+            if ($request->foto_de_firma) {
+                $file = $request->file('foto_de_firma');
+
+                // Get File Content
+                $fileContent = $file->get();
+
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
+
+                $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
+
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                $simpatizante->documento = $newFileName; 
+            }
+            $simpatizante->save();
+
+            Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
+
+            session()->flash('status', 'Simpatizante creado con éxito!');
+
+            DB::commit();
+            return response()->json(200);
         } catch (QueryException $ex) {
             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $out->writeln($ex);
-            if ($request->ajax()) {
-                return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
-            }
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         } catch (Exception $ex) {
             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $out->writeln($ex);
-            if ($request->ajax()) {
-                return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
-            }
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         } catch (Throwable $ex) {
             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $out->writeln($ex);
-            if ($request->ajax()) {
-                return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
-            }
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         }
+        catch (Error $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+    }
+
+    public function aprobarSimpatizantes(Request $request)
+    {
+        //FALTA: VALIDAR EL ROL
+        $data = request()->validate([
+            'seleccion.*' => 'nullable|exists:electors,id'
+        ]);
+
+        DB::beginTransaction();
+        try {
+            foreach ($request->seleccion as $id) {
+                $elector = Elector::find($id);
+                $elector->aprobado = 1;
+                $elector->save();
+            }
+            
+            session()->flash('status', 'Simpatizante creado con éxito!');
+
+            DB::commit();
+            return response()->json(200);
+        } catch (QueryException $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        } catch (Exception $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        } catch (Throwable $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+        catch (Error $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+        DB::rollBack();
+        return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
     }
 }

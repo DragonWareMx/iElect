@@ -86,11 +86,6 @@ Simpatizantes
                         height="auto" alt="" uk-img />
                 </div>
             </div>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Editar
-                </button>
-            </p>
         </div>
     </div>
 </div>
@@ -148,64 +143,69 @@ Simpatizantes
             <h5 class="uk-text-bold uk-padding-small" style="margin: 0">Información por sección</h5>
             <!-- Tabla -->
             <div class="uk-overflow-auto uk-padding-small">
-                <form id="form-aprobar" class="uk-modal-body" action="{{ route('simpatizantes') }}" method="post">
+                <form id="form-aprobar" class="uk-modal-body" action="{{ route('aprobar-simpatizante') }}" method="post">
+                    @csrf
+                    @method('PATCH')
                     <div class="uk-flex">
-                    <table class="uk-table uk-table-small uk-table-divider">
-                        <thead class="uk-background-muted">
-                            <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>Sexo</th>
-                                <th>Edad</th>
-                                <th>Ocupación</th>
-                                <th>Sección electoral</th>
-                                <th>Clave de elecetor</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-simps">
-                            @php
-                            $contador = 1;
-                            @endphp
-                            @foreach ($simpatizantes as $simpatizante)
-                            <tr data-id="{{$simpatizante->id}}">
-                                <td>#{{ $contador }}</td>
-                                <td>{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
-                                </td>
-                                <td>{{ $simpatizante->sexo }}</td>
-                                <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años') }}
-                                </td>
-                                <td>{{ $simpatizante->job->nombre }}</td>
-                                <td>{{ $simpatizante->section->num_seccion }}</td>
-                                <td>{{ $simpatizante->clave_elector }}</td>
+                        <table class="uk-table uk-table-small uk-table-divider">
+                            <thead class="uk-background-muted">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Sexo</th>
+                                    <th>Edad</th>
+                                    <th>Ocupación</th>
+                                    <th>Sección</th>
+                                    <th>Clave de elecetor</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-simps">
                                 @php
-                                $contador++;
+                                $contador = 1;
                                 @endphp
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                    <table class="uk-table uk-table-small uk-table-divider uk-width-1-5 uk-margin-remove">
-                        <thead class="uk-background-muted">
-                            <tr>
-                                <th>Selección</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @php
-                            $contador = 1;
-                            @endphp
-                            @foreach ($simpatizantes as $simpatizante)
-                            <tr>
-                                <td><input type="checkbox" name="hobby[]" value="{{ $simpatizante->id }}"></td>
-                                
+                                @foreach ($simpatizantes as $simpatizante)
+                                <tr data-id="{{$simpatizante->id}}">
+                                    <td>#{{ $contador }}</td>
+                                    <td class="uk-text-truncate" uk-tooltip="{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}">{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
+                                    </td>
+                                    <td>{{ $simpatizante->sexo }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años') }}
+                                    </td>
+                                    <td>{{ $simpatizante->job->nombre }}</td>
+                                    <td>{{ $simpatizante->section->num_seccion }}</td>
+                                    <td>{{ $simpatizante->clave_elector }}</td>
+                                    @php
+                                    $contador++;
+                                    @endphp
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                        <table class="uk-table uk-table-small uk-table-divider uk-width-1-5 uk-margin-remove">
+                            <thead class="uk-background-muted">
+                                <tr>
+                                    <th>Selección</th>
+                                </tr>
+                            </thead>
+                            <tbody>
                                 @php
-                                $contador++;
+                                $contador = 1;
                                 @endphp
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                                @foreach ($simpatizantes as $simpatizante)
+                                <tr>
+                                    <td><input type="checkbox" name="seleccion[]" value="{{ $simpatizante->id }}"></td>
+                                    
+                                    @php
+                                    $contador++;
+                                    @endphp
+                                </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
+                    <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
+                        Aprobar seleccionados
+                    </button>
                 </form>
                 {!! $simpatizantes->links() !!}
             </div>

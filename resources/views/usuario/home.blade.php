@@ -14,18 +14,18 @@ $simpatizantes = 0;
 $porcentaje = 0;
 $countS = array_count_values($electores->pluck('sexo')->toArray());
 if(count($countS) != 0){
-if (isset($countS['h'])) {
-$hombres = $countS['h'];
-}else{
-$hombres = 0;
-}
-
-if (isset($count['m'])) {
-$mujeres = $countS['m'];
-}else{
-$mujeres = 0;
-}
-
+    if (isset($countS['h'])) {
+        $hombres = $countS['h'];
+    }else{
+        $hombres = 0;
+    }
+    
+    if (isset($countS['m'])) {
+        $mujeres = $countS['m'];
+    }else{
+        $mujeres = 0;
+    }
+    
 $total = $hombres + $mujeres;
 $porcH = round(($hombres * 100)/$total, 2);
 $porcM = round(($mujeres * 100)/$total, 2);

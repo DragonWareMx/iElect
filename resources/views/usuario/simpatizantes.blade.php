@@ -104,12 +104,12 @@ Simpatizantes
         <div class="uk-modal-header">
             <h2 class="uk-modal-title">Agregar simpatizante</h2>
         </div>
-        <div id="errors" class="uk-alert-danger" uk-alert style="display:none;"></div>
         {{-- enctype="multipart/form-data" --}}
         <form id="form-nuevo-simp" class="uk-modal-body" action="{{ route('agregar-simpatizante') }}" method="POST"
             enctype="multipart/form-data">
             <div class="uk-modal-body">
                 @csrf
+                <div id="errors" class="uk-alert-danger" uk-alert style="display:none;"></div>
                 <div uk-grid>
                     <!-- Lado izquierdo -->
                     <div class="uk-width-1-2@m">

@@ -35,14 +35,20 @@ class HomeController extends Controller
             $campana = session()->get('campana');
 
             //Recibe todas las secciones
-            $simpatizantes = Elector::select('users.name', 'electors.*')
-                ->join('users', 'users.id', '=', 'electors.user_id')
-                ->where('campaign_id', '=', $campana->id)
-                ->where('electors.user_id', '=', Auth::user()->id);
 
-            $total = $simpatizantes->get()->count();
+            $total = Elector::select('users.name', 'electors.*')
+                            ->join('users', 'users.id', '=', 'electors.user_id')
+                            ->where('campaign_id', '=', $campana->id)
+                            ->where('electors.user_id', '=', Auth::user()->id)->get()->count();
 
-            $simpatizantes = $simpatizantes->paginate(10);
+            $totalNA = Elector::select('users.name', 'electors.*')
+                            ->join('users', 'users.id', '=', 'electors.user_id')
+                            ->where('campaign_id', '=', $campana->id)
+                            ->where('electors.user_id', '=', Auth::user()->id)
+                            ->where('aprobado',0)
+                            ->get()
+                            ->count();
+
 
             $ocupaciones = Job::all();
 
@@ -54,7 +60,7 @@ class HomeController extends Controller
                 $secciones = null;
             }
 
-            return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total]);
+            return view('usuario.simpatizantes', ['secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA]);
         } else if (Auth::user()->roles[0]->name == 'Agente') {
             $user = Auth::user();
             //$campana = session()->get('campana');
