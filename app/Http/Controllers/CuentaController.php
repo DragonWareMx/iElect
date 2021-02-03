@@ -39,9 +39,7 @@ class CuentaController extends Controller
                 $userBrigadista = true;
             }
         }
-        // $campañas= Campaign::join('campaign_user', 'campaigns.id', '=', 'campaign_user.campaign_id')->where('campaign_user.user_id',$user->id)->orderBy('campaigns.created_at', 'desc')->get();
-        $campañas = Campaign::find(1);
-        // dd($campañas);
+        $campañas = session()->get('campana');
         return view('usuario.ajustes',['agente' => $userAgente, 'brigadista' => $userBrigadista, 'campana' => $campañas]);
     }
 
@@ -83,21 +81,18 @@ class CuentaController extends Controller
                         $user->password=bcrypt(request('password'));
                         
                         
+                        $oldFile = public_path() . '/storage/uploads/' . $user->avatar;
+                        if (file_exists($oldFile)) {
+                            unlink($oldFile);
+                        }
                         $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
                         $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
                         $extension = request('fileField')->getClientOriginalExtension();
                         $newFileName = $fileName . '_' . time() . '.' . $extension;
-                        $path = request('fileField')->storeAs('/public/avatar/', $newFileName);
+                        $path = request('fileField')->storeAs('/public/uploads/', $newFileName);
                         $user->avatar = $newFileName;
-                
-                        $oldImage=public_path().'/public/avatar/'.$user->avatar;
-                        if(file_exists($oldImage)){
-                            unlink($oldImage);
-                        }
-                        
-                        $user->avatar=$newFileName;
                         $user->save();
-                        
+
                         // dd('Actualizando contraseña bien');
                         \DB::commit();
                         return redirect('ajustes/cuenta')->with('status', 'Se actualizaron los datos correctamente');
@@ -110,19 +105,16 @@ class CuentaController extends Controller
                 // Se actualiza solo la foto
                 else if (request('fileField')!=null && request('password')==null && request('passActual')==null && request('cfmPassword')==null){
 
+                    $oldFile = public_path() . '/storage/uploads/' . $user->avatar;
+                    if (file_exists($oldFile)) {
+                        unlink($oldFile);
+                    }
                     $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
                     $extension = request('fileField')->getClientOriginalExtension();
                     $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('fileField')->storeAs('/public/avatar/', $newFileName);
+                    $path = request('fileField')->storeAs('/public/uploads/', $newFileName);
                     $user->avatar = $newFileName;
-            
-                    $oldImage=public_path().'/public/avatar/'.$user->avatar;
-                    if(file_exists($oldImage)){
-                        unlink($oldImage);
-                    }
-
-                    $user->avatar=$newFileName;
                     $user->save();
                     \DB::commit();
                         return redirect('ajustes/cuenta')->with('status', 'Se actualizaron los datos correctamente');
@@ -171,19 +163,16 @@ class CuentaController extends Controller
                         $user->password=bcrypt(request('password'));
                         
                         
+                        $oldFile = public_path() . '/storage/uploads/' . $user->avatar;
+                        if (file_exists($oldFile)) {
+                            unlink($oldFile);
+                        }
                         $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
                         $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
                         $extension = request('fileField')->getClientOriginalExtension();
                         $newFileName = $fileName . '_' . time() . '.' . $extension;
-                        $path = request('fileField')->storeAs('/public/avatar/', $newFileName);
+                        $path = request('fileField')->storeAs('/public/uploads/', $newFileName);
                         $user->avatar = $newFileName;
-                
-                        $oldImage=public_path().'/public/avatar/'.$user->avatar;
-                        if(file_exists($oldImage)){
-                            unlink($oldImage);
-                        }
-                        
-                        $user->avatar=$newFileName;
                         $user->name=request('nombre');
                         $user->save();
                         
@@ -199,19 +188,17 @@ class CuentaController extends Controller
                 // Se actualiza solo la foto
                 else if (request('fileField')!=null && request('password')==null && request('passActual')==null && request('cfmPassword')==null){
 
+                    $oldFile = public_path() . '/storage/uploads/' . $user->avatar;
+                    if (file_exists($oldFile)) {
+                        unlink($oldFile);
+                    }
                     $fileNameWithTheExtension = request('fileField')->getClientOriginalName();
                     $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
                     $extension = request('fileField')->getClientOriginalExtension();
                     $newFileName = $fileName . '_' . time() . '.' . $extension;
-                    $path = request('fileField')->storeAs('/public/avatar/', $newFileName);
+                    $path = request('fileField')->storeAs('/public/uploads/', $newFileName);
                     $user->avatar = $newFileName;
-            
-                    $oldImage=public_path().'/public/avatar/'.$user->avatar;
-                    if(file_exists($oldImage)){
-                        unlink($oldImage);
-                    }
 
-                    $user->avatar=$newFileName;
                     $user->name=request('nombre');
                     $user->save();
                     \DB::commit();
