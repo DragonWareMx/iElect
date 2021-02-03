@@ -364,7 +364,8 @@ class adminController extends Controller
     {
         Gate::authorize('haveaccess', 'admin.perm');
         $campana = Campaign::findOrFail($id);
-        return view('admin.campana', ['campana' => $campana]);
+        $secciones=$campana->section()->paginate(20);
+        return view('admin.campana', ['campana' => $campana,'secciones'=>$secciones]);
     }
 
     public function editarSeccion(Request $request, $id){
