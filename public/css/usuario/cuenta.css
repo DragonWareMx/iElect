@@ -20,13 +20,14 @@
 .omrs-input-group input{
     border: solid 1px #E5E5E5 !important;
     transition: all ease-in-out 0.25s;
+    background-color: transparent !important;
 }
 
 .omrs-input-group input:hover, .omrs-input-group input:focus{
     border: solid 1px #007AFF !important;
     transition: all ease-in-out 0.25s;
     background-color: transparent !important;
-}
+} 
 
 #passActual-error, #password-error, #cfmPassword-error{
     font-size: 13px;

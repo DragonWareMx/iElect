@@ -5,6 +5,7 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Log In</title>
+    <link rel="stylesheet" href="{{asset('css/usuario/cuenta.css')}}" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
     @include('subviews.imports')
@@ -43,7 +44,7 @@
                         </div>
                         <!--Input contraseña-->
                         <div class="uk-margin">
-                            <div class="omrs-input-group">
+                            <div class="omrs-input-group"> 
                                 <label class="omrs-input-underlined input-outlined input-lead-icon">
                                     <input id="password" type="password" name="password" required
                                         autocomplete="current-password" />
