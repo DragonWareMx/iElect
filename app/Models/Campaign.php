@@ -27,7 +27,7 @@ class Campaign extends Model
     }
     public function section()
     {
-        return $this->belongsToMany('App\Models\Section')->withPivot('meta', 'prioridad');
+        return $this->belongsToMany('App\Models\Section')->withPivot('meta', 'prioridad','id');
     }
     public function elector()
     {
