@@ -228,3 +228,6 @@ Route::delete('/admin/eliminar/campana/{id}', 'adminController@eliminarCampana')
 
 //Rutas para ver campaña
 Route::get('/admin/campana/{id}', 'adminController@verCampana')->name('ver-campana');
+
+//Rutas para ver campaña
+Route::patch('/admin/editar/seccion/{id}', 'adminController@editarSeccion')->name('editar-secction');
