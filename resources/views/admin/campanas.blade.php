@@ -22,7 +22,7 @@ Campañas
                     <!-- Avatar -->
                     <div class="avatar-wrapper uk-text-center uk-margin-medium-bottom">
                         <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="150"
-                            height="150" alt="Border circle" id="info-foto" style="object-fit:cover" />
+                            height="150" alt="Border circle" id="info-foto" style="object-fit:cover;height:150px;" />
                     </div>
                     <!--Grid DATOS-->
                     <div uk-grid>
