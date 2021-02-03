@@ -126,14 +126,14 @@ Campañas
                     Agregar campaña
                     <span uk-icon="icon: plus" class="uk-margin-left"></span>
                 </button>
-                <div class="uk-visible@m">
+                <form action="/admin/campanas" method="get">
                     <div class="omrs-input-group">
                         <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
+                            <input name="search" />
+                            <button type="submit" class="input-trail-icon" uk-icon="search"></button>
                         </label>
                     </div>
-                </div>
+                </form>
             </div>
 
             <!-- Tabla -->
