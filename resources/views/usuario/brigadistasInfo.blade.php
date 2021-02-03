@@ -9,6 +9,13 @@ Brigadistas
 @endsection
 
 @section('body')
+@php
+    $totalBrigadistas=0;
+    foreach($brigadistas as $b) {
+        $totalBrigadistas++;
+    }
+@endphp
+
 <!-- Contenido de la página -->
 <div class="uk-margin uk-margin-left uk-margin-right">
     <!-- Card de SECCION -->
@@ -16,16 +23,19 @@ Brigadistas
         <div class="uk-card uk-card-default">
             <!-- HEADER --> 
             <div class="uk-padding-small uk-flex uk-flex-middle">
-                <h3 class="uk-text-bold">Brigadistas</h3>
-                <p class="uk-margin-left" style="margin-top: 0 !important">Total: 5879 brigadistas</p>
+                <h3 class="uk-text-bold">Brigadistas</h3> 
+                <p class="uk-margin-left" style="margin-top: 0 !important">Total: {{$totalBrigadistas}} brigadista(s)</p>
             </div>
 
             <div class="uk-hidden@m">
                 <div class="omrs-input-group">
-                    <label class="omrs-input-underlined input-outlined input-trail-icon">
-                        <input required />
-                        <span class="input-trail-icon" uk-icon="search"></span>
-                    </label>
+                    <form id="form-buscador" class="uk-modal-body" action="{{ route('brigadistas') }}"
+                        method="get" style="padding: 0">
+                        <label class="omrs-input-underlined input-outlined input-trail-icon">
+                            <input name="busc" type="text" maxlength="100" />
+                            <span class="input-trail-icon" uk-icon="search"></span>
+                        </label>
+                    </form>
                 </div>
             </div>
             <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
@@ -64,24 +74,10 @@ Brigadistas
                                         <td>{{$b->bFecha}}</td>
                                     </tr>
                                 @endforeach
-                                {{-- @foreach($brigadistas as $b) 
-                                    
-                                    <tr>
-                                        <td>{{$b->id}}</td>
-                                        <td>{{$b->name}}</td>
-                                        <td>{{$b->email}}</td>
-                                        <td>NN</td>
-                                        @foreach ($campanas as $c)
-                                            @if($c->id == $b->campaign_id)
-                                                <td>{{$c->codigo}}</td>
-                                            @endif
-                                        @endforeach
-                                        <td>{{$b->created_at}}</td>
-                                    </tr>
-                                @endforeach --}}
                             </tbody>
                         </table>
-                        <ul class="uk-pagination uk-flex-center" uk-margin>
+                        {!! $brigadistas->links() !!}
+                        {{-- <ul class="uk-pagination uk-flex-center" uk-margin>
                             <li>
                                 <a href="#"><span uk-pagination-previous></span></a>
                             </li>
@@ -94,7 +90,7 @@ Brigadistas
                             <li>
                                 <a href="#"><span uk-pagination-next></span></a>
                             </li>
-                        </ul>
+                        </ul> --}}
                     </div>
                 </div>
                 <div class="uk-width-1-4@m">
