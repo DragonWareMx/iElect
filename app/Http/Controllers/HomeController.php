@@ -38,8 +38,11 @@ class HomeController extends Controller
             $simpatizantes = Elector::select('users.name', 'electors.*')
                 ->join('users', 'users.id', '=', 'electors.user_id')
                 ->where('campaign_id', '=', $campana->id)
-                ->where('electors.user_id', '=', Auth::user()->id)
-                ->paginate(10);
+                ->where('electors.user_id', '=', Auth::user()->id);
+
+            $total = $simpatizantes->get()->count();
+
+            $simpatizantes = $simpatizantes->paginate(10);
 
             $ocupaciones = Job::all();
 
@@ -51,7 +54,7 @@ class HomeController extends Controller
                 $secciones = null;
             }
 
-            return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones]);
+            return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total]);
         } else if (Auth::user()->roles[0]->name == 'Agente') {
             $user = Auth::user();
             //$campana = session()->get('campana');

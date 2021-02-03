@@ -122,6 +122,8 @@ Route::get('/brigadistas/solicitudes', function () {
 /****** SIMPATIZANTES ******/
 //Simpatizantes
 Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simpatizantes')->middleware('auth')->middleware(CheckCamp::class);
+//Simpatizantes
+Route::get('/simpatizantes/no_aprobados', 'simpatizanteController@simpatizantes_no_aprobados')->name('simpatizantes_no_aprobados')->middleware('auth')->middleware(CheckCamp::class);
 
 //Simpatizantes
 Route::get('/simpatizantes/solicitudes', function () {

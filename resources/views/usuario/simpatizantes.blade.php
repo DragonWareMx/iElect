@@ -387,7 +387,8 @@ Simpatizantes
             <!-- HEADER -->
             <div class="uk-padding-small uk-flex uk-flex-middle">
                 <h3 class="uk-text-bold">Simpatizantes</h3>
-                <p class="uk-margin-left" style="margin-top: 0">Total: {{ $simpatizantes->count() }} simpatizantes</p>
+                <p class="uk-margin-left" style="margin-top: 0">Total: {{ $total }} simpatizantes</p>
+                <p class="uk-margin-left" style="margin-top: 0">Total: {{ $totalNA }} simpatizantes no aprobados</p>
             </div>
 
             <div>
@@ -437,6 +438,7 @@ Simpatizantes
             </div>
 
             @if (Auth::user()->roles[0]->name == 'Agente')
+            <a class="uk-padding-small" href="{{ route('simpatizantes_no_aprobados') }}">Ver simpatizantes no aprobados</a>
             @if ($simpatizantes && count($simpatizantes) > 0)
             <h5 class="uk-text-bold uk-padding-small" style="margin: 0">Información por sección</h5>
             <!-- Tabla -->
