@@ -128,7 +128,7 @@ Simpatizantes
                     <div class="omrs-input-group">
                         <form id="form-buscador" class="uk-modal-body" action="{{ route('simpatizantes_no_aprobados') }}" method="get">
                             <label class="omrs-input-underlined input-outlined input-trail-icon">
-                                <input name="busc" type="text" maxlength="100"/>
+                                <input name="busc" type="text" maxlength="100" @if(isset($busqueda)) value="{{$busqueda}}"@endif/>
                                 <span class="input-trail-icon" uk-icon="search"></span>
                             </label>
                         </form>
@@ -146,6 +146,7 @@ Simpatizantes
                 <form id="form-aprobar" class="uk-modal-body" action="{{ route('aprobar-simpatizante') }}" method="post">
                     @csrf
                     @method('PATCH')
+                    <div id="errors" class="uk-alert-danger" uk-alert style="display:none;"></div>
                     <div class="uk-flex">
                         <table class="uk-table uk-table-small uk-table-divider">
                             <thead class="uk-background-muted">
@@ -210,7 +211,7 @@ Simpatizantes
                 {!! $simpatizantes->links() !!}
             </div>
             @else
-            <h5 class="uk-text-bold uk-padding-small" style="margin: 0">No hay simpatizantes registrados</h5>
+            <h5 class="uk-text-bold uk-padding-small" style="margin: 0">No hay simpatizantes no aprobados</h5>
             @endif
             @endif
         </div>
@@ -290,6 +291,87 @@ Simpatizantes
                 }
                 UIkit.modal("#modal-datos-simp").toggle();
             });
+        });
+    </script>
+    {{-- SCRIPT AGREGAR --}}
+    <script>
+        //ajax del form de nuevo
+        $("#form-aprobar").bind("submit",function(){
+            // Capturamnos el boton de envío
+            var btnEnviar = $("#btnEnviar");
+
+            $.ajax({
+                type: $(this).attr("method"),
+                url: $(this).attr("action"),
+                data: $(this).serialize(),
+                beforeSend: function(data){
+                    /*
+                    * Esta función se ejecuta durante el envió de la petición al
+                    * servidor.
+                    * */
+                    // btnEnviar.text("Enviando"); Para button
+                    btnEnviar.val("Enviando"); // Para input de tipo button
+                    btnEnviar.attr("disabled","disabled");
+                },
+                complete:function(data){
+                    /*
+                    * Se ejecuta al termino de la petición
+                    * */
+                    btnEnviar.val("Enviar formulario");
+                },
+                success: function(data){
+                    /*
+                    * Se ejecuta cuando termina la petición y esta ha sido
+                    * correcta
+                    * */
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> Simpatizantes aprobados con éxito!',
+                        status: 'success',
+                        pos: 'top-center',
+                        timeout: 2000
+                    });
+                    $('#errors').css('display', 'none');
+                    setTimeout(
+                    function()
+                    {
+                        window.location.reload(true);
+                    }, 2000);
+                },
+                error: function(data){
+                    console.log(data);
+                    // $('#success').css('display', 'none');
+                    btnEnviar.removeAttr("disabled");
+                    $('#errors').css('display', 'block');
+                    var errors = data.responseJSON.errors;
+                    var errorsContainer = $('#errors');
+                    errorsContainer.innerHTML = '';
+                    var errorsList = '';
+                    // for (var i = 0; i < errors.length; i++) {
+                    // //     //if(errors[i].redirect)
+                    // //         //window.location.href = window.location.origin + '/logout'
+
+                    //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                    // }
+                    for(var key in errors){
+                        var obj=errors[key];
+                        console.log(obj);
+                        for(var yek in obj){
+                            var error=obj[yek];
+                            console.log(error);
+                            errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                        }
+                    }
+                    errorsContainer.html(errorsList);
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                        status: 'danger',
+                        pos: 'top-center',
+                        timeout: 2000
+                    });
+                }
+            });
+            // Nos permite cancelar el envio del formulario
+            return false;
         });
     </script>
     @endif

@@ -157,6 +157,9 @@ class SimpatizanteController extends Controller
                         if(str_contains($apellido_m, $busqueda)) {
                             return $record;
                         }
+                        if(str_contains($nombre." ".$apellido_p." ".$apellido_m, $busqueda)) {
+                            return $record;
+                        }
                         if(str_contains($clave_elector, $busqueda)) {
                             return $record;
                         }
@@ -182,11 +185,12 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
-                    $simpatizantes = $simpatizantes->paginate(2)->appends(request()->except('page'));
+                    $simpatizantes = $simpatizantes->paginate(10)->appends(request()->except('page'));
                 }
 
+                $busc = $request->busc;
                 //se manda la vista
-                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA]);
+                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA, 'busqueda'=>$busc]);
             }
         }
         else{
@@ -260,7 +264,7 @@ class SimpatizanteController extends Controller
                     $secciones = null;
                 }
 
-                //si hay request de la busqueda deal se obtienen solo los simpatizantes que coinciden
+                //si hay request de la busqueda se obtienen solo los simpatizantes que coinciden
                 if(isset($request->busc)){
                     $simpatizantes = $simpatizantes->get()->filter(function($record) use($request) {
                         $normalizeChars = array(
@@ -327,11 +331,13 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
-                    $simpatizantes = $simpatizantes->paginate(2)->appends(request()->except('page'));
+                    $simpatizantes = $simpatizantes->paginate(10)->appends(request()->except('page'));
                 }
 
+                $busc = $request->busc;
+
                 //se manda la vista
-                return view('usuario.simpatizantes_no_aprobados', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA]);
+                return view('usuario.simpatizantes_no_aprobados', ['simpatizantes' => $simpatizantes, 'secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA,'busqueda'=>$busc]);
             }
         }
         else{
@@ -528,12 +534,18 @@ class SimpatizanteController extends Controller
             'seleccion.*' => 'nullable|exists:electors,id'
         ]);
 
+        if(!isset($request->seleccion)){
+            return response()->json(['errors' => ['catch' => [0 => 'No se ha seleccionado ningún simpatizante.']]], 422);
+        }
+
         DB::beginTransaction();
         try {
+            $contador = 0;
             foreach ($request->seleccion as $id) {
                 $elector = Elector::find($id);
                 $elector->aprobado = 1;
                 $elector->save();
+                $contador++;
             }
             
             session()->flash('status', 'Simpatizante creado con éxito!');

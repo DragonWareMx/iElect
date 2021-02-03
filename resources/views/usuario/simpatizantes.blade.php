@@ -429,7 +429,7 @@ Simpatizantes
                         <form id="form-buscador" class="uk-modal-body" action="{{ route('simpatizantes') }}"
                             method="get" style="padding: 0">
                             <label class="omrs-input-underlined input-outlined input-trail-icon">
-                                <input name="busc" type="text" maxlength="100" />
+                                <input name="busc" type="text" maxlength="100" @if(isset($busqueda)) value="{{$busqueda}}" @endif/>
                                 <span class="input-trail-icon" uk-icon="search"></span>
                             </label>
                         </form>
