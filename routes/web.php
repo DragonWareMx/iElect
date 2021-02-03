@@ -111,13 +111,9 @@ Route::get('/seccion/{id}', 'SeccionesController@verSeccion')->name('seccion');
 
 /****** BRIGADISTAS ******/
 //Brigadistas
-Route::get('/brigadistas', function () {
-    return view('usuario.brigadistas');
-})->name('brigadistas');
+Route::get('/brigadistas', 'brigadistasInfoController@index')->name('brigadistas')->middleware(CheckCamp::class); 
 
-Route::get('/brigadistas/solicitudes', function () {
-    return view('usuario.brigadistas_solicitudes');
-})->name('brigadistas_sol');
+Route::get('/brigadistas/solicitudes', 'brigadistasInfoController@solicitudes')->name('brigadistas_sol');
 
 /****** SIMPATIZANTES ******/
 //Simpatizantes
