@@ -19,6 +19,7 @@ class UserSeeder extends Seeder
         DB::table('users')->insert([
             'name' => 'DragonWare',
             'email' =>  'test@dragonware.com.mx',
+            'avatar' =>  'img/avatar/monita.jpg',
             'password' => Hash::make('viledruid9000'),
         ]);
 
