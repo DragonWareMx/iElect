@@ -9,6 +9,8 @@ Seccion
 
 <!-- CSS de Seccion -->
 <link rel="stylesheet" href="{{asset('css/usuario/seccion.css')}}" />
+<!-- CSS Avatar -->
+<link rel="stylesheet" href="{{asset('css/usuario/cuenta.css')}}" />
 @endsection
 
 @php
@@ -152,8 +154,9 @@ $g65 = 0;
                 <div class="uk-width-1-2@m">
                     <!-- Avatar -->
                     <div class="avatar-wrapper uk-text-center">
-                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="150"
-                            height="150" alt="Border circle" />
+                        <img id="simp_edit_foto" class="profile-pic uk-border-circle"
+                            src="{{asset('img/icons/default.png')}}" width="150" height="150" alt="Border circle"
+                            uk-img />
                     </div>
                     <div class="uk-text-bold">Nombre</div>
                     <div id="simp_edit_nombre">José Agustín Aguilar Solórzano</div>
@@ -194,15 +197,21 @@ $g65 = 0;
                             <div id="simp_edit_tw">link</div>
                             <br />
                             <div class="uk-text-bold">Brigadista</div>
-                            <div>#######</div>
+                            <div id="simp_edit_brigadista">#######</div>
                             <br />
                         </div>
                     </div>
                 </div>
                 <div class="uk-width-1-2@m">
-                    <img id="simp_edit_front" class="uk-margin-bottom" data-src="img/test/ine_front.jpg" width="75%"
+                    <div class="uk-text-bold" id="simp_edit_front_t">Foto de credencial anverso</div>
+                    <img id="simp_edit_front" class="uk-margin-bottom" src="img/test/ine_front.jpg" width="75%"
                         height="auto" alt="" uk-img />
-                    <img id="simp_edit_back" data-src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
+                    <div class="uk-text-bold" id="simp_edit_back_t">Foto de credencial inverso</div>
+                    <img id="simp_edit_back" class="uk-margin-bottom" src="img/test/ine_back.jpg" width="75%"
+                        height="auto" alt="" uk-img />
+                    <div class="uk-text-bold" id="simp_edit_firma_t">Foto de firma</div>
+                    <img id="simp_edit_firma" class="uk-margin-bottom" src="img/test/ine_back.jpg" width="75%"
+                        height="auto" alt="" uk-img />
                 </div>
             </div>
             <p class="uk-text-right">
@@ -376,19 +385,25 @@ $g65 = 0;
                 </div>
                 <div class="uk-hidden@m">
                     <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
-                        </label>
+                        <form id="form-buscador" class="uk-modal-body" action="{{route('seccion', ['id'=>$id])}}"
+                            method="get" style="padding: 0">
+                            <label class="omrs-input-underlined input-outlined input-trail-icon">
+                                <input name="busc" type="text" maxlength="100" />
+                                <span class="input-trail-icon" uk-icon="search"></span>
+                            </label>
+                        </form>
                     </div>
                 </div>
                 <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
                     <div class="uk-visible@m">
                         <div class="omrs-input-group">
-                            <label class="omrs-input-underlined input-outlined input-trail-icon">
-                                <input required />
-                                <span class="input-trail-icon" uk-icon="search"></span>
-                            </label>
+                            <form id="form-buscador" class="uk-modal-body" action="{{route('seccion', ['id'=>$id])}}"
+                                method="get" style="padding: 0">
+                                <label class="omrs-input-underlined input-outlined input-trail-icon">
+                                    <input name="busc" type="text" maxlength="100" required />
+                                    <span class="input-trail-icon" uk-icon="search"></span>
+                                </label>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -621,10 +636,41 @@ $g65 = 0;
             $('#simp_edit_face').html(obj['facebook']);
             $('#simp_edit_tw').html(obj['twitter']);
             //aqui falta lo del brigadista
+            $('#simp_edit_brigadista').html(obj['name']);
 
             //aqui empieza lo de las fotos del ine
-            $("#simp_edit_front").attr("data-src","storage/uploads/"+obj['credencial_a']);
-            $("#simp_edit_back").attr("data-src","storage/uploads/"+obj['credencial_r']);
+            if(obj['credencial_a']){
+                $("#simp_edit_front").attr("src",obj['credencial_a']);
+                $("#simp_edit_front_t").html('Foto de credencial anverso');
+            }
+            else{
+                $("#simp_edit_front").attr("src","");
+                $("#simp_edit_front_t").html('Sin foto de credencial anverso');
+            }
+            if(obj['credencial_r']){
+                $("#simp_edit_back").attr("src",obj['credencial_r']);
+                $("#simp_edit_back_t").html('Foto de credencial inverso');
+            }
+            else{
+                $("#simp_edit_back").attr("src",obj['credencial_a']);
+                $("#simp_edit_back_t").html('Sin foto de credencial inverso');
+            }
+
+            //aqui empieza lo de las fotos del simp
+            if(obj['foto_elector']){
+                $("#simp_edit_foto").attr("src",obj['foto_elector']);
+            }
+            else{
+                $("#simp_edit_foto").attr("src","{{asset('img/icons/default.png')}}");
+            }
+            if(obj['documento']){
+                $("#simp_edit_firma").attr("src",obj['documento']);
+                $("#simp_edit_firma_t").html('Foto de firma');
+            }
+            else{
+                $("#simp_edit_firma").attr("src","");
+                $("#simp_edit_firma_t").html('Sin foto de firma');
+            }
             UIkit.modal("#modal-datos-simp").toggle();
         });
     });

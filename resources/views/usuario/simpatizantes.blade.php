@@ -115,7 +115,7 @@ Simpatizantes
                     <div class="uk-width-1-2@m">
                         {{--<!-- Avatar -->
                             <div class="avatar-wrapper uk-margin-bottom">
-                                <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}"
+                                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}"
                         width="200"
                         height="200" alt="Border circle" />
                         <div class="upload-text">
@@ -214,7 +214,7 @@ Simpatizantes
                                 {{-- pattern="[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}" title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número sin espacios." --}}
                                 <label class="omrs-input-underlined input-outlined">
                                     <input name="telefono" type="text" maxlength="15"
-                                        pattern="[0-9]{3}[ -]*[0-9]{3}[ -]*[0-9]{4}"
+                                        pattern="[0-9]{3}[ -]{0,3}[0-9]{3}[ -]{0,3}[0-9]{4}"
                                         title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número de 10 dígitos sin espacios." />
                                     <span class="omrs-input-label">Teléfono</span>
                                 </label>
@@ -356,7 +356,6 @@ Simpatizantes
                 </div>
             </div>
     </div>
-    </form>
     <p class="uk-text-muted">
         El ciudadano involucrado será notificado sobre la carga de su
         información personal al sistema iElect brindandole transparencia
@@ -375,6 +374,7 @@ Simpatizantes
             Enviar
         </button>
     </p>
+    </form>
 </div>
 </div>
 @endif
@@ -425,10 +425,13 @@ Simpatizantes
                 @if (Auth::user()->roles[0]->name == 'Agente')
                 <div class="uk-visible@m">
                     <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
-                        </label>
+                        <form id="form-buscador" class="uk-modal-body" action="{{ route('simpatizantes') }}"
+                            method="get" style="padding: 0">
+                            <label class="omrs-input-underlined input-outlined input-trail-icon">
+                                <input name="busc" type="text" maxlength="100" />
+                                <span class="input-trail-icon" uk-icon="search"></span>
+                            </label>
+                        </form>
                     </div>
                 </div>
                 @endif
