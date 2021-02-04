@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Section;
 use App\Models\Vote;
+use App\Models\PoliticPartie;
 
 
 class historicoController extends Controller
@@ -22,21 +23,47 @@ class historicoController extends Controller
         $puesto = 2; //es el id de puesto de Gobernador
         $votos = Vote::where([['section_id','=', $id],['position_id', '=',$puesto],['election_id','=', 1]])->orderBy('num', 'desc')->get();
         
-        
         $partidos=[];
         $num = [];
         $colores =[];
+        $promedios =[];
+        $ganadores = [];
+        $puestos = [];
+        $idPuestos =[];
+        $voteWin =[];
         $i=0;
 
         
         foreach ($votos as $voto) {
             $ejemplo[$i]=$voto->section->id;
             $partidos[$i]=$voto->politic_partie->siglas;
+            $idPartie=$voto->politic_partie->id;
             $num[$i]=$voto->num;
             $colores[$i]=$voto->politic_partie->color;
+            
+            $promedios[$i]=0;
+            $j=0;
+            
+            $voteXpartie=Vote::where([['section_id', '=', $id],['election_id', '=', 1],['politic_partie_id', '=', $idPartie]])->get();
+            foreach ($voteXpartie as $vote){
+                $promedios[$i] += $vote->num; 
+                $puestos[$j] = $vote->position->name;
+                $idPuestos[$j] = $vote->position->id;
+                $j++;
+            }
+            $promedios[$i]/=$j;
+            $k=0;
+            foreach($puestos as $p){
+                $winXpos=Vote::where([['section_id','=', $id],['position_id', '=',$idPuestos[$k]],['election_id','=', 1]])->orderBy('num', 'desc')->first();
+                $ganadores[$k]=$winXpos->politic_partie->siglas; //cambiar por logo después, no?
+                $voteWin[$k]=$winXpos->num;
+                $k++;
+            }
+            
             $i++;
         }
         
-        return response(['seccion'=>$seccion, 'partidos'=>$partidos, 'num'=>$num, 'colores'=>$colores]);
+        return response(['seccion'=>$seccion, 'partidos'=>$partidos, 'num'=>$num, 'colores'=>$colores, 'promedios'=>$promedios, 
+        'ganadores'=>$ganadores, 'puestos'=>$puestos, 'voteWin'=>$voteWin]);
     }
 }
