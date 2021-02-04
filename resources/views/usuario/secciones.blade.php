@@ -249,6 +249,14 @@ backgroundColor: "rgba(0,122,255,1)",
 },
 options: {
 maintainAspectRatio: false,
+scales: {
+yAxes: [{
+ticks: {
+min: 0,
+stepSize: 1
+}
+}]
+}
 },
 });
 

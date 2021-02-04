@@ -14,18 +14,18 @@ $simpatizantes = 0;
 $porcentaje = 0;
 $countS = array_count_values($electores->pluck('sexo')->toArray());
 if(count($countS) != 0){
-    if (isset($countS['h'])) {
-        $hombres = $countS['h'];
-    }else{
-        $hombres = 0;
-    }
-    
-    if (isset($countS['m'])) {
-        $mujeres = $countS['m'];
-    }else{
-        $mujeres = 0;
-    }
-    
+if (isset($countS['h'])) {
+$hombres = $countS['h'];
+}else{
+$hombres = 0;
+}
+
+if (isset($countS['m'])) {
+$mujeres = $countS['m'];
+}else{
+$mujeres = 0;
+}
+
 $total = $hombres + $mujeres;
 $porcH = round(($hombres * 100)/$total, 2);
 $porcM = round(($mujeres * 100)/$total, 2);
@@ -129,7 +129,6 @@ $porcM = 0;
             <h3 class="uk-text-bold">
                 Campaña
             </h3>
-            <a class="uk-position-right uk-padding" href="" uk-icon="cog"></a>
         </div>
 
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
@@ -139,7 +138,8 @@ $porcM = 0;
                 <div class="uk-grid uk-child-width-1">
                     @foreach ($campana->politic_partie as $pp)
                     <div class="uk-flex uk-flex-middle uk-margin-bottom">
-                        <img class="uk-border-circle" src="{{$pp->logo}}" width="80" height="80" alt="Border circle" />
+                        <img class="uk-border-circle" src="{{$pp->logo}}" width="80" height="80"
+                            alt="{{$pp->siglas}}" />
                         <div class="uk-margin-left">
                             {{$pp->siglas}}
                         </div>
@@ -179,7 +179,6 @@ $porcM = 0;
             <h3 class="uk-text-bold">
                 Sin campaña
             </h3>
-            <a class="uk-position-right uk-padding" href="" uk-icon="cog"></a>
         </div>
     </div>
     @endif

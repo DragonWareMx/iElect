@@ -219,158 +219,6 @@ $g65 = 0;
                         height="auto" alt="" uk-img />
                 </div>
             </div>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Editar
-                </button>
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Agregar Simpatizante -->
-<div id="modal-agregar-simp" class="uk-modal-container" uk-modal>
-    <div class="uk-modal-dialog">
-        <button class="uk-modal-close-default" type="button" uk-close></button>
-        <div class="uk-modal-header">
-            <h2 class="uk-modal-title">Agregar simpatizante</h2>
-        </div>
-        <div class="uk-modal-body">
-            <div uk-grid>
-                <!-- Lado izquierdo -->
-                <div class="uk-width-1-2@m">
-                    <!-- Avatar -->
-                    <div class="avatar-wrapper uk-margin-bottom">
-                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="200"
-                            height="200" alt="Border circle" />
-                        <div class="upload-text">
-                            Editar foto
-                            <span class="uk-margin-small-left" uk-icon="upload"></span>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Nombre completo</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Domicilio</span>
-                        </label>
-                    </div>
-                    <!--Grid Edad, Sexo, Ocupación, Teléfono-->
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Edad</span>
-                                </label>
-                            </div>
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Ocupación</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Sexo</span>
-                                </label>
-                            </div>
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Teléfono</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Correo electrónico</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Selección electoral</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Clave de elector</span>
-                        </label>
-                    </div>
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Facebook</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Twitter</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Lado derecho -->
-                <div class="uk-width-1-2@m">
-                    <p>Fotografías</p>
-                    <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                        <span class="uk-text-middle">Foto de credencial anverso</span>
-                        <span uk-icon="icon: cloud-upload"></span>
-                        <div uk-form-custom>
-                            <input type="file" multiple />
-                            <span class="uk-link">Selecciona una</span>
-                        </div>
-                    </div>
-
-                    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-                    <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                        <span class="uk-text-middle">Foto de credencial inverso</span>
-                        <span uk-icon="icon: cloud-upload"></span>
-                        <div uk-form-custom>
-                            <input type="file" multiple />
-                            <span class="uk-link">Selecciona una</span>
-                        </div>
-                    </div>
-
-                    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-                </div>
-            </div>
-            <p class="uk-text-muted">
-                El ciudadano involucrado será notificado sobre la carga de su
-                información personal al sistema iElect brindandole transparencia
-                total y la posibilidad de solicitud de eliminación de la misma.
-            </p>
-            <p class="uk-position-medium uk-position-bottom-left">
-                <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
-                    Eliminar
-                </button>
-            </p>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Cancelar
-                </button>
-                <button class="uk-button uk-button-primary" type="button">
-                    Enviar
-                </button>
-            </p>
         </div>
     </div>
 </div>
@@ -879,6 +727,14 @@ backgroundColor: "rgba(0,122,255,1)",
 },
 options: {
 maintainAspectRatio: false,
+scales: {
+yAxes: [{
+ticks: {
+min: 0,
+stepSize: 1
+}
+}]
+}
 },
 });
 
