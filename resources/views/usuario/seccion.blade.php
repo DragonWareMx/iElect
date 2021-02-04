@@ -97,47 +97,52 @@ $g65 = 0;
             <h2 class="uk-modal-title">Editar datos de sección</h2>
         </div>
         <div class="uk-modal-body">
-            <div class="uk-margin">
-                <div class="select">
-                    <select class="select-text" required>
-                        <option value="" disabled></option>
-                        <option value="1" @php if($datosSec->campaign[0]->pivot->prioridad=="Alta"){
-                            echo('selected');
-                            }
-                            @endphp>Alta</option>
-                        <option value="2" @php if($datosSec->campaign[0]->pivot->prioridad=="Media"){
-                            echo('selected');
-                            }
-                            @endphp>Media</option>
-                        <option value="3" @php if($datosSec->campaign[0]->pivot->prioridad=="Baja"){
-                            echo('selected');
-                            }
-                            @endphp>Baja</option>
-                    </select>
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label class="select-label">Prioridad</label>
-                </div>
-            </div>
-            <div class="uk-margin">
-                <div class="uk-form-controls">
-                    <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required value="{{$datosSec->campaign[0]->pivot->meta}}" />
-                            <span class="omrs-input-label">Meta final de simpatizantes</span>
-                        </label>
+            <form id="form-update" action="{{route('actualizar-campana', ['id'=>$id])}}" method="post">
+                @csrf
+                @method('PATCH')
+                <div class="uk-margin">
+                    <div class="select">
+                        <select name="prioridad" id="prioridad" class="select-text" required>
+                            <option value="" disabled></option>
+                            <option value="Alta" @php if($datosSec->campaign[0]->pivot->prioridad=="Alta"){
+                                echo('selected');
+                                }
+                                @endphp>Alta</option>
+                            <option value="Media" @php if($datosSec->campaign[0]->pivot->prioridad=="Media"){
+                                echo('selected');
+                                }
+                                @endphp>Media</option>
+                            <option value="Baja" @php if($datosSec->campaign[0]->pivot->prioridad=="Baja"){
+                                echo('selected');
+                                }
+                                @endphp>Baja</option>
+                        </select>
+                        <span class="select-highlight"></span>
+                        <span class="select-bar"></span>
+                        <label class="select-label">Prioridad</label>
                     </div>
                 </div>
-            </div>
+                <div class="uk-margin">
+                    <div class="uk-form-controls">
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input name="meta" type="number" maxlength="100" required
+                                    value="{{$datosSec->campaign[0]->pivot->meta}}" />
+                                <span class="omrs-input-label">Meta final de simpatizantes</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Cancelar
-                </button>
-                <button class="uk-button uk-button-primary" type="button">
-                    Enviar
-                </button>
-            </p>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">
+                        Cancelar
+                    </button>
+                    <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
+                        Enviar
+                    </button>
+                </p>
+            </form>
         </div>
     </div>
 </div>
@@ -562,28 +567,30 @@ $g65 = 0;
                 <table class="uk-table uk-table-small uk-table-divider">
                     <thead class="uk-background-muted">
                         <tr>
-                            <th>#</th>
+                            <th>Clave de elecetor</th>
                             <th>Nombre</th>
                             <th>Sexo</th>
                             <th>Edad</th>
                             <th>Ocupación</th>
                             <th>Sección electoral</th>
-                            <th>Clave de elecetor</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-simps">
                         @foreach ($electores as $elector)
 
                         <tr data-id="{{$elector->id}}">
-                            <td>#{{$elector->id}}</td>
+                            <td>{{$elector->clave_elector}}</td>
                             <td>{{$elector->nombre}} {{$elector->apellido_p}} {{$elector->apellido_m}}</td>
-                            <td>{{$elector->sexo}}</td>
+                            <td>@if ($elector->sexo == "h")
+                                Hombre
+                                @else
+                                Mujer
+                                @endif</td>
                             <td>{{\Carbon\Carbon::parse($elector->fecha_nac)->diff(Carbon\Carbon::now())->format('%y')}}
                                 Años
                             </td>
                             <td>{{$elector->job->nombre}}</td>
                             <td>{{$elector->section->num_seccion}}</td>
-                            <td>{{$elector->clave_elector}}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -674,6 +681,87 @@ $g65 = 0;
             UIkit.modal("#modal-datos-simp").toggle();
         });
     });
+</script>
+
+<script>
+    //ajax jeje
+    $("#form-update").bind("submit",function(){
+            // Capturamnos el boton de envío
+            var btnEnviar = $("#btnEnviar");
+
+            $.ajax({
+                type: $(this).attr("method"),
+                url: $(this).attr("action"),
+                data: $(this).serialize(),
+                beforeSend: function(data){
+                    /*
+                    * Esta función se ejecuta durante el envió de la petición al
+                    * servidor.
+                    * */
+                    // btnEnviar.text("Enviando"); Para button
+                    btnEnviar.val("Enviando"); // Para input de tipo button
+                    btnEnviar.attr("disabled","disabled");
+                },
+                complete:function(data){
+                    /*
+                    * Se ejecuta al termino de la petición
+                    * */
+                    btnEnviar.val("Enviar formulario");
+                },
+                success: function(data){
+                    /*
+                    * Se ejecuta cuando termina la petición y esta ha sido
+                    * correcta
+                    * */
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> Datos modificados con éxito!',
+                        status: 'success',
+                        pos: 'top-center',
+                        timeout: 2000
+                    });
+                    $('#errors').css('display', 'none');
+                    setTimeout(
+                    function()
+                    {
+                        window.location.reload(true);
+                    }, 2000);
+                },
+                error: function(data){
+                    console.log(data);
+                    // $('#success').css('display', 'none');
+                    btnEnviar.removeAttr("disabled");
+                    $('#errors').css('display', 'block');
+                    var errors = data.responseJSON.errors;
+                    var errorsContainer = $('#errors');
+                    errorsContainer.innerHTML = '';
+                    var errorsList = '';
+                    // for (var i = 0; i < errors.length; i++) {
+                    // //     //if(errors[i].redirect)
+                    // //         //window.location.href = window.location.origin + '/logout'
+
+                    //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                    // }
+                    for(var key in errors){
+                        var obj=errors[key];
+                        console.log(obj);
+                        for(var yek in obj){
+                            var error=obj[yek];
+                            console.log(error);
+                            errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                        }
+                    }
+                    errorsContainer.html(errorsList);
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                        status: 'danger',
+                        pos: 'top-center',
+                        timeout: 2000
+                    });
+                }
+            });
+            // Nos permite cancelar el envio del formulario
+            return false;
+        });
 </script>
 
 @endsection

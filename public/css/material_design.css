@@ -16,10 +16,19 @@ div.omrs-input-group {
     width: 100%;
 }
 
-/* Outlined */
-.input-outlined > input {
-    border: 1px solid var(--omrs-color-ink-medium-contrast) !important;
+.omrs-input-group input {
+    border: solid 1px #e5e5e5 !important;
+    transition: all ease-in-out 0.25s;
 }
+
+.omrs-input-group input:hover,
+.omrs-input-group input:focus {
+    border: solid 1px #007aff !important;
+    transition: all ease-in-out 0.25s;
+    background-color: transparent !important;
+}
+
+/* Outlined */
 
 /* Lead icon */
 .input-lead-icon > input {

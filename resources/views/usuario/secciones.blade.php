@@ -5,6 +5,7 @@ Secciones
 @endsection
 
 @section('imports')
+<link rel="stylesheet" href="{{asset('css/usuario/seccion.css')}}" />
 @extends('subviews.chartjs')
 @endsection
 

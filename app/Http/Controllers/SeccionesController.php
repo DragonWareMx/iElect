@@ -6,10 +6,12 @@ use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Models\Elector;
 use App\Models\Campaign;
+use App\Models\Campaign_Section;
 use Carbon\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 
 class SeccionesController extends Controller
 {
@@ -161,11 +163,32 @@ class SeccionesController extends Controller
                     );
                     $elector = strtr($record->nombre, $normalizeChars);
                     $elector = strtolower($elector);
+                    $ap_p = strtr($record->apellido_p, $normalizeChars);
+                    $ap_p = strtolower($ap_p);
+                    $ap_m = strtr($record->apellido_m, $normalizeChars);
+                    $ap_m = strtolower($ap_m);
+                    $clave_elector = strtr($record->clave_elector, $normalizeChars);
+                    $clave_elector = strtolower($clave_elector);
                     $busqueda = strtr($request->busc, $normalizeChars);
                     $busqueda = strtolower($busqueda);
                     $out = new \Symfony\Component\Console\Output\ConsoleOutput();
                     $out->writeln($busqueda);
                     if (str_contains($elector, $busqueda)) {
+                        return $record;
+                    }
+                    if (str_contains($ap_p, $busqueda)) {
+                        return $record;
+                    }
+                    if (str_contains($ap_m, $busqueda)) {
+                        return $record;
+                    }
+                    if (str_contains($elector . " " . $ap_p, $busqueda)) {
+                        return $record;
+                    }
+                    if (str_contains($elector . " " . $ap_p . " " . $ap_m, $busqueda)) {
+                        return $record;
+                    }
+                    if (str_contains($clave_elector, $busqueda)) {
                         return $record;
                     }
                 });
@@ -191,6 +214,25 @@ class SeccionesController extends Controller
 
         $seccion = Section::find($id);
         return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores, 'rangos' => $rangos, 'id' => $id]);
+    }
+
+    public function updCampana(Request $request, $id)
+    {
+        $campana = session()->get('campana');
+        if (!isset($request->prioridad) || !isset($request->meta)) {
+            return response()->json(['errors' => ['catch' => [0 => 'No se ha cambiado la prioridad o meta.']]], 422);
+        }
+
+        DB::beginTransaction();
+        $camp_sec = Campaign_Section::where('section_id', '=', $id)->where('campaign_id', '=', $campana->id)->first();
+        $camp_sec->meta = $request->meta;
+        $camp_sec->prioridad = $request->prioridad;
+        $camp_sec->save();
+
+        session()->flash('status', 'Simpatizante creado con éxito!');
+
+        DB::commit();
+        return response()->json(200);
     }
 
     /**
