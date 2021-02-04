@@ -5,7 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Rol extends Model
+class Order extends Model
 {
     use HasFactory;
+
+    public function campaign()
+    {
+        return $this->belongsTo('App\Models\Campaign');
+    }
 }

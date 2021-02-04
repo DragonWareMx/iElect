@@ -15,7 +15,9 @@
     <!-- Navbar -->
     <div class="uk-navbar-container uk-visible@m" uk-navbar style="background-color: white">
         <div class="uk-navbar-left uk-padding-small">
-            <h1 class="uk-text-primary">iElect</h1>
+            <a href="{{ route('home') }}" style="text-decoration: none">
+                <h1 class="uk-text-primary">iElect</h1>
+            </a>
             <!-- Cuenta -->
             <a class="uk-link-toggle" href="#">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
@@ -35,7 +37,18 @@
         </div>
         <!-- Icono ajustes -->
         <div class="uk-navbar-right uk-padding-small">
-            <a href="{{route('ajustes')}}" uk-icon="icon: cog; ratio: 1.5"></a>
+            <div class="uk-inline">
+                <button class="" type="button" uk-icon="icon: cog; ratio: 1.5" style="outline: none"></button>
+                <div uk-dropdown="mode: click;pos: bottom-justify" id="dropdown">
+                    <ul class="uk-nav uk-dropdown-nav">
+                        <li class="uk-dropdown-close"><a href="#modal-logout" uk-toggle><span uk-icon="sign-out"
+                                    style="margin-right:10px" id="logout"></span>Cerrar
+                                Sesión</a></li>
+                        <li class="uk-dropdown-close"><a href="{{ route('ajustes') }}"><span uk-icon="settings"
+                                    style="margin-right:10px"></span>Configuración</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -143,10 +156,29 @@
                             <span class="uk-margin-small-right" uk-icon="cog"></span>Ajustes
                         </a>
                     </li>
+                    <li>
+                        <a uk-toggle href="#modal-logout">
+                            <span class=" uk-margin-small-right" uk-icon="sign-out"></span>Cerrar Sesión
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <div id="modal-logout" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <h2 class="uk-modal-title uk-text-danger">¿Seguro que quieres salir?</h2>
+            <p>Selecciona "Cerrar sesión" si está listo para salir de iElect.</p>
+            <p class="uk-text-right">
+                <form action="{{ route('logout') }}" method="post">
+                    @csrf
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">Cancelar</button>
+                    <button class="uk-button uk-button-danger" type="submit">Cerrar sesión</button>
+                </form>
+            </p>
+        </div>
+    </div>
 
     @yield("body")
 </body>

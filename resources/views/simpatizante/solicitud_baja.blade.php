@@ -7,7 +7,7 @@
     <title>Solicitud de eliminación de datos</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    @extends('subviews.imports')
+    @include('subviews.imports')
 
     <!-- CSS Avatar -->
     <link rel="stylesheet" href="{{asset('css/simpatizante/aviso_datos.css')}}" />
@@ -16,16 +16,17 @@
 <body>
 
     <!-- This is the modal with the default close button -->
-    <div id="modal-close-default" uk-modal>
-        <div class="uk-modal-dialog uk-modal-body">
+    <div id="modal-close-default" class="uk-flex-top" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body uk-margin-auto-vertical">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <h2 class="uk-modal-title uk-text-primary">iElect</h2>
-            <h3 class="uk-text-center">
-                Solicitud de eliminación de datos enviada correctamente
+            <h3 class="uk-text-center uk-text-large">
+                Tus datos personales han sido eliminados con éxito de iElect.
             </h3>
             <p>
-                Su solicitud fue enviada exitosamente, y será recibida por el coordinador de la campaña, usted será
-                notificado mediante un mensaje cuando la eleminación de su información se haya efectuado correctamente
+                Si tienes alguna duda sobre el uso que se le dio a tu información durante este tiempo puedes leer los
+                Términos y Condiciones y el Aviso de privacidad de nuestra aplicación, también puedes comunicarte al
+                número: (ahí iría un número que no tenemos).
             </p>
         </div>
     </div>
@@ -38,35 +39,39 @@
                     <div class="uk-child-width-expand uk-padding-large" uk-grid>
                         <div class="uk-width-expand@m uk-width-xlarge">
                             <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
-                                Solicitud de eliminación de datos
+                                ¿Quieres eliminar tus datos personales de iElect?
                             </h3>
+                            <div class="uk-alert-danger" uk-alert id="errors" style="display: none">
+                                <a class="uk-alert-close" uk-close></a>
+                                <ul id="errors-list">
+                                </ul>
+                            </div>
                             <!--Input correo electronico-->
                             <div class="uk-margin">
-                                <div class="omrs-input-group">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input required />
-                                        <span class="omrs-input-label">Clave de elector</span>
-                                    </label>
-                                </div>
-                            </div>
-                            <!--Input contraseña-->
-                            <div class="uk-margin">
-                                <div class="omrs-input-group">
-                                    <label class="omrs-input-underlined input-outlined">
-                                        <input type="text" required />
-                                        <span class="omrs-input-label">Motivo de la solicitud</span>
-                                    </label>
+                                <div class="uk-text uk-text-justify" id="texto">
+                                    Si das clic en Enviar, la información personal que brindaste al brigadista para la
+                                    campaña {{$campaign}} será eliminada de nuestra base de datos
+                                    definitivamente. Si quieres seguir apoyando la campaña da clic en cancelar. Recuerda
+                                    que la información personal que nos compartiste se usa sólo para los fines
+                                    establecidos en el documento de Términos y condiciones y en el aviso de privacidad.
                                 </div>
                             </div>
                             <!--Div grid-->
                             <div class="uk-child-width-1-1 uk-grid">
                                 <!--Botón inicio-->
-                                <div class="uk-text-left@m uk-text-center uk-margin-top">
-                                    <button class="uk-button uk-button-primary"
-                                        uk-toggle="target: #modal-close-default">
+                                <form class="uk-text-left@m uk-text-center uk-margin-top" method="POST"
+                                    action="{{ route('solicitud_baja-delete',['uuid'=>$uuid]) }}"
+                                    id="form-delete-datos">
+                                    @csrf @method('DELETE')
+                                    <input type="hidden" value="{{$uuid}}" name="uuid">
+                                    <button class="uk-button uk-button-primary" id="btnEnviar">
                                         Enviar
                                     </button>
-                                </div>
+                                    <button class="uk-button uk-button-secundary" type="button"
+                                        style="margin-left: 10px" id="btnCancelar">
+                                        Cancelar
+                                    </button>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -97,5 +102,71 @@
         </div>
     </footer>
 </body>
+
+<script>
+    $(document).ready(function(){
+            $('#btnCancelar').click(function() {
+                $('#btnCancelar').hide('fast');
+                $('#btnEnviar').hide('fast');
+                $('#texto').hide().html('Tus datos siguen con iElect. Gracias por tu confianza.').fadeIn(2000);
+            });
+            //ajax del form de eliminar
+            $("#form-delete-datos").bind("submit",function(){
+                // Capturamnos el boton de envío
+                var btnEnviar = $("#btnEnviar");
+
+                $.ajax({
+                    type: $(this).attr("method"),
+                    url: $(this).attr("action"),
+                    data: $(this).serialize(),
+                    beforeSend: function(data){
+                        /*
+                        * Esta función se ejecuta durante el envió de la petición al
+                        * servidor.
+                        * */
+                        // btnEnviar.text("Enviando"); Para button
+                        btnEnviar.val("Enviando"); // Para input de tipo button
+                        btnEnviar.attr("disabled","disabled");
+                    },
+                    complete:function(data){
+                        /*
+                        * Se ejecuta al termino de la petición
+                        * */
+                        btnEnviar.val("Enviar formulario");
+                    },
+                    success: function(data){
+                        /*
+                        * Se ejecuta cuando termina la petición y esta ha sido
+                        * correcta
+                        * */
+                        $('#errors').css('display', 'none');
+
+                        UIkit.modal('#modal-close-default').show();
+                    },
+                    error: function(data){
+                        /*
+                        * Se ejecuta si la peticón ha sido erronea
+                        * */
+                        btnEnviar.removeAttr("disabled");
+                        $('#errors').css('display', 'block');
+                        var errors = data.responseJSON.errors;
+                        var errorsContainer = $('#errors-list');
+                        errorsContainer.innerHTML = '';
+                        var errorsList = '';
+                        for(var key in errors){
+                            var obj=errors[key];
+                            for(var yek in obj){
+                                var error=obj[yek];
+                                errorsList += '<li>'+ error +'</li>';
+                            }
+                        }
+                        errorsContainer.html(errorsList);
+                    }
+                });
+                // Nos permite cancelar el envio del formulario
+                return false;
+            });
+        });
+</script>
 
 </html>

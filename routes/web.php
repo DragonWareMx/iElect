@@ -1,7 +1,13 @@
 <?php
 
+//use Illuminate\Support\Facades\Gate;
+
+use App\Http\Controllers\SeccionesController;
+use App\Models\Elector;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Request;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,35 +26,66 @@ use Illuminate\Support\Facades\Request;
 })->name('lay');
 */
 
-/****** LOGIN ******/
-//Ruta Login
+//esta ruta es de ejemplo para poner el gate pa checar el rol vaya :v
+// Route::get('/test', function () {
+//     Gate::authorize('haveaccess', 'admin.perm');
+//     return 'hola we';
+// })->name('lay')->middleware('auth');
+Route::get('/crear/elector', function () {
+    $elector = new Elector();
+    $elector->uuid = Uuid::generate()->string;
+    $elector->nombre = 'Leonardo';
+    $elector->apellido_p = 'Lopez';
+    $elector->apellido_m = 'Lopez';
+    $elector->job_id = '1';
+    $elector->edo_civil = 'soltero';
+    $elector->fecha_nac = '1999-04-12';
+    $elector->telefono = '4433998915';
+    $elector->email = 'lopez_lopez_daniel@hotmail.com';
+    $elector->red_social = '@LeoLopez';
+    $elector->calle = 'Antono Alzate';
+    $elector->ext_num = '142';
+    $elector->int_num = 'A';
+    $elector->colonia = 'Centro';
+    $elector->localidad = 'Morelia';
+    $elector->municipio = 'Morelia';
+    $elector->cp = '58000';
+    $elector->section_id = '1';
+    $elector->campaign_id = '1';
+    $elector->user_id = '1';
+    $elector->clave_elector = 'LASOASDASLD';
+    $elector->foto_elector = 'foto.jpg';
+    $elector->credencial_a = 'foto1.jpg';
+    $elector->credencial_r = 'foto2.jpg';
+    $elector->save();
+    return 'se hizo';
+});
+
+
+//Ruta principal
 Route::get('/', function () {
-    return view('login.index');
+    return redirect()->route('home');
 })->name('index');
 
-//Ruta Recuperar contraseña
-Route::get('/recuperar_contrasena', function () {
-    return view('login.recuperar_contrasena');
-})->name('recuperar_contra');
-
-//Ruta Recuperar contraseña
-Route::get('/registro_brigadista', function () {
+/****** LOGIN ******/
+Auth::routes(['register' => false]);
+//Ruta registro brigadista
+Route::get('/registro/brigadista', function () {
     return view('login.registro_brig');
 })->name('registro_brig');
 
+Route::post('/registro/brigadista', 'OrderController@brigadista')->name('registro.brig');
 
 //Home
-Route::get('/inicio', function () {
-    return view('usuario.home');
-})->name('home');
+Route::get('/inicio', 'HomeController@index')->name('home');
 
 //Ruta Mapa Seccional
-Route::get('/mapa_seccional','mapaSeccionalController@index' )->name('mapa_seccional');
+Route::get('/mapa_seccional', 'mapaSeccionalController@index')->name('mapa_seccional');
 //Ruta Obten sección seleccionada o secciones según el caso
-Route::get('/seccion_mapa/{id}','mapaSeccionalController@seccion')->name('seccion_mapa');
-Route::get('/dF_mapa/{id}','mapaSeccionalController@secDF')->name('dF_mapa');
-Route::get('/dL_mapa/{id}','mapaSeccionalController@secDL')->name('dL_mapa');
-Route::get('/mN_mapa/{id}','mapaSeccionalController@secM')->name('mN_mapa');
+Route::get('/seccion_mapa/{id}', 'mapaSeccionalController@seccion')->name('seccion_mapa');
+Route::get('/dF_mapa/{id}', 'mapaSeccionalController@secDF')->name('dF_mapa');
+Route::get('/dL_mapa/{id}', 'mapaSeccionalController@secDL')->name('dL_mapa');
+Route::get('/mN_mapa/{id}', 'mapaSeccionalController@secM')->name('mN_mapa');
 //Ruta Ajustes
 Route::get('/ajustes', function () {
     return view('usuario.ajustes');
@@ -66,14 +103,10 @@ Route::get('/ajustes/partido_electoral', function () {
 
 /****** SECCIONES ******/
 //Secciones
-Route::get('/secciones', function () {
-    return view('usuario.secciones');
-})->name('secciones');
+Route::get('/secciones', 'SeccionesController@verSecciones')->name('secciones');
 
 //Seccion
-Route::get('/seccion', function () {
-    return view('usuario.seccion');
-})->name('seccion');
+Route::get('/seccion/{id}', 'SeccionesController@verSeccion')->name('seccion');
 
 /****** BRIGADISTAS ******/
 //Brigadistas
@@ -87,9 +120,10 @@ Route::get('/brigadistas/solicitudes', function () {
 
 /****** SIMPATIZANTES ******/
 //Simpatizantes
-Route::get('/simpatizantes', function () {
-    return view('usuario.simpatizantes');
-})->name('simpatizantes');
+Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simpatizantes');
+
+//agregar simpatizante
+Route::post('/simpatizantes/agregar', 'simpatizanteController@agregarSimpatizante')->name('agregar-simpatizante');
 
 //Simpatizantes
 Route::get('/simpatizantes/solicitudes', function () {
@@ -110,9 +144,13 @@ Route::get('/admin/404', function () {
 })->name('admin-404');
 
 //Admin | Inicio
-Route::get('/admin/inicio', function () {
-    return view('admin.inicio');
-})->name('admin-inicio');
+Route::get('/admin/inicio', 'adminController@inicio')->name('admin-inicio');
+
+//Admin | agregar usuario
+Route::post('/admin/agregar/usuario', 'adminController@agregarUsuario')->name('agregar-usuario');
+
+//Admin | agregar usuario
+Route::patch('/admin/editar/usuario/{id}', 'adminController@editarUsuario')->name('editar-usuario');
 
 //Admin | Cuenta
 Route::get('/admin/cuenta', function () {
@@ -125,9 +163,7 @@ Route::get('/admin/seccion', function () {
 })->name('admin-seccion');
 
 //Admin | Usuarios
-Route::get('/admin/usuarios', function () {
-    return view('admin.usuarios');
-})->name('admin-usuarios');
+Route::get('/admin/usuarios', 'adminController@verUsuarios')->name('admin-usuarios');
 
 //Admin | Usuario
 Route::get('/admin/usuarios/usuario', function () {
@@ -158,6 +194,6 @@ Route::get('/simpatizante/aviso', function () {
 })->name('simpatizante-aviso');
 
 //Simpatizante | Solicitud de baja
-Route::get('/simpatizante/baja', function () {
-    return view('simpatizante.solicitud_baja');
-})->name('simpatizante-solicitud_baja');
+Route::get('/simpatizante/baja/{uuid}', 'SimpatizanteController@index')->name('simpatizante-solicitud_baja');
+
+Route::delete('/simpatizante/baja/{uuid}', 'SimpatizanteController@delete')->name('solicitud_baja-delete');

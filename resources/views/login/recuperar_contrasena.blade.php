@@ -15,7 +15,9 @@
     <div>
         <div class="uk-section uk-section-muted uk-flex uk-flex-middle uk-animation-fade" uk-height-viewport>
             <div class="uk-card uk-card-default uk-width-1-2@m uk-position-center">
-                <div class="uk-child-width-expand uk-padding-large" uk-grid>
+                <form class="uk-child-width-expand uk-padding-large" uk-grid method="POST"
+                    action="{{ route('password.email') }}">
+                    @csrf
                     <div class="uk-width-1-3@m uk-text-center uk-margin-auto-vertical">
                         <h1 class="uk-text-primary" style="font-size: 80px">iElect</h1>
                         <small class="uk-text-muted uk-visible@m">Copyright ©2021 iElect</small>
@@ -28,15 +30,26 @@
                             Se enviará un mensaje al correo electrónico para restaurar la
                             contraseña
                         </p>
+                        @if (session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
+                        </div>
+                        @endif
                         <!--Input correo electronico-->
                         <div class="uk-margin">
                             <div class="omrs-input-group">
                                 <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                    <input required />
+                                    <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                                        autocomplete="email" />
                                     <span class="omrs-input-label">Correo electrónico</span>
                                     <span class="uk-form-icon" uk-icon="icon: mail"></span>
                                 </label>
                             </div>
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <!--Div grid-->
                         <div class="uk-child-width-1-1 uk-grid">
@@ -44,7 +57,7 @@
                             <div>
                                 <p class="uk-text-right@m uk-text-center">
                                     ¿Listo para iniciar sesión?
-                                    <a class="uk-link-heading uk-text-primary" href="{{route('index')}}">Clic aquí</a>
+                                    <a class="uk-link-heading uk-text-primary" href="{{route('login')}}">Clic aquí</a>
                                 </p>
                             </div>
                             <!--Botón inicio-->
@@ -54,10 +67,11 @@
                             <small class="uk-text-muted uk-text-center uk-hidden@m">Copyright ©2021 iElect</small>
                         </div>
                         <div>
-                            <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted" style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
+                            <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
+                                style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
                         </div>
                     </div>
-                </div>
+                </form>
             </div>
         </div>
     </div>

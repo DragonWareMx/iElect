@@ -20,7 +20,8 @@
                         <h1 class="uk-text-primary" style="font-size: 80px">iElect</h1>
                         <small class="uk-text-muted uk-visible@m">Copyright ©2021 iElect</small>
                     </div>
-                    <div class="uk-width-expand@m">
+                    <form class="uk-width-expand@m" method="POST" action="{{ route('login') }}">
+                        @csrf
                         <h3 class="uk-card-title uk-text-bold uk-text-left@m uk-text-center">
                             Iniciar Sesión
                         </h3>
@@ -28,21 +29,33 @@
                         <div class="uk-margin">
                             <div class="omrs-input-group">
                                 <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                    <input required />
+                                    <input id="email" type="email" name="email" value="{{ old('email') }}" required
+                                        autocomplete="email" autofocus />
                                     <span class="omrs-input-label">Correo electrónico</span>
                                     <span class="uk-form-icon" uk-icon="icon: mail"></span>
                                 </label>
                             </div>
+                            @error('email')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <!--Input contraseña-->
                         <div class="uk-margin">
                             <div class="omrs-input-group">
                                 <label class="omrs-input-underlined input-outlined input-lead-icon">
-                                    <input type="password" required />
+                                    <input id="password" type="password" name="password" required
+                                        autocomplete="current-password" />
                                     <span class="omrs-input-label">Contraseña</span>
                                     <span class="uk-form-icon" uk-icon="icon: lock"></span>
                                 </label>
                             </div>
+                            @error('password')
+                            <span class="invalid-feedback" role="alert">
+                                <strong>{{ $message }}</strong>
+                            </span>
+                            @enderror
                         </div>
                         <!--Div grid-->
                         <div class="uk-child-width-1-1 uk-grid">
@@ -50,7 +63,9 @@
                             <div>
                                 <p class="uk-text-right@m uk-text-center">
                                     ¿Olvidaste tu contraseña?
-                                    <a class="uk-link-heading uk-text-primary" href="{{route('recuperar_contra')}}">Clic aquí</a>
+                                    <a class="uk-link-heading uk-text-primary"
+                                        href="{{ route('password.request') }}">Clic
+                                        aquí</a>
                                 </p>
                             </div>
                             <!--Botón inicio-->
@@ -65,9 +80,10 @@
                             <small class="uk-text-muted uk-text-center uk-hidden@m">Copyright ©2021 iElect</small>
                         </div>
                         <div>
-                            <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted" style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
+                            <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
+                                style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
                         </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
