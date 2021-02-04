@@ -18,11 +18,11 @@ Histórico
             <!-- SELECT -->
             <div class="uk-width-large">
                 <div class="select">
-                    <select class="select-text" required>
+                    <select class="select-text" required onchange="callSection(this.value)">
                         <option value="" disabled selected></option>
-                        <option value="1">Sección 2165</option>
-                        <option value="2">Sección 2166</option>
-                        <option value="3">Sección 2167</option>
+                        @foreach ($secciones as $seccion)
+                            <option value="{{$seccion->id}}">{{$seccion->id}}-{{$seccion->town->nombre}}</option>
+                        @endforeach    
                     </select>
                     <span class="select-highlight"></span>
                     <span class="select-bar"></span>
@@ -33,7 +33,7 @@ Histórico
             <div class="uk-margin-top uk-text-center elec_resp" style="top: -70px; position: relative;">
                 <div class="uk-flex-inline uk-vertical-align-middle">
                     <a href="" uk-icon="chevron-left"></a>
-                    <p class="uk-margin-remove uk-text-bold">Elecciones 2018</p>
+                    <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
                     <a href="" uk-icon="chevron-right"></a>
                 </div>
                 <p class="uk-margin-remove">Gobernador estatal de Michoacán</p>
@@ -57,22 +57,8 @@ Histórico
                                 <th>Puesto por sección</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>NDP</td>
-                                <td>183</td>
-                                <td>Primer lugar</td>
-                            </tr>
-                            <tr>
-                                <td>PRI</td>
-                                <td>#</td>
-                                <td>Segundo lugar</td>
-                            </tr>
-                            <tr>
-                                <td>PAN</td>
-                                <td>#</td>
-                                <td>Tercer lugar</td>
-                            </tr>
+                        <tbody id="tableVotes">
+                            
                         </tbody>
                     </table>
                 </div>
@@ -221,75 +207,92 @@ Histórico
     </div>
 </div>
 @endsection
+<script>
+    function callSection(ide){
+        httpRequest = false;
+        if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
+            httpRequest = new XMLHttpRequest();
+            
+        } else {
+        // Internet explorer siempre llevando la contra.
+            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        if (httpRequest == false) return false; // no se puedo crear el objeto
+        
+        httpRequest.open('GET', '/historico_seccion/' + ide, true);
+        
+        
+        httpRequest.onreadystatechange = function() {
+                    
+            if (httpRequest.readyState == 4) {
+                // la peticion la recibio el servidor
+                if (httpRequest.status == 200) {
+                    // convertimos la respuesta del servidor a un objeto JSON
+                    respuesta = JSON.parse(httpRequest.responseText);
+                    selectedSc = respuesta.seccion;
+                    total =  selectedSc.hombres + selectedSc.mujeres;
+                    
+                    //Grafica de pastel 
+                    var simpCanvas = document.getElementById("ocupChart");
+                    Chart.defaults.global.defaultFontFamily = "Lato";
+                    Chart.defaults.global.defaultFontSize = 18;
+                    Chart.defaults.global.legend.display = false;
 
+                    simpData = {
+                    labels: ["Hombres", "Mujeres"],
+                    datasets: [
+                    {
+                    data: [selectedSc.hombres,selectedSc.mujeres],
+                    backgroundColor: ["#9B51E0", "#FB8832"],
+                    },
+                    ],
+                    };
+
+                    let pieChart = new Chart(simpCanvas, {
+                    type: "pie",
+                    data: simpData,
+                    });
+                    
+                    //Grafica de barras
+                    Chart.defaults.global.legend.display = false;
+                    var ctx = document.getElementById("barChart").getContext("2d");
+                    var barHistoric = new Chart(ctx, {
+                    type: "bar",
+                    data: {
+                    labels: respuesta.partidos,
+                    datasets: [
+                    {
+                    label: "Votos",
+                    data: respuesta.num,
+                    backgroundColor: respuesta.colores,
+                    },
+                    ],
+                    },
+                    options: {
+                    maintainAspectRatio: false,
+                    },
+                    });
+                    //borro resultados anteriores de tabla
+                    tabla = document.getElementById('tableVotes');
+                    tabla.innerHTML='';
+
+                    //lleno tabla de resultados
+                    
+                    for (i in respuesta.partidos) {
+                        if (respuesta.num[i]==0) break;
+                        place = parseInt(i)+1;
+                        tabla.innerHTML+='<tr> <td>' + respuesta.partidos[i] + '</td> <td>' + respuesta.num[i] + '</td> <td>' + place + '</td> </tr>';
+                    }
+
+                } else {
+                    alert("Error de la consulta a la Base de datos"); //poner el error correcto 
+                    // error 404, 500 etc.
+                }   
+            }
+        }
+        httpRequest.send();
+    }
+</script>
 @section('scripts')
-//Grafica de barras
-Chart.defaults.global.legend.display = false;
-var ctx = document.getElementById("barChart").getContext("2d");
-var barChart = new Chart(ctx, {
-type: "bar",
-data: {
-labels: [
-"PRI",
-"PAN",
-"PRD",
-"PT",
-"PES",
-"NDP",
-"NDP",
-"NDP",
-"NDP",
-"NDP",
-"NDP",
-"NDP",
-],
-datasets: [
-{
-label: "data-1",
-data: [200, 153, 60, 180, 130, 175, 112, 124, 180, 55, 45, 150],
-backgroundColor: ["#029336", "#06338E", "#FFCB01", "#DA251D", "#5A2A7C"],
-},
-],
-},
-options: {
-maintainAspectRatio: false,
-},
-});
 
-//Grafica de pastel Ocupaciones
-//Grafica de pastel
-var ocupCanvas = document.getElementById("ocupChart");
-
-Chart.defaults.global.defaultFontFamily = "Lato";
-Chart.defaults.global.defaultFontSize = 18;
-Chart.defaults.global.legend.display = false;
-
-var ocupData = {
-labels: [
-"Estudiantes",
-"Vigilantes",
-"Contratistas",
-"Hogar",
-"Profesores",
-"Otros",
-],
-datasets: [
-{
-data: [25, 3, 10, 4, 56, 2],
-backgroundColor: [
-"#FFD43A",
-"#04BE65",
-"#2D9B94",
-"#007AFF",
-"#C8194B",
-"#ADADAD",
-],
-},
-],
-};
-
-var ocupChart = new Chart(ocupCanvas, {
-type: "pie",
-data: ocupData,
-});
 @endsection

@@ -98,10 +98,8 @@ Route::get('/simpatizantes/solicitudes', function () {
 
 /****** HISTORICO ******/
 //Historico
-Route::get('/historico', function () {
-    return view('usuario.historico');
-})->name('historico');
-
+Route::get('/historico', 'historicoController@index')->name('historico');
+Route::get('/historico_seccion/{id}','historicoController@seccion')->name('historicoSc');
 
 /********************/
 /***    ADMIN    ****/

@@ -89,7 +89,7 @@ defer></script>
                 <h6 class="uk-margin-remove uk-text-bold">SECCIÓN</h6>
                 <div class="uk-margin-bottom">
                     <div class="uk-form-controls">
-                        <select class="uk-select" id="form-stacked-select-sc">
+                        <select class="uk-select" id="form-stacked-select-sc" onchange="slSection(this.value)">
                             <option value="" selected="selected">Secciones</option>
                         </select>
                     </div>
@@ -183,17 +183,8 @@ defer></script>
                                         <th>Puesto por sección</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>NDP</td>
-                                        <td>183</td>
-                                        <td>Primer lugar</td>
-                                    </tr>
-                                    <tr>
-                                        <td>PRI</td>
-                                        <td>#</td>
-                                        <td>Segundo lugar</td>
-                                    </tr>
+                                <tbody id="tableVotes">
+                                    
                                 </tbody>
                             </table>
                         </div>
@@ -214,6 +205,132 @@ defer></script>
     let idControl; //guarda el id del distrito o muni de las secciones visibles
     let click=false;
     
+function callSection(nombre){//método para jalar info de sección de la bd, se llama dentro de dos funciones init map, en el evento click y en slSection
+    
+    httpRequest = false;
+    if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
+        httpRequest = new XMLHttpRequest();
+        
+    } else {
+    // Internet explorer siempre llevando la contra.
+        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if (httpRequest == false) return false; // no se puedo crear el objeto
+    
+    var ide = nombre; // obtener el id de la sección
+    var url = document.getElementById('form-ajax').action;
+    httpRequest.open('GET', url + '/' + ide, true);
+    
+    
+    httpRequest.onreadystatechange = function() {
+                
+        if (httpRequest.readyState == 4) {
+            // la peticion la recibio el servidor
+            if (httpRequest.status == 200) {
+                // convertimos la respuesta del servidor a un objeto JSON
+                respuesta = JSON.parse(httpRequest.responseText);
+                selectedSc = respuesta.seccion;
+                total =  selectedSc.hombres + selectedSc.mujeres;
+                
+                //Grafica de pastel 
+                var simpCanvas = document.getElementById("simpChart");
+                Chart.defaults.global.defaultFontFamily = "Lato";
+                Chart.defaults.global.defaultFontSize = 18;
+                Chart.defaults.global.legend.display = false;
+
+                simpData = {
+                labels: ["Hombres", "Mujeres"],
+                datasets: [
+                {
+                data: [selectedSc.hombres,selectedSc.mujeres],
+                backgroundColor: ["#9B51E0", "#FB8832"],
+                },
+                ],
+                };
+
+                let pieChart = new Chart(simpCanvas, {
+                type: "pie",
+                data: simpData,
+                });
+                
+                document.getElementById("totalLN").innerHTML = total;
+                porcentajeH = parseInt((selectedSc.hombres*100)/total);
+                porcentajeM = parseInt((selectedSc.mujeres*100)/total);
+                document.getElementById('men').innerHTML = 'H '+porcentajeH +'%';
+                document.getElementById('women').innerHTML = 'M '+porcentajeM +'%';
+
+                //Grafica de barras
+                var ctx = document.getElementById("barChart").getContext("2d");
+                var barChart = new Chart(ctx, {
+                type: "bar",
+                data: {
+                labels: [
+                "18",
+                "19",
+                "20-24",
+                "25-29",
+                "30-34",
+                "35-39",
+                "40-44",
+                "45-49",
+                "50-54",
+                "55-59",
+                "60-64",
+                "65 o más",
+                ],
+                datasets: [
+                {
+                label: "Electores",
+                data: [selectedSc['0'],selectedSc['1'],selectedSc['20_24'],selectedSc['25_29'],selectedSc['30_34'],
+                        selectedSc['35_39'],selectedSc['40_44'], selectedSc['45_49'],selectedSc['50_54'],selectedSc['55_59'],
+                        selectedSc['60_64'], selectedSc['65_mas']],
+                backgroundColor: "rgba(0,122,255,1)",
+                },
+                ],
+                },
+                options: {
+                maintainAspectRatio: false,
+                },
+                });
+                //Grafica de barras
+                Chart.defaults.global.legend.display = false;
+                var ctx = document.getElementById("barHistoric").getContext("2d");
+                var barHistoric = new Chart(ctx, {
+                type: "bar",
+                data: {
+                labels: respuesta.partidos,
+                datasets: [
+                {
+                label: "Votos",
+                data: respuesta.num,
+                backgroundColor: respuesta.colores,
+                },
+                ],
+                },
+                options: {
+                maintainAspectRatio: false,
+                },
+                });
+                //borro resultados anteriores de tabla
+                tabla = document.getElementById('tableVotes');
+                tabla.innerHTML='';
+
+                //lleno tabla de resultados
+                
+                for (i in respuesta.partidos) {
+                    if (respuesta.num[i]==0) break;
+                    place = parseInt(i)+1;
+                    tabla.innerHTML+='<tr> <td>' + respuesta.partidos[i] + '</td> <td>' + respuesta.num[i] + '</td> <td>' + place + '</td> </tr>';
+                }
+
+            } else {
+                alert("Error de la consulta a la Base de datos"); //poner el error correcto 
+                // error 404, 500 etc.
+            }   
+        }
+    }
+    httpRequest.send();  
+}
 
 function initMap() {
     map = new google.maps.Map(document.getElementById("mapa"), {
@@ -258,11 +375,11 @@ function initMap() {
             canvas.style.width='auto';
             canvas.style.maxHeight='200px';
             before_me =document.getElementById("before_me2");
-            document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
+            document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de votos
 
             var nombre = event.feature.getProperty('Name');
             document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
-            map.data.setStyle(function(feature) {
+            map.data.setStyle(function(feature) {//le pongo el color a la seccion del mapa cliqueada
                 var ide = feature.getProperty('Name');
                 var ver = ide == nombre ? true : false; 
                 
@@ -273,118 +390,7 @@ function initMap() {
                 };
             });
             //map.data.overrideStyle(event.feature, {fillColor: 'green', strokeColor:'white'});
-
-            httpRequest = false;
-            if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
-                httpRequest = new XMLHttpRequest();
-                
-            } else {
-            // Internet explorer siempre llevando la contra.
-                httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            if (httpRequest == false) return false; // no se puedo crear el objeto
-            
-            var ide = nombre; // obtener el id de la sección
-            var url = document.getElementById('form-ajax').action;
-            httpRequest.open('GET', url + '/' + ide, true);
-            
-            
-            httpRequest.onreadystatechange = function() {
-                       
-                if (httpRequest.readyState == 4) {
-                    // la peticion la recibio el servidor
-                    if (httpRequest.status == 200) {
-                        // convertimos la respuesta del servidor a un objeto JSON
-                        respuesta = JSON.parse(httpRequest.responseText);
-                        selectedSc = respuesta.seccion;
-                        total =  selectedSc.hombres + selectedSc.mujeres;
-                        
-                        //Grafica de pastel 
-                        var simpCanvas = document.getElementById("simpChart");
-                        Chart.defaults.global.defaultFontFamily = "Lato";
-                        Chart.defaults.global.defaultFontSize = 18;
-                        Chart.defaults.global.legend.display = false;
-
-                        simpData = {
-                        labels: ["Hombres", "Mujeres"],
-                        datasets: [
-                        {
-                        data: [selectedSc.hombres,selectedSc.mujeres],
-                        backgroundColor: ["#9B51E0", "#FB8832"],
-                        },
-                        ],
-                        };
-
-                        let pieChart = new Chart(simpCanvas, {
-                        type: "pie",
-                        data: simpData,
-                        });
-                        
-                        document.getElementById("totalLN").innerHTML = total;
-                        porcentajeH = parseInt((selectedSc.hombres*100)/total);
-                        porcentajeM = parseInt((selectedSc.mujeres*100)/total);
-                        document.getElementById('men').innerHTML = 'H '+porcentajeH +'%';
-                        document.getElementById('women').innerHTML = 'M '+porcentajeM +'%';
-
-                        //Grafica de barras
-                        var ctx = document.getElementById("barChart").getContext("2d");
-                        var barChart = new Chart(ctx, {
-                        type: "bar",
-                        data: {
-                        labels: [
-                        "18",
-                        "19",
-                        "20-24",
-                        "25-29",
-                        "30-34",
-                        "35-39",
-                        "40-44",
-                        "45-49",
-                        "50-54",
-                        "55-59",
-                        "60-64",
-                        "65 o más",
-                        ],
-                        datasets: [
-                        {
-                        label: "Electores",
-                        data: [selectedSc['0'],selectedSc['1'],selectedSc['20_24'],selectedSc['25_29'],selectedSc['30_34'],
-                                selectedSc['35_39'],selectedSc['40_44'], selectedSc['45_49'],selectedSc['50_54'],selectedSc['55_59'],
-                                selectedSc['60_64'], selectedSc['65_mas']],
-                        backgroundColor: "rgba(0,122,255,1)",
-                        },
-                        ],
-                        },
-                        options: {
-                        maintainAspectRatio: false,
-                        },
-                        });
-                        //Grafica de barras
-                        Chart.defaults.global.legend.display = false;
-                        var ctx = document.getElementById("barHistoric").getContext("2d");
-                        var barHistoric = new Chart(ctx, {
-                        type: "bar",
-                        data: {
-                        labels: respuesta.partidos,
-                        datasets: [
-                        {
-                        label: "Votos",
-                        data: respuesta.num,
-                        backgroundColor: respuesta.colores,
-                        },
-                        ],
-                        },
-                        options: {
-                        maintainAspectRatio: false,
-                        },
-                        });
-                    } else {
-                        alert("Error"); //poner el error correcto 
-                        // error 404, 500 etc.
-                    }   
-                }
-            }
-            httpRequest.send();   
+            callSection(nombre);  
             click=true;
         }
         else{
@@ -594,6 +600,54 @@ function drawSections(vars, caso){
     } 
 }
 
+function slSection(sc){
+    document.getElementById("section").innerHTML = "Sección "+ sc;
+    document.getElementById('porcentajes').style.display = 'block';
+    document.getElementById('moreInfo').style.display = 'block';
+
+    document.getElementById("simpChart").remove();
+    var canvas = document.createElement("canvas");
+    canvas.id = "simpChart"; 
+    canvas.style.height='200';
+    canvas.style.width='auto';
+    canvas.style.maxHeight='250px';
+    document.getElementById('div_pie').appendChild(canvas);//creo y elimino elementos html de los canvas para que no se superpongan al actualizar
+
+    document.getElementById("barChart").remove();
+    var canvas = document.createElement("canvas");
+    canvas.id = "barChart"; 
+    canvas.style.height='200';
+    canvas.style.width='auto';
+    canvas.style.maxHeight='250px';
+    before_me =document.getElementById("before_me");
+    document.getElementById('div_graphics').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
+
+    document.getElementById("barHistoric").remove();
+    var canvas = document.createElement("canvas");
+    canvas.id = "barHistoric"; 
+    canvas.style.height='200';
+    canvas.style.width='auto';
+    canvas.style.maxHeight='200px';
+    before_me =document.getElementById("before_me2");
+    document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de votos
+
+    var nombre = sc;
+    document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
+    map.data.setStyle(function(feature) {//le pongo el color a la seccion del mapa cliqueada y oculto las demás
+        var ide = feature.getProperty('Name');
+        var ver = ide == nombre ? true : false; 
+        var color = ide == nombre ? 'blue': 'none';
+        return {
+        strokeWeight: 1,
+        fillOpacity: 0.3,
+        visible: ver,
+        fillColor: color,
+        };
+    });
+    
+    callSection(nombre); //esta función jala la info de la bd     
+    click=true;  
+}
 </script>
 @endsection
 
