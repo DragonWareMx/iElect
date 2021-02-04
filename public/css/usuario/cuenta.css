@@ -29,9 +29,12 @@
     background-color: transparent !important;
 } 
 
-#passActual-error, #password-error, #cfmPassword-error{
-    font-size: 13px;
-    color: rgb(199, 48, 48);
+.tr_brigadistas:hover{
+    background-color: rgb(240, 240, 240);
+    cursor: pointer;
+}
+.tr_brigadistas:focus, .tr_brigadistas:active, .tr_brigadistasS{
+    background-color:  #c2dfff;
 }
 
 .upload-text {

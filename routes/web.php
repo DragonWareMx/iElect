@@ -115,6 +115,8 @@ Route::get('/brigadistas', 'brigadistasInfoController@index')->name('brigadistas
 
 Route::get('/brigadistas/solicitudes', 'brigadistasInfoController@solicitudes')->name('brigadistas_sol');
 
+Route::post('/brigadistas/solicitudes/accion', 'brigadistasInfoController@accion')->name('brigadistas_accion');
+
 /****** SIMPATIZANTES ******/
 //Simpatizantes
 Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simpatizantes')->middleware('auth')->middleware(CheckCamp::class);

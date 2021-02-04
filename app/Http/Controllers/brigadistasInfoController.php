@@ -13,6 +13,8 @@ use App\Models\User;
 use App\Models\Campaign;
 use App\Models\Section;
 use App\Models\Elector;
+use App\Models\Order;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -102,6 +104,89 @@ class brigadistasInfoController extends Controller
     }
 
     public function solicitudes(){
-        return view('usuario.brigadistas_solicitudes');
+        $campana = session()->get('campana');
+        $soli = Order::where('campaign_id', $campana->id)
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(10);
+        return view('usuario.brigadistas_solicitudes',['solicitudes' => $soli]);
+    }
+
+    public function accion(Request $request){
+        // dd($request);
+        if(!$request->b){
+            return redirect('brigadistas/solicitudes')->withErrors(['Selecciona al menos un brigadista.']);
+        }
+        else{
+            $cantidad=sizeof($request->b);
+            
+            if($request->action == "eliminar"){
+                try{
+                    \DB::beginTransaction();
+                    {
+                        // ELIMINARLOS 
+                        for($i=0 ; $i< $cantidad; $i++) {
+                            DB::table('orders')->where('id',$request->b[$i] )->delete();
+                        }
+                        \DB::commit();
+
+                        return redirect('brigadistas/solicitudes')->with('status', 'Brigadistas eliminados correctamente');
+                    } 
+                } 
+                catch(QueryException $ex){
+                    \DB::rollback();
+                    return redirect('brigadistas/solicitudes')->withErrors(['Ocurrió un error inesperado, intentalo más tarde.']);
+                }
+            }
+
+            else{
+                try{
+                    \DB::beginTransaction();
+                    {
+                        $brigadista;
+                        for($i=0 ; $i< $cantidad; $i++) {
+                            // Se obtienen los datos del brigadista que se va a aceptar
+                            $brigadista = Order::where('id', $request->b[$i])->get();
+
+                            // GUARDARLOS COMO USUARIO
+                            $newUser = new User();
+                            $newUser->name = $brigadista[0]->name;
+                            $newUser->email = $brigadista[0]->email;
+                            $newUser->password = $brigadista[0]->password;
+                            // $newUser->password = Hash::make($brigadista[0]->password);
+                            $newUser->status = 'activo';
+                            $newUser->save();
+                            
+                            // Obtener el id de la inserción de arriba
+                            $idUser = User::latest('id')->first();
+                            $fechaNow = Carbon::now();
+                            // dd($fechaNow);
+                            // GUARDARLO EN ROL DE USUARIO
+                            DB::table('role_user')->insert([
+                                'role_id' => 3,
+                                'user_id' => $idUser->id,
+                                'created_at' => $fechaNow
+                            ]);
+                            
+                            // ASIGNARLO A LA CAMPAÑA
+                            DB::table('campaign_user')->insert([
+                                'campaign_id' => $brigadista[0]->campaign_id,
+                                'user_id' => $idUser->id,
+                                'created_at' => $fechaNow
+                            ]);
+                            
+                            // ELIMINARLO DE ORDERS
+                            DB::table('orders')->where('id',$request->b[$i] )->delete();
+                            // dd('SE ELIMINO'); 
+                        }
+                        \DB::commit();
+                        return redirect('brigadistas/solicitudes')->with('status', 'Brigadistas aceptados correctamente');
+                    } 
+                } 
+                catch(QueryException $ex){
+                    \DB::rollback();
+                    return redirect('brigadistas/solicitudes')->withErrors(['Ocurrió un error inesperado, intentalo más tarde.']);
+                }
+            }
+        }
     }
 }

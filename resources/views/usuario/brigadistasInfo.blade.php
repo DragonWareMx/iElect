@@ -77,20 +77,6 @@ Brigadistas
                             </tbody>
                         </table>
                         {!! $brigadistas->links() !!}
-                        {{-- <ul class="uk-pagination uk-flex-center" uk-margin>
-                            <li>
-                                <a href="#"><span uk-pagination-previous></span></a>
-                            </li>
-                            <li><a href="#">1</a></li>
-                            <li class="uk-disabled"><span>...</span></li>
-                            <li><a href="#">5</a></li>
-                            <li><a href="#">6</a></li>
-                            <li class="uk-active"><span>7</span></li>
-                            <li><a href="#">8</a></li>
-                            <li>
-                                <a href="#"><span uk-pagination-next></span></a>
-                            </li>
-                        </ul> --}}
                     </div>
                 </div>
                 <div class="uk-width-1-4@m">
@@ -114,8 +100,4 @@ Brigadistas
 @endsection
 
 @section('scripts')
-//Modal de la tabla
-function myFunction(x) {
-UIkit.modal("#modal-datos-simp").toggle();
-}
 @endsection
