@@ -126,6 +126,8 @@ Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simp
 Route::get('/simpatizantes/no_aprobados', 'simpatizanteController@simpatizantes_no_aprobados')->name('simpatizantes_no_aprobados')->middleware('auth')->middleware(CheckCamp::class);
 //aprobar simpatizantes
 Route::patch('/simpatizantes/aprobar', 'simpatizanteController@aprobarSimpatizantes')->name('aprobar-simpatizante')->middleware('auth');
+//aprobar simpatizantes
+Route::get('/simpatizantes/editar/{id}', 'simpatizanteController@editarSimpatizantes')->name('editar-simpatizante')->middleware('auth');
 //Simpatizantes
 // Route::get('/simpatizantes/solicitudes', function () {
 //     return view('usuario.simpatizantes_eliminar');
