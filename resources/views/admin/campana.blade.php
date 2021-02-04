@@ -102,11 +102,8 @@ Campañas
                 </tr>
             </thead>
             <tbody id="tabla-secciones">
-                @php
-                 $i=0;   
-                @endphp
-                @foreach ($campana->section as $seccion)
-                <tr style="cursor: pointer" data-id="{{$seccion->pivot->id}}" data-num={{$i}}>
+                @foreach ($secciones as $seccion)
+                <tr style="cursor: pointer" data-id="{{$seccion->pivot->id}}" data-num={{$seccion->id}}>
                     <td>{{$seccion->num_seccion}}</td>
                     <td>{{$seccion->town->nombre}}</td>
                     <td>{{$seccion->federal_district->cabecera}}</td>
@@ -114,12 +111,10 @@ Campañas
                     <td>{{$seccion->pivot->meta}}</td>
                     <td>{{$seccion->pivot->prioridad}}</td>
                 </tr>
-                @php
-                   $i++;
-                @endphp 
                 @endforeach
             </tbody>
         </table>
+        {!! $secciones->links() !!}
     </div>
 
     <!-- Modal Editar Seccion -->
@@ -175,13 +170,20 @@ Campañas
 <script>
     //Mandar datos de la sección al modal
     $(document).ready(function () {
-        var camp={!! json_encode($campana); !!};
+        var camp={!! json_encode($secciones); !!};
+        var camp=camp['data'];
         $('#tabla-secciones tr').click(function(){
             var data=$(this).data('num');
-            $('#seccionId').html('Editar sección '+ camp['section'][data]['num_seccion'] +' de esta campaña');
-            $('#meta').val(camp['section'][data]['pivot']['meta']);
-            $('#prioridad').val(camp['section'][data]['pivot']['prioridad']);
-            $('#form-editar-seccion').attr('action', '/admin/editar/seccion/'+camp['section'][data]['pivot']['id']);
+            for(var key in camp){
+                var obj=camp[key];
+                if(obj["id"] == data){
+                    break;
+                }
+            }
+            $('#seccionId').html('Editar sección '+ obj['num_seccion'] +' de esta campaña');
+            $('#meta').val(obj['pivot']['meta']);
+            $('#prioridad').val(obj['pivot']['prioridad']);
+            $('#form-editar-seccion').attr('action', '/admin/editar/seccion/'+obj['pivot']['id']);
             UIkit.modal("#modal-editar-seccion").toggle();
             
         });
