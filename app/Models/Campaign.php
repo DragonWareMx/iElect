@@ -9,21 +9,28 @@ class Campaign extends Model
 {
     use HasFactory;
 
-    public function position(){
+    public function position()
+    {
         return $this->belongsTo('App\Models\Position');
     }
-    public function privacy_document(){
+    public function privacy_document()
+    {
         return $this->hasMany('App\Models\PrivacyDocument');
     }
-    public function user(){
+    public function user()
+    {
         return $this->belongsToMany('App\Models\User');
     }
-    public function politic_partie(){
+    public function politic_partie()
+    {
         return $this->belongsToMany('App\Models\PoliticPartie');
     }
-    public function section(){
-        return $this->belongsToMany('App\Models\Section');
+    public function section()
+    {
+        return $this->belongsToMany('App\Models\Section')->withPivot('meta', 'prioridad');
     }
-
-
+    public function elector()
+    {
+        return $this->hasMany('App\Models\Elector');
+    }
 }
