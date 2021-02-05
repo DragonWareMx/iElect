@@ -494,7 +494,7 @@ Simpatizantes
                     <span uk-icon="icon: plus" class="uk-margin-left"></span>
                 </button>
                 @endif
-                @if (Auth::user()->roles[0]->name == 'Agente')
+                @if (Auth::user()->roles[0]->name == 'Agente' || Auth::user()->roles[0]->name == 'Administrador')
                 <div class="uk-visible@m">
                     <div class="omrs-input-group">
                         <form id="form-buscador" class="uk-modal-body" action="{{ route('simpatizantes') }}"

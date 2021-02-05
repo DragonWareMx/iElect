@@ -64,12 +64,14 @@ class SimpatizanteController extends Controller
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('campaign_id','=',$campana->id)
                                         ->where('aprobado',1)
+                                        ->orderBy('created_at', 'DESC')
                                         ->paginate(10);
 
                 //Cuenta el total de simpatizantes registrados
                 $total = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
                                 ->where('campaign_id','=',$campana->id)
+                                ->where('aprobado',1)
                                 ->get()->count();
 
                 //Cuenta el total de simpatizantes no aprobados
@@ -91,7 +93,8 @@ class SimpatizanteController extends Controller
                 $simpatizantes = Elector::select('users.name', 'electors.*')
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('campaign_id','=',$campana->id)
-                                        ->where('aprobado',1);
+                                        ->where('aprobado',1)
+                                        ->orderBy('created_at', 'DESC');
 
                 //Cuenta el total de simpatizantes registrados
                 $total = Elector::select('users.name', 'electors.*')
@@ -192,13 +195,14 @@ class SimpatizanteController extends Controller
                 //Obtiene todos los simpatizantes aprobados
                 $simpatizantes = Elector::select('users.name', 'electors.*')
                                         ->join('users', 'users.id', '=', 'electors.user_id')
-                                        ->orderBy('created_at', 'ASC')
                                         ->where('aprobado',1)
+                                        ->orderBy('created_at', 'DESC')
                                         ->paginate(10);
 
                 //Cuenta el total de simpatizantes registrados
                 $total = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
+                                ->where('aprobado',1)
                                 ->get()->count();
 
                 //Cuenta el total de simpatizantes no aprobados
@@ -218,19 +222,17 @@ class SimpatizanteController extends Controller
                 //Obtiene todos los simpatizantes aprobados
                 $simpatizantes = Elector::select('users.name', 'electors.*')
                                         ->join('users', 'users.id', '=', 'electors.user_id')
-                                        ->where('campaign_id','=',$campana->id)
-                                        ->where('aprobado',1);
+                                        ->where('aprobado',1)
+                                        ->orderBy('created_at', 'DESC');
 
                 //Cuenta el total de simpatizantes registrados
                 $total = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
-                                ->where('campaign_id','=',$campana->id)
                                 ->where('aprobado',1)->get()->count();
                 
                 //Cuenta el total de simpatizantes no aprobados
                 $totalNA = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
-                                ->where('campaign_id','=',$campana->id)
                                 ->where('aprobado',0)
                                 ->get()
                                 ->count();
@@ -329,7 +331,7 @@ class SimpatizanteController extends Controller
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('campaign_id','=',$campana->id)
                                         ->where('aprobado',0)
-                                        ->orderBy('created_at', 'ASC')
+                                        ->orderBy('created_at', 'DESC')
                                         ->paginate(10);
 
                 $totalNA = Elector::select('users.name', 'electors.*')
@@ -350,7 +352,7 @@ class SimpatizanteController extends Controller
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('campaign_id','=',$campana->id)
                                         ->where('aprobado',0)
-                                        ->orderBy('created_at', 'ASC');
+                                        ->orderBy('created_at', 'DESC');
 
                 $total = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
@@ -446,7 +448,7 @@ class SimpatizanteController extends Controller
                 $simpatizantes = Elector::select('users.name', 'electors.*')
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('aprobado',0)
-                                        ->orderBy('created_at', 'ASC')
+                                        ->orderBy('created_at', 'DESC')
                                         ->paginate(10);
 
                 $totalNA = Elector::select('users.name', 'electors.*')
@@ -464,17 +466,14 @@ class SimpatizanteController extends Controller
                 //Recibe todas las secciones
                 $simpatizantes = Elector::select('users.name', 'electors.*')
                                         ->join('users', 'users.id', '=', 'electors.user_id')
-                                        ->where('campaign_id','=',$campana->id)
                                         ->where('aprobado',0)
-                                        ->orderBy('created_at', 'ASC');
+                                        ->orderBy('created_at', 'DESC');
 
                 $total = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
-                                ->where('campaign_id','=',$campana->id)
                                 ->where('aprobado',1)->get()->count();
                 $totalNA = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
-                                ->where('campaign_id','=',$campana->id)
                                 ->where('aprobado',0)
                                 ->get()
                                 ->count();
@@ -589,12 +588,49 @@ class SimpatizanteController extends Controller
             'foto_de_firma' => 'nullable|mimes:jpeg,jpg,png|image',
         ]);
 
+        //verifica que el elector esté en la edad permitida
         if(intval(\Carbon\Carbon::parse($request->fecha_de_nacimiento)->diff(\Carbon\Carbon::now())->format('%y')) < 17){
             return response()->json(['errors' => ['catch' => [0 => 'La fecha de nacimiento debe ser de una persona de 17 años o más.']]], 422);
         }
 
+        //variables que guardan los nombres de los archivos en caso que haya un error
+        $nfotoa = null;
+        $nfotor = null;
+        $nfotoe = null;
+        $nfotod = null;
+
         DB::beginTransaction();
         try {
+            //se obtiene la campana
+            $campana = session()->get('campana');
+            //se obtiene la seccion
+            $seccion = Section::find($request->seccion);
+            //SI NO EXISTE LA SECCION SE MANDA ERROR
+            if(is_null($seccion)){
+                DB::rollBack();
+                return response()->json(['errors' => ['catch' => [0 => 'La sección: '.$request->seccion.' no existe en la base de datos.']]], 500);
+            }
+
+            //VERIFICA QUE LA SECCION FORME PARTE DE LA CAMPAÑA
+            $existe = $seccion->campaign->contains($campana->id);
+            
+            if(!$existe){
+                DB::rollBack();
+                return response()->json(['errors' => ['catch' => [0 => 'La sección: '.$request->seccion.' no está relacionada con la campaña.']]], 500);
+            }
+
+            //VERIFICA QUE NO EXISTA UN ELECTOR CON LA MISMA CLAVE EN LA MISMA CAMPAÑA
+            $simpVal = Elector::where('campaign_id',$campana->id)->get()->filter(function($record) use($request) {
+                if($record->clave_elector == $request->clave_elector){
+                    return $record;
+                }
+            });
+            if(!is_null($simpVal) && count($simpVal) > 0){
+                //simpatizante ya registrado
+                DB::rollBack();
+                return response()->json(['errors' => ['catch' => [0 => 'El simpatizante con la clave de elector: '.$request->clave_elector.' ya ha sido registrado en esta campaña.']]], 500);
+            }
+
             //SE CREA EL ELECTOR
             $simpatizante = new Elector();
 
@@ -621,12 +657,6 @@ class SimpatizanteController extends Controller
             $simpatizante->ext_num = $request->num_exterior;
             $simpatizante->int_num = $request->num_interior;
             $simpatizante->cp = $request->CP;
-            //se obtiene la campana
-            $campana = session()->get('campana');
-            //se obtiene la seccion
-            $seccion = Section::find($request->seccion);
-
-            //FALTA: Que se verifique que la seccion sea de la campana
 
             $simpatizante->localidad = $seccion->local_district->numero;
             $simpatizante->municipio = $seccion->town->numero;
@@ -654,6 +684,7 @@ class SimpatizanteController extends Controller
                 // Store the encrypted Content
                 \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
 
+                $nfotoa = $newFileName;
                 $simpatizante->credencial_a = $newFileName;
             }
             if ($request->foto_inverso) {
@@ -672,6 +703,7 @@ class SimpatizanteController extends Controller
                 // Store the encrypted Content
                 \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
 
+                $nfotor = $newFileName;
                 $simpatizante->credencial_r = $newFileName;
             }
             if ($request->foto_de_elector) {
@@ -690,6 +722,7 @@ class SimpatizanteController extends Controller
                 // Store the encrypted Content
                 \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
 
+                $nfotoe = $newFileName;
                 $simpatizante->foto_elector = $newFileName;
             }
             if ($request->foto_de_firma) {
@@ -708,6 +741,7 @@ class SimpatizanteController extends Controller
                 // Store the encrypted Content
                 \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
 
+                $nfotod = $newFileName;
                 $simpatizante->documento = $newFileName; 
             }
             $simpatizante->save();
@@ -721,22 +755,82 @@ class SimpatizanteController extends Controller
         } catch (QueryException $ex) {
             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
             DB::rollBack();
             return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         } catch (Exception $ex) {
             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
             DB::rollBack();
             return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         } catch (Throwable $ex) {
             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
             DB::rollBack();
             return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         }
         catch (Error $ex) {
             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
             $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
             DB::rollBack();
             return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         }
@@ -809,5 +903,19 @@ class SimpatizanteController extends Controller
 
         //se manda la vista
         return view('usuario.simpatizante_editar', ['simpatizante' => $simpatizante, 'secciones'=>$secciones,'ocupaciones'=>$ocupaciones, 'campanas'=>$campanas]);
+    }
+
+    public function editarSimpatizante(Request $request)
+    {
+        $simpatizante = Elector::findOrFail($id);
+
+        $ocupaciones = Job::all();
+
+        $secciones = Section::whereHas('campaign', function (Builder $query) use ($simpatizante) {
+            $query->where('campaigns.id', '=', $simpatizante->campaign->id);
+        })->get();
+
+        //se manda la vista
+        return view('usuario.simpatizante_editar', ['simpatizante' => $simpatizante, 'secciones'=>$secciones,'ocupaciones'=>$ocupaciones]);
     }
 }

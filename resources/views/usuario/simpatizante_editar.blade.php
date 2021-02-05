@@ -18,31 +18,17 @@ Simpatizantes
 <a class="uk-padding-small" href="{{ route('simpatizantes') }}">Ver simpatizantes</a>
 <button class="uk-modal-close-default" type="button" uk-close></button>
 <div class="uk-modal-header">
-    <h2 class="uk-modal-title">Agregar simpatizante</h2>
+    <h2 class="uk-modal-title">Editar simpatizante</h2>
 </div>
 {{-- enctype="multipart/form-data" --}}
-<form id="form-editar-simp" class="uk-modal-body" action="{{ route('agregar-simpatizante') }}" method="POST"
+<form id="form-editar-simp" class="uk-modal-body" action="{{ route('update-simpatizante') }}" method="POST"
     enctype="multipart/form-data">
     @csrf
+    @method('PATCH')
     <div id="errors" class="uk-alert-danger" uk-alert style="display:none;"></div>
     <div uk-grid>
         <!-- Lado izquierdo -->
         <div class="uk-width-1-2@m">
-            @if (!is_null($campanas) && count($campanas) > 0)
-            <h6 class="uk-text-bold">Campañas</h6>
-            <div class="select">
-                <select class="select-text" required name="campana">
-                    @foreach ($campanas as $campana)
-                    <option value="{{ $campana->id }}" @if($simpatizante->campaign_id == $campana->id) selected @endif>Campaña: {{ $campana->name }}</option>
-                    @endforeach
-                </select>
-                <span class="select-highlight"></span>
-                <span class="select-bar"></span>
-                <label class="select-label">Sección</label>
-            </div>
-            @else
-            <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
-            @endif
             @if (!is_null($secciones) && count($secciones) > 0)
             <h6 class="uk-text-bold">Secciones</h6>
             <div class="select">
