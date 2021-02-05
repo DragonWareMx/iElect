@@ -3,24 +3,37 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use App\Models\User;
 use App\Models\Section;
 use App\Models\Vote;
 use App\Models\PoliticPartie;
+use App\Models\Campaigne;
 
 
 class historicoController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
     public function index(){
-        $secciones = Section::get();//aquí se cambiará sólo por las secciones asignadas
+        Gate::authorize('haveaccess', 'agente.perm');
+        $campana = session()->get('campana');
+        
+        $secciones = $campana->section()->get();
+        
         return view('usuario.historico', ['secciones'=>$secciones]);
     }
 
     public function seccion($id){
+        Gate::authorize('haveaccess', 'agente.perm');
+        $campana = session()->get('campana');
         $seccion = Section::find($id);
-        //$puesto = se saca de la sesión, de la campaña... cuando haya registros hay que ponerlo, usamos mientras uno de prueba.
         //$eleccion = se va a sacar la última donde hubo ese puesto, se usará un while y un contador hacia atrás si el resultado es nulo se pone la siguiente.
-        $puesto = 2; //es el id de puesto de Gobernador
+        $puesto = $campana->position_id; //es el id de puesto
         $votos = Vote::where([['section_id','=', $id],['position_id', '=',$puesto],['election_id','=', 1]])->orderBy('num', 'desc')->get();
         
         $partidos=[];

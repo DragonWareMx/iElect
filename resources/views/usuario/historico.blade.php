@@ -10,7 +10,8 @@ Histórico
 @endsection
 
 @section('body')
-<div class="uk-margin uk-margin-left uk-margin-right">
+<body onload="callSection({{$secciones[0]->id}})">
+<div class="uk-margin uk-margin-left uk-margin-right" >
     <!-- CARD HISTORICO -->
     <div class="uk-card uk-card-default uk-padding-small">
         <h3>Histórico</h3>
@@ -26,7 +27,7 @@ Histórico
                     </select>
                     <span class="select-highlight"></span>
                     <span class="select-bar"></span>
-                    <label class="select-label">Sección</label>
+                    <label id="labelSelect" class="select-label">Sección</label>
                 </div>
             </div>
             <!-- SELECCION ELECCIONES -->
@@ -36,12 +37,12 @@ Histórico
                     <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
                     <a href="" uk-icon="chevron-right"></a>
                 </div>
-                <p class="uk-margin-remove">Gobernador estatal de Michoacán</p>
+                <p class="uk-margin-remove">{{session()->get('campana')->position->name}}</p>
             </div>
         </div>
         <div class="uk-margin-top" uk-grid>
             <!-- Grafica de barras -->
-            <div class="uk-width-1-2@m">
+            <div id="dadBar" class="uk-width-1-2@m">
                 <!--<h5 class="uk-text-bold uk-padding-small">Edad</h5>-->
                 <canvas id="barChart" width="auto" height="200"></canvas>
             </div>
@@ -75,9 +76,9 @@ Histórico
                     <!-- Grafica de pastel -->
                     <div class="">
                         <div class="uk-flex uk-flex-middle">
-                            <div class="uk-margin-large-right">
+                            <div id="daddyChart" class="uk-margin-large-right">
                                 <canvas id="ocupChart" width="auto" height="400"></canvas>
-                                <small class="uk-text-center" style="width: max-content;">Promedio obtenido por partido</small>
+                                <small id="before_me" class="uk-text-center" style="width: max-content;">Promedio obtenido por partido</small>
                             </div>
                             <div id="porcentajes" class="uk-flex-none uk-margin-large-left" >
 
@@ -114,9 +115,11 @@ Histórico
         </div>
     </div>
 </div>
+</body>
 @endsection
 <script>
     function callSection(ide){
+
         httpRequest = false;
         if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
             httpRequest = new XMLHttpRequest();
@@ -131,7 +134,30 @@ Histórico
         
         
         httpRequest.onreadystatechange = function() {
-                    
+            porcentajes = document.getElementById('porcentajes');
+            tabla2= document.getElementById('tableW');
+            tabla = document.getElementById('tableVotes');
+            
+            
+            tabla.innerHTML='';
+            tabla2.innerHTML='';
+            porcentajes.innerHTML='';
+
+            document.getElementById("ocupChart").remove();
+            var canvas = document.createElement("canvas");
+            canvas.id = "ocupChart"; 
+            canvas.style.height='400';
+            canvas.style.width='auto';
+            before = document.getElementById('before_me');
+            document.getElementById('daddyChart').insertBefore(canvas, before);        
+            
+            document.getElementById("barChart").remove();
+            var canvas = document.createElement("canvas");
+            canvas.id = "barChart"; 
+            canvas.style.height='200';
+            canvas.style.width='auto';
+            document.getElementById('dadBar').appendChild(canvas); 
+            
             if (httpRequest.readyState == 4) {
                 // la peticion la recibio el servidor
                 if (httpRequest.status == 200) {
@@ -161,13 +187,13 @@ Histórico
                     });
                     
                     //puntitos de porcentaje promedios
-                    porcentajes = document.getElementById('porcentajes');
-                    tabla2= document.getElementById('tableW');
+                    
                     
                     for (i in respuesta.partidos){
-                        porcentajes.innerHTML+=  '<div> <span class="uk-badge" style="background-color:'+respuesta.colores[i]+'"></span>'+
-                        respuesta.partidos[i]+' '+respuesta.promedios[i]+'</div>';
-
+                        if (respuesta.promedios[i]!=0){
+                            porcentajes.innerHTML+=  '<div> <span class="uk-badge" style="background-color:'+respuesta.colores[i]+'"></span>'+
+                            respuesta.partidos[i]+' '+respuesta.promedios[i]+'</div>';
+                        }
                     }
                     //tabla de ganadores por puesto
                     console.log(respuesta);
@@ -195,9 +221,7 @@ Histórico
                     maintainAspectRatio: false,
                     },
                     });
-                    //borro resultados anteriores de tabla
-                    tabla = document.getElementById('tableVotes');
-                    tabla.innerHTML='';
+                    
 
                     //lleno tabla de resultados
                     

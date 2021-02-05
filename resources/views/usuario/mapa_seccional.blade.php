@@ -18,6 +18,27 @@ defer></script>
     <div class="uk-card uk-card-default uk-margin-top uk-padding-small">
         <div class="uk-flex uk-flex-middle">
             <h3 class="uk-text-bold uk-margin-remove">Mapa seccional</h3>
+            @if (!isset($dFederales) && !isset($dLocales))
+            <a href="#" class="uk-margin-left" onclick="opciones('municipio')">
+                <img class="uk-margin-small-right" src="{{asset('img/icons/section.png')}}"
+                    style="max-height: 24px; max-width: 24px; width: 100%;" />
+                Municipios
+            </a>
+            
+            @elseif (!isset($dFederales) && !isset($municipios))
+            <a href="#" class="uk-margin-left" onclick="opciones('local')">
+                <img class="uk-margin-small-right" src="{{asset('img/icons/mich.png')}}"
+                    style="max-height: 18px; max-width: 26px; width: 100%;" />
+                Distritos locales
+            </a> 
+            
+            @elseif (!isset($dLocales) && !isset($municipios))
+            <a href="#" class="uk-margin-left" onclick="opciones('federal')">
+                <img class="uk-margin-small-right" src="{{asset('img/icons/mexico.png')}}"
+                    style="max-height: 18px; max-width: 26px; width: 100%;" />
+                Distritos federales
+            </a>
+            @else
             <a href="#" class="uk-margin-left" onclick="opciones('federal')">
                 <img class="uk-margin-small-right" src="{{asset('img/icons/mexico.png')}}"
                     style="max-height: 18px; max-width: 26px; width: 100%;" />
@@ -33,6 +54,8 @@ defer></script>
                     style="max-height: 24px; max-width: 24px; width: 100%;" />
                 Municipios
             </a>
+            @endif
+
         </div>
 
         <div class="uk-child-width-expand@s uk-margin" uk-grid>
@@ -40,13 +63,61 @@ defer></script>
                 <h6 class="uk-margin-remove uk-text-bold">ENTIDAD FEDERATIVA</h6>
                 <div class="uk-margin-bottom">
                     <div class="uk-form-controls">
-                        <select class="uk-select" id="form-stacked-select-edo">
+                        <select class="uk-select" id="form-stacked-select-edo" disabled>
                         @foreach ($estados as $estado)
-                            <option value="{{$estado->id}}">{{$estado->nombre}}</option>    
+                            @if ($estado->id == 16)
+                            <option value="{{$estado->id}}" selected>{{$estado->nombre}}</option>    
+                            @endif
                         @endforeach
                         </select>
                     </div>
                 </div>
+                
+                @if (!isset($dFederales) && !isset($dLocales))
+                <div id="municipio" style="display: none" class="uk-animation-slide-top-medium">
+                    <h6 class="uk-margin-remove uk-text-bold">MUNICIPIO</h6>
+                    <div class="uk-margin-bottom">
+                        <div class="uk-form-controls">
+                            <select class="uk-select" id="form-stacked-select-mp" onchange="drawSections(this.value, 'municipio')">
+                                <option value="" selected="selected" >Selecciona un municipio</option>
+                    
+                                <option value="{{$municipios->id}}&{{$municipios->local_district[0]->coordenadas}}">{{$municipios->nombre}}</option>    
+                                
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                @elseif (!isset($dFederales) && !isset($municipios))
+                <div id="local" style="display: none" class="uk-animation-slide-top-medium">
+                    <h6 class="uk-margin-remove uk-text-bold">DISTRITO LOCAL</h6>
+                        <div class="uk-margin-bottom">
+                            <div class="uk-form-controls">
+                                <select class="uk-select" id="form-stacked-select-dl" onchange="drawSections(this.value, 'local')">
+                                    <option value="" selected="selected" >Selecciona un distrito</option>
+                                
+                                    <option value="{{$dLocales->id}}&{{$dLocales->coordenadas}}">{{$dLocales->id}}-{{$dLocales->cabecera}}</option>    
+                                
+                                </select>
+                            </div>
+                        </div>
+                </div>
+                @elseif (!isset($dLocales) && !isset($municipios))
+                <div id="federal" class="uk-animation-slide-top-medium" style="display: none">
+                    <h6 class="uk-margin-remove uk-text-bold">DISTRITO FEDERAL</h6>
+                    <div class="uk-margin-bottom">
+                        <div class="uk-form-controls">
+                            <select id="selectDF" class="uk-select" id="form-stacked-select-df" onchange="drawSections(this.value, 'federal')">
+                                <option value="" selected="selected">Selecciona un distrito</option>
+                                
+                                    <option value="{{$dFederales->id}}&{{$dFederales->coordenadas}}" >{{$dFederales->id}}-{{$dFederales->cabecera}}</option>    
+                               
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                @else  
+
                 <div id="federal" class="uk-animation-slide-top-medium" style="display: none">
                     <h6 class="uk-margin-remove uk-text-bold">DISTRITO FEDERAL</h6>
                     <div class="uk-margin-bottom">
@@ -86,6 +157,7 @@ defer></script>
                         </div>
                     </div>
                 </div>
+                @endif
                 <h6 class="uk-margin-remove uk-text-bold">SECCIÓN</h6>
                 <div class="uk-margin-bottom">
                     <div class="uk-form-controls">
@@ -163,7 +235,7 @@ defer></script>
                         <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
                         <a href="" uk-icon="chevron-right"></a>
                     </div>
-                    <p class="uk-margin-remove">Gobernador estatal de Michoacán</p>
+                    <p class="uk-margin-remove">{{session()->get('campana')->position->name}}</p>
                 </div>
                 <div class="uk-margin-top" uk-grid>
                     <!-- Grafica de barras -->
