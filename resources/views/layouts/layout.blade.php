@@ -30,7 +30,7 @@
                     </div>
                     <div class="uk-width-expand">
                         <h3 class="uk-card-title uk-margin-remove-bottom">
-                            {{ Auth::user()->name }} 
+                            {{Auth::user()->name}}
                         </h3>
                         <p class="uk-text-meta uk-margin-remove-top">
                             Nombre del partido NDP

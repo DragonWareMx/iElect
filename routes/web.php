@@ -89,7 +89,7 @@ Route::get('/dF_mapa/{id}', 'mapaSeccionalController@secDF')->name('dF_mapa');
 Route::get('/dL_mapa/{id}', 'mapaSeccionalController@secDL')->name('dL_mapa');
 Route::get('/mN_mapa/{id}', 'mapaSeccionalController@secM')->name('mN_mapa');
 //Ruta Ajustes
-Route::get('/ajustes','CuentaController@index')->name('ajustes');
+Route::get('/ajustes', 'CuentaController@index')->name('ajustes');
 
 //Ruta Cuenta
 Route::get('/ajustes/cuenta', 'CuentaController@cuenta')->name('ajustes_cuenta');
@@ -108,6 +108,7 @@ Route::get('/secciones', 'SeccionesController@verSecciones')->name('secciones');
 
 //Seccion
 Route::get('/seccion/{id}', 'SeccionesController@verSeccion')->name('seccion');
+Route::patch('/seccion/{id}', 'SeccionesController@updCampana')->name('actualizar-campana');
 
 /****** BRIGADISTAS ******/
 //Brigadistas
@@ -122,11 +123,14 @@ Route::get('/brigadistas/solicitudes', function () {
 /****** SIMPATIZANTES ******/
 //Simpatizantes
 Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simpatizantes')->middleware('auth')->middleware(CheckCamp::class);
-
+//Simpatizantes no aprobados
+Route::get('/simpatizantes/no_aprobados', 'simpatizanteController@simpatizantes_no_aprobados')->name('simpatizantes_no_aprobados')->middleware('auth')->middleware(CheckCamp::class);
+//aprobar simpatizantes
+Route::patch('/simpatizantes/aprobar', 'simpatizanteController@aprobarSimpatizantes')->name('aprobar-simpatizante')->middleware('auth');
 //Simpatizantes
-Route::get('/simpatizantes/solicitudes', function () {
-    return view('usuario.simpatizantes_eliminar');
-})->name('simpatizantes_eliminar')->middleware('auth');
+// Route::get('/simpatizantes/solicitudes', function () {
+//     return view('usuario.simpatizantes_eliminar');
+// })->name('simpatizantes_eliminar')->middleware('auth');
 
 /****** HISTORICO ******/
 //Historico
@@ -189,7 +193,7 @@ Route::get('/admin/usuarios/usuario/edit', function () {
 //Route::get('/brigadistas/inicio', 'simpatizanteController@simpatizantes')->name('brigadistas-inicio')->middleware('auth');
 
 //agregar simpatizante
-Route::post('/simpatizantes/agregar', 'simpatizanteController@agregarSimpatizante')->name('agregar-simpatizante');
+Route::post('/simpatizantes/agregar', 'simpatizanteController@agregarSimpatizante')->name('agregar-simpatizante')->middleware('auth');
 
 /********************/
 /**  SIMPATIZANTE  **/
@@ -226,3 +230,6 @@ Route::delete('/admin/eliminar/campana/{id}', 'adminController@eliminarCampana')
 
 //Rutas para ver campaña
 Route::get('/admin/campana/{id}', 'adminController@verCampana')->name('ver-campana');
+
+//Rutas para ver campaña
+Route::patch('/admin/editar/seccion/{id}', 'adminController@editarSeccion')->name('editar-secction');

@@ -104,41 +104,41 @@ Simpatizantes
         <div class="uk-modal-header">
             <h2 class="uk-modal-title">Agregar simpatizante</h2>
         </div>
-        <div id="errors" class="uk-alert-danger" uk-alert style="display:none;"></div>
         {{-- enctype="multipart/form-data" --}}
         <form id="form-nuevo-simp" class="uk-modal-body" action="{{ route('agregar-simpatizante') }}" method="POST"
             enctype="multipart/form-data">
             <div class="uk-modal-body">
                 @csrf
+                <div id="errors" class="uk-alert-danger" uk-alert style="display:none;"></div>
                 <div uk-grid>
                     <!-- Lado izquierdo -->
                     <div class="uk-width-1-2@m">
                         {{--<!-- Avatar -->
                             <div class="avatar-wrapper uk-margin-bottom">
                                         <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}"
-                                width="200"
-                                height="200" alt="Border circle" />
-                                <div class="upload-text">
-                                    Editar foto
-                                    <span class="uk-margin-small-left" uk-icon="upload"></span>
-                                </div>
-                            </div>
-                            --}}
+                        width="200"
+                        height="200" alt="Border circle" />
+                        <div class="upload-text">
+                            Editar foto
+                            <span class="uk-margin-small-left" uk-icon="upload"></span>
+                        </div>
+                    </div>
+                    --}}
 
                     @if (!is_null($secciones) && count($secciones) > 0)
-                        <h6 class="uk-text-bold">Secciones</h6>
-                        <div class="select">
-                            <select class="select-text" required name="seccion">
-                                @foreach ($secciones as $seccion)
-                                <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option>
-                                @endforeach
-                            </select>
-                            <span class="select-highlight"></span>
-                            <span class="select-bar"></span>
-                            <label class="select-label">Sección</label>
-                        </div>
+                    <h6 class="uk-text-bold">Secciones</h6>
+                    <div class="select">
+                        <select class="select-text" required name="seccion">
+                            @foreach ($secciones as $seccion)
+                            <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option>
+                            @endforeach
+                        </select>
+                        <span class="select-highlight"></span>
+                        <span class="select-bar"></span>
+                        <label class="select-label">Sección</label>
+                    </div>
                     @else
-                        <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
+                    <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
                     @endif
 
                     <h6 class="uk-text-bold">Datos personales</h6>
@@ -355,27 +355,27 @@ Simpatizantes
 
                 </div>
             </div>
-            </div>
-            <p class="uk-text-muted">
-                El ciudadano involucrado será notificado sobre la carga de su
-                información personal al sistema iElect brindandole transparencia
-                total y la posibilidad de solicitud de eliminación de la misma.
-            </p>
-            <p class="uk-position-medium uk-position-bottom-left">
-                <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
-                    Eliminar
-                </button>
-            </p>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Cancelar
-                </button>
-                <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
-                    Enviar
-                </button>
-            </p>
-        </form>
     </div>
+    <p class="uk-text-muted">
+        El ciudadano involucrado será notificado sobre la carga de su
+        información personal al sistema iElect brindandole transparencia
+        total y la posibilidad de solicitud de eliminación de la misma.
+    </p>
+    <p class="uk-position-medium uk-position-bottom-left">
+        <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
+            Eliminar
+        </button>
+    </p>
+    <p class="uk-text-right">
+        <button class="uk-button uk-button-default uk-modal-close" type="button">
+            Cancelar
+        </button>
+        <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
+            Enviar
+        </button>
+    </p>
+    </form>
+</div>
 </div>
 @endif
 
@@ -387,7 +387,8 @@ Simpatizantes
             <!-- HEADER -->
             <div class="uk-padding-small uk-flex uk-flex-middle">
                 <h3 class="uk-text-bold">Simpatizantes</h3>
-                <p class="uk-margin-left" style="margin-top: 0">Total: {{ $simpatizantes->count() }} simpatizantes</p>
+                <p class="uk-margin-left" style="margin-top: 0">Total: {{ $total }} simpatizantes</p>
+                <p class="uk-margin-left" style="margin-top: 0">Total: {{ $totalNA }} simpatizantes no aprobados</p>
             </div>
 
             <div>
@@ -425,9 +426,10 @@ Simpatizantes
                 @if (Auth::user()->roles[0]->name == 'Agente')
                 <div class="uk-visible@m">
                     <div class="omrs-input-group">
-                        <form id="form-buscador" class="uk-modal-body" action="{{ route('simpatizantes') }}" method="get">
+                        <form id="form-buscador" class="uk-modal-body" action="{{ route('simpatizantes') }}"
+                            method="get" style="padding: 0">
                             <label class="omrs-input-underlined input-outlined input-trail-icon">
-                                <input name="busc" type="text" maxlength="100"/>
+                                <input name="busc" type="text" maxlength="100" @if(isset($busqueda)) value="{{$busqueda}}" @endif/>
                                 <span class="input-trail-icon" uk-icon="search"></span>
                             </label>
                         </form>
@@ -437,6 +439,7 @@ Simpatizantes
             </div>
 
             @if (Auth::user()->roles[0]->name == 'Agente')
+            <a class="uk-padding-small" href="{{ route('simpatizantes_no_aprobados') }}">Ver simpatizantes no aprobados</a>
             @if ($simpatizantes && count($simpatizantes) > 0)
             <h5 class="uk-text-bold uk-padding-small" style="margin: 0">Información por sección</h5>
             <!-- Tabla -->

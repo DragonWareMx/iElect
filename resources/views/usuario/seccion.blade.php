@@ -9,6 +9,8 @@ Seccion
 
 <!-- CSS de Seccion -->
 <link rel="stylesheet" href="{{asset('css/usuario/seccion.css')}}" />
+<!-- CSS Avatar -->
+<link rel="stylesheet" href="{{asset('css/usuario/cuenta.css')}}" />
 @endsection
 
 @php
@@ -95,47 +97,52 @@ $g65 = 0;
             <h2 class="uk-modal-title">Editar datos de sección</h2>
         </div>
         <div class="uk-modal-body">
-            <div class="uk-margin">
-                <div class="select">
-                    <select class="select-text" required>
-                        <option value="" disabled></option>
-                        <option value="1" @php if($datosSec->campaign[0]->pivot->prioridad=="Alta"){
-                            echo('selected');
-                            }
-                            @endphp>Alta</option>
-                        <option value="2" @php if($datosSec->campaign[0]->pivot->prioridad=="Media"){
-                            echo('selected');
-                            }
-                            @endphp>Media</option>
-                        <option value="3" @php if($datosSec->campaign[0]->pivot->prioridad=="Baja"){
-                            echo('selected');
-                            }
-                            @endphp>Baja</option>
-                    </select>
-                    <span class="select-highlight"></span>
-                    <span class="select-bar"></span>
-                    <label class="select-label">Prioridad</label>
-                </div>
-            </div>
-            <div class="uk-margin">
-                <div class="uk-form-controls">
-                    <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required value="{{$datosSec->campaign[0]->pivot->meta}}" />
-                            <span class="omrs-input-label">Meta final de simpatizantes</span>
-                        </label>
+            <form id="form-update" action="{{route('actualizar-campana', ['id'=>$id])}}" method="post">
+                @csrf
+                @method('PATCH')
+                <div class="uk-margin">
+                    <div class="select">
+                        <select name="prioridad" id="prioridad" class="select-text" required>
+                            <option value="" disabled></option>
+                            <option value="Alta" @php if($datosSec->campaign[0]->pivot->prioridad=="Alta"){
+                                echo('selected');
+                                }
+                                @endphp>Alta</option>
+                            <option value="Media" @php if($datosSec->campaign[0]->pivot->prioridad=="Media"){
+                                echo('selected');
+                                }
+                                @endphp>Media</option>
+                            <option value="Baja" @php if($datosSec->campaign[0]->pivot->prioridad=="Baja"){
+                                echo('selected');
+                                }
+                                @endphp>Baja</option>
+                        </select>
+                        <span class="select-highlight"></span>
+                        <span class="select-bar"></span>
+                        <label class="select-label">Prioridad</label>
                     </div>
                 </div>
-            </div>
+                <div class="uk-margin">
+                    <div class="uk-form-controls">
+                        <div class="omrs-input-group">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input name="meta" type="number" maxlength="100" required
+                                    value="{{$datosSec->campaign[0]->pivot->meta}}" />
+                                <span class="omrs-input-label">Meta final de simpatizantes</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
 
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Cancelar
-                </button>
-                <button class="uk-button uk-button-primary" type="button">
-                    Enviar
-                </button>
-            </p>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">
+                        Cancelar
+                    </button>
+                    <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
+                        Enviar
+                    </button>
+                </p>
+            </form>
         </div>
     </div>
 </div>
@@ -152,8 +159,9 @@ $g65 = 0;
                 <div class="uk-width-1-2@m">
                     <!-- Avatar -->
                     <div class="avatar-wrapper uk-text-center">
-                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="150"
-                            height="150" alt="Border circle" />
+                        <img id="simp_edit_foto" class="profile-pic uk-border-circle"
+                            src="{{asset('img/icons/default.png')}}" width="150" height="150" alt="Border circle"
+                            uk-img />
                     </div>
                     <div class="uk-text-bold">Nombre</div>
                     <div id="simp_edit_nombre">José Agustín Aguilar Solórzano</div>
@@ -194,169 +202,23 @@ $g65 = 0;
                             <div id="simp_edit_tw">link</div>
                             <br />
                             <div class="uk-text-bold">Brigadista</div>
-                            <div>#######</div>
+                            <div id="simp_edit_brigadista">#######</div>
                             <br />
                         </div>
                     </div>
                 </div>
                 <div class="uk-width-1-2@m">
-                    <img id="simp_edit_front" class="uk-margin-bottom" data-src="img/test/ine_front.jpg" width="75%"
+                    <div class="uk-text-bold" id="simp_edit_front_t">Foto de credencial anverso</div>
+                    <img id="simp_edit_front" class="uk-margin-bottom" src="img/test/ine_front.jpg" width="75%"
                         height="auto" alt="" uk-img />
-                    <img id="simp_edit_back" data-src="img/test/ine_back.jpg" width="75%" height="auto" alt="" uk-img />
+                    <div class="uk-text-bold" id="simp_edit_back_t">Foto de credencial inverso</div>
+                    <img id="simp_edit_back" class="uk-margin-bottom" src="img/test/ine_back.jpg" width="75%"
+                        height="auto" alt="" uk-img />
+                    <div class="uk-text-bold" id="simp_edit_firma_t">Foto de firma</div>
+                    <img id="simp_edit_firma" class="uk-margin-bottom" src="img/test/ine_back.jpg" width="75%"
+                        height="auto" alt="" uk-img />
                 </div>
             </div>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Editar
-                </button>
-            </p>
-        </div>
-    </div>
-</div>
-
-<!-- Modal Agregar Simpatizante -->
-<div id="modal-agregar-simp" class="uk-modal-container" uk-modal>
-    <div class="uk-modal-dialog">
-        <button class="uk-modal-close-default" type="button" uk-close></button>
-        <div class="uk-modal-header">
-            <h2 class="uk-modal-title">Agregar simpatizante</h2>
-        </div>
-        <div class="uk-modal-body">
-            <div uk-grid>
-                <!-- Lado izquierdo -->
-                <div class="uk-width-1-2@m">
-                    <!-- Avatar -->
-                    <div class="avatar-wrapper uk-margin-bottom">
-                        <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="200"
-                            height="200" alt="Border circle" />
-                        <div class="upload-text">
-                            Editar foto
-                            <span class="uk-margin-small-left" uk-icon="upload"></span>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Nombre completo</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Domicilio</span>
-                        </label>
-                    </div>
-                    <!--Grid Edad, Sexo, Ocupación, Teléfono-->
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Edad</span>
-                                </label>
-                            </div>
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Ocupación</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Sexo</span>
-                                </label>
-                            </div>
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Teléfono</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Correo electrónico</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Selección electoral</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required />
-                            <span class="omrs-input-label">Clave de elector</span>
-                        </label>
-                    </div>
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Facebook</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required />
-                                    <span class="omrs-input-label">Twitter</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Lado derecho -->
-                <div class="uk-width-1-2@m">
-                    <p>Fotografías</p>
-                    <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                        <span class="uk-text-middle">Foto de credencial anverso</span>
-                        <span uk-icon="icon: cloud-upload"></span>
-                        <div uk-form-custom>
-                            <input type="file" multiple />
-                            <span class="uk-link">Selecciona una</span>
-                        </div>
-                    </div>
-
-                    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-                    <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                        <span class="uk-text-middle">Foto de credencial inverso</span>
-                        <span uk-icon="icon: cloud-upload"></span>
-                        <div uk-form-custom>
-                            <input type="file" multiple />
-                            <span class="uk-link">Selecciona una</span>
-                        </div>
-                    </div>
-
-                    <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-                </div>
-            </div>
-            <p class="uk-text-muted">
-                El ciudadano involucrado será notificado sobre la carga de su
-                información personal al sistema iElect brindandole transparencia
-                total y la posibilidad de solicitud de eliminación de la misma.
-            </p>
-            <p class="uk-position-medium uk-position-bottom-left">
-                <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
-                    Eliminar
-                </button>
-            </p>
-            <p class="uk-text-right">
-                <button class="uk-button uk-button-default uk-modal-close" type="button">
-                    Cancelar
-                </button>
-                <button class="uk-button uk-button-primary" type="button">
-                    Enviar
-                </button>
-            </p>
         </div>
     </div>
 </div>
@@ -376,19 +238,25 @@ $g65 = 0;
                 </div>
                 <div class="uk-hidden@m">
                     <div class="omrs-input-group">
-                        <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
-                        </label>
+                        <form id="form-buscador" class="uk-modal-body" action="{{route('seccion', ['id'=>$id])}}"
+                            method="get" style="padding: 0">
+                            <label class="omrs-input-underlined input-outlined input-trail-icon">
+                                <input name="busc" type="text" maxlength="100" />
+                                <span class="input-trail-icon" uk-icon="search"></span>
+                            </label>
+                        </form>
                     </div>
                 </div>
                 <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
                     <div class="uk-visible@m">
                         <div class="omrs-input-group">
-                            <label class="omrs-input-underlined input-outlined input-trail-icon">
-                                <input required />
-                                <span class="input-trail-icon" uk-icon="search"></span>
-                            </label>
+                            <form id="form-buscador" class="uk-modal-body" action="{{route('seccion', ['id'=>$id])}}"
+                                method="get" style="padding: 0">
+                                <label class="omrs-input-underlined input-outlined input-trail-icon">
+                                    <input name="busc" type="text" maxlength="100" required />
+                                    <span class="input-trail-icon" uk-icon="search"></span>
+                                </label>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -547,28 +415,30 @@ $g65 = 0;
                 <table class="uk-table uk-table-small uk-table-divider">
                     <thead class="uk-background-muted">
                         <tr>
-                            <th>#</th>
+                            <th>Clave de elecetor</th>
                             <th>Nombre</th>
                             <th>Sexo</th>
                             <th>Edad</th>
                             <th>Ocupación</th>
                             <th>Sección electoral</th>
-                            <th>Clave de elecetor</th>
                         </tr>
                     </thead>
                     <tbody id="tabla-simps">
                         @foreach ($electores as $elector)
 
                         <tr data-id="{{$elector->id}}">
-                            <td>#{{$elector->id}}</td>
+                            <td>{{$elector->clave_elector}}</td>
                             <td>{{$elector->nombre}} {{$elector->apellido_p}} {{$elector->apellido_m}}</td>
-                            <td>{{$elector->sexo}}</td>
+                            <td>@if ($elector->sexo == "h")
+                                Hombre
+                                @else
+                                Mujer
+                                @endif</td>
                             <td>{{\Carbon\Carbon::parse($elector->fecha_nac)->diff(Carbon\Carbon::now())->format('%y')}}
                                 Años
                             </td>
                             <td>{{$elector->job->nombre}}</td>
                             <td>{{$elector->section->num_seccion}}</td>
-                            <td>{{$elector->clave_elector}}</td>
                         </tr>
                         @endforeach
                     </tbody>
@@ -621,13 +491,125 @@ $g65 = 0;
             $('#simp_edit_face').html(obj['facebook']);
             $('#simp_edit_tw').html(obj['twitter']);
             //aqui falta lo del brigadista
+            $('#simp_edit_brigadista').html(obj['name']);
 
             //aqui empieza lo de las fotos del ine
-            $("#simp_edit_front").attr("data-src","storage/uploads/"+obj['credencial_a']);
-            $("#simp_edit_back").attr("data-src","storage/uploads/"+obj['credencial_r']);
+            if(obj['credencial_a']){
+                $("#simp_edit_front").attr("src",obj['credencial_a']);
+                $("#simp_edit_front_t").html('Foto de credencial anverso');
+            }
+            else{
+                $("#simp_edit_front").attr("src","");
+                $("#simp_edit_front_t").html('Sin foto de credencial anverso');
+            }
+            if(obj['credencial_r']){
+                $("#simp_edit_back").attr("src",obj['credencial_r']);
+                $("#simp_edit_back_t").html('Foto de credencial inverso');
+            }
+            else{
+                $("#simp_edit_back").attr("src",obj['credencial_a']);
+                $("#simp_edit_back_t").html('Sin foto de credencial inverso');
+            }
+
+            //aqui empieza lo de las fotos del simp
+            if(obj['foto_elector']){
+                $("#simp_edit_foto").attr("src",obj['foto_elector']);
+            }
+            else{
+                $("#simp_edit_foto").attr("src","{{asset('img/icons/default.png')}}");
+            }
+            if(obj['documento']){
+                $("#simp_edit_firma").attr("src",obj['documento']);
+                $("#simp_edit_firma_t").html('Foto de firma');
+            }
+            else{
+                $("#simp_edit_firma").attr("src","");
+                $("#simp_edit_firma_t").html('Sin foto de firma');
+            }
             UIkit.modal("#modal-datos-simp").toggle();
         });
     });
+</script>
+
+<script>
+    //ajax jeje
+    $("#form-update").bind("submit",function(){
+            // Capturamnos el boton de envío
+            var btnEnviar = $("#btnEnviar");
+
+            $.ajax({
+                type: $(this).attr("method"),
+                url: $(this).attr("action"),
+                data: $(this).serialize(),
+                beforeSend: function(data){
+                    /*
+                    * Esta función se ejecuta durante el envió de la petición al
+                    * servidor.
+                    * */
+                    // btnEnviar.text("Enviando"); Para button
+                    btnEnviar.val("Enviando"); // Para input de tipo button
+                    btnEnviar.attr("disabled","disabled");
+                },
+                complete:function(data){
+                    /*
+                    * Se ejecuta al termino de la petición
+                    * */
+                    btnEnviar.val("Enviar formulario");
+                },
+                success: function(data){
+                    /*
+                    * Se ejecuta cuando termina la petición y esta ha sido
+                    * correcta
+                    * */
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: check\'></span> Datos modificados con éxito!',
+                        status: 'success',
+                        pos: 'top-center',
+                        timeout: 2000
+                    });
+                    $('#errors').css('display', 'none');
+                    setTimeout(
+                    function()
+                    {
+                        window.location.reload(true);
+                    }, 2000);
+                },
+                error: function(data){
+                    console.log(data);
+                    // $('#success').css('display', 'none');
+                    btnEnviar.removeAttr("disabled");
+                    $('#errors').css('display', 'block');
+                    var errors = data.responseJSON.errors;
+                    var errorsContainer = $('#errors');
+                    errorsContainer.innerHTML = '';
+                    var errorsList = '';
+                    // for (var i = 0; i < errors.length; i++) {
+                    // //     //if(errors[i].redirect)
+                    // //         //window.location.href = window.location.origin + '/logout'
+
+                    //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                    // }
+                    for(var key in errors){
+                        var obj=errors[key];
+                        console.log(obj);
+                        for(var yek in obj){
+                            var error=obj[yek];
+                            console.log(error);
+                            errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                        }
+                    }
+                    errorsContainer.html(errorsList);
+                    UIkit.notification({
+                        message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                        status: 'danger',
+                        pos: 'top-center',
+                        timeout: 2000
+                    });
+                }
+            });
+            // Nos permite cancelar el envio del formulario
+            return false;
+        });
 </script>
 
 @endsection
@@ -745,6 +727,14 @@ backgroundColor: "rgba(0,122,255,1)",
 },
 options: {
 maintainAspectRatio: false,
+scales: {
+yAxes: [{
+ticks: {
+min: 0,
+stepSize: 1
+}
+}]
+}
 },
 });
 

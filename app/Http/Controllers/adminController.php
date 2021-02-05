@@ -19,6 +19,7 @@ use App\Models\FederalDistrict;
 use App\Models\Town;
 use App\Models\Section;
 use App\Models\Elector;
+use App\Models\Campaign_Section;
 
 class adminController extends Controller
 {
@@ -317,21 +318,24 @@ class adminController extends Controller
                 $campana->politic_partie()->sync($partidos);
                 $campana->user()->sync($agentes);
             });
-            if ($request->ajax()) {
-                session()->flash('status', 'Campaña creada con éxito!');
-                return 200;
-            }
-        } catch (QueryException $ex) {
-            if ($request->ajax()) {
-                return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
-            }
+            return response()->json(200);
+        } 
+        catch (QueryException $ex) {
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
         }
     }
 
-    public function verCampanas()
+    public function verCampanas(Request $request)
     {
         Gate::authorize('haveaccess', 'admin.perm');
-        $campanas = Campaign::with('user')->paginate(10);
+        if($request->search){
+            $campanas = Campaign::where('name','like','%'.$request->search.'%')
+            ->orWhere('candidato','like','%'.$request->search.'%')
+            ->orWhere('codigo','like','%'.$request->search.'%')
+            ->paginate(10)->appends(request()->except('page'));
+        }
+        else
+            $campanas = Campaign::with('user')->paginate(10);
         $numcamp = Campaign::count();
         $parties = PoliticPartie::get();
         $agents = User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('status', 'activo')->where('role_user.role_id', 2)->get();
@@ -367,6 +371,28 @@ class adminController extends Controller
     {
         Gate::authorize('haveaccess', 'admin.perm');
         $campana = Campaign::findOrFail($id);
-        return view('admin.campana', ['campana' => $campana]);
+        $secciones=$campana->section()->paginate(20);
+        return view('admin.campana', ['campana' => $campana,'secciones'=>$secciones]);
+    }
+
+    public function editarSeccion(Request $request, $id){
+        Gate::authorize('haveaccess', 'admin.perm');
+        $data = request()->validate([
+            'meta' => 'required|numeric',
+            'prioridad' => 'required|in:Alta,Media,Baja'
+        ]);
+        DB::beginTransaction();
+        try{
+            $seccion=Campaign_Section::findOrFail($id);
+            $seccion->meta=$request->meta;
+            $seccion->prioridad=$request->prioridad;
+            $seccion->save();
+            DB::commit();
+            return response()->json(200);
+        }
+        catch(\Exception $ex){
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
     }
 }
