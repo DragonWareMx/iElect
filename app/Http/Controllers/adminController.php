@@ -325,10 +325,17 @@ class adminController extends Controller
         }
     }
 
-    public function verCampanas()
+    public function verCampanas(Request $request)
     {
         Gate::authorize('haveaccess', 'admin.perm');
-        $campanas = Campaign::with('user')->paginate(10);
+        if($request->search){
+            $campanas = Campaign::where('name','like','%'.$request->search.'%')
+            ->orWhere('candidato','like','%'.$request->search.'%')
+            ->orWhere('codigo','like','%'.$request->search.'%')
+            ->paginate(10)->appends(request()->except('page'));
+        }
+        else
+            $campanas = Campaign::with('user')->paginate(10);
         $numcamp = Campaign::count();
         $parties = PoliticPartie::get();
         $agents = User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('status', 'activo')->where('role_user.role_id', 2)->get();
@@ -364,7 +371,8 @@ class adminController extends Controller
     {
         Gate::authorize('haveaccess', 'admin.perm');
         $campana = Campaign::findOrFail($id);
-        return view('admin.campana', ['campana' => $campana]);
+        $secciones=$campana->section()->paginate(20);
+        return view('admin.campana', ['campana' => $campana,'secciones'=>$secciones]);
     }
 
     public function editarSeccion(Request $request, $id){

@@ -22,7 +22,7 @@ Campañas
                     <!-- Avatar -->
                     <div class="avatar-wrapper uk-text-center uk-margin-medium-bottom">
                         <img class="profile-pic uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="150"
-                            height="150" alt="Border circle" id="info-foto" style="object-fit:cover" />
+                            height="150" alt="Border circle" id="info-foto" style="object-fit:cover;height:150px;" />
                     </div>
                     <!--Grid DATOS-->
                     <div uk-grid>
@@ -126,14 +126,14 @@ Campañas
                     Agregar campaña
                     <span uk-icon="icon: plus" class="uk-margin-left"></span>
                 </button>
-                <div class="uk-visible@m">
+                <form action="/admin/campanas" method="get">
                     <div class="omrs-input-group">
                         <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
+                            <input name="search" />
+                            <button type="submit" class="input-trail-icon" uk-icon="search"></button>
                         </label>
                     </div>
-                </div>
+                </form>
             </div>
 
             <!-- Tabla -->
