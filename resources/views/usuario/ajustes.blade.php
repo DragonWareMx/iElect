@@ -14,7 +14,7 @@ Ajustes
     <div class="uk-card uk-card-default uk-card-body uk-margin-top">
         <div class="uk-card-title">
             <h3 class="uk-text-bold">Cuenta</h3>
-            @if($agente == true || $brigadista)
+            @if($agente == true || $brigadista == true)
                 <a class="uk-position-right uk-padding" href="{{route('ajustes_cuenta')}}" uk-icon="cog"></a>
             @else
             <a class="uk-position-right uk-padding" href="{{route('admin-cuenta')}}" uk-icon="cog"></a>
@@ -24,9 +24,9 @@ Ajustes
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
             <div class="uk-width-auto uk-width-1-6@m">
                 <!-- Avatar circulo -->
-                <div class="avatar-wrapper">
+                <div class="avatar-wrapper"> 
                     @if(Auth::user()->avatar !=NULL)
-                        <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" width="200" height="200"
+                        <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('storage/uploads/'.Auth::user()->avatar)}}" width="200" height="200"
                             alt="Foto" />
                     @else
                         <img class="uk-border-circle" src="{{asset('img/test/default.png')}}" width="200" height="200"
@@ -40,16 +40,16 @@ Ajustes
                 <br />
                 <div class="uk-text-bold">Correo electrónico</div>
                 <div>{{ Auth::user()->email }}</div>
-                <br />
+                {{-- <br />
                     @if($agente == true || $brigadista)
                         <div class="uk-text-bold">Zona, secciones</div>
                         <div>Nombre de la zona, 14 secciones</div>
-                    @endif                    
+                    @endif                     --}}
             </div>
         </div>
     </div>
     <!-- Card de PARTIDO ELECTORAL -->
-    @if($agente == true || $brigadista)
+    @if($agente == true || $brigadista == true)
         @if (!is_null($campana))
         <!-- Card de PARTIDO ELECTORAL -->
         <div class="uk-card uk-card-default uk-card-body uk-margin-top">
@@ -57,7 +57,7 @@ Ajustes
                 <h3 class="uk-text-bold">
                     Campaña
                 </h3>
-                <a class="uk-position-right uk-padding" href="" uk-icon="cog"></a>
+                {{-- <a class="uk-position-right uk-padding" href="" uk-icon="cog"></a> --}}
             </div>
 
             <div class="uk-child-width-expand@s uk-text-center" uk-grid>
@@ -67,7 +67,7 @@ Ajustes
                     <div class="uk-grid uk-child-width-1">
                         @foreach ($campana->politic_partie as $pp)
                         <div class="uk-flex uk-flex-middle uk-margin-bottom">
-                            <img class="uk-border-circle" src="{{$pp->logo}}" width="80" height="80" alt="Border circle" />
+                            <img class="uk-border-circle" src="{{asset('img/logoPartidos/'.$pp->logo)}}" width="80" height="80" alt="Border circle" />
                             <div class="uk-margin-left">
                                 {{$pp->siglas}}
                             </div> 
@@ -91,12 +91,14 @@ Ajustes
                         <br />
                         @endforeach</div>
                     <br />
-                    <div class="uk-text-bold">Código de campaña</div>
+                    <div class="uk-text-bold uk-text-primary">Código de campaña</div>
                     <div>{{$campana->codigo}}</div>
-                    <div class="uk-text-muted">
-                        Este código deberá ser proporcionado a los brigadistas para que
-                        puedan registrarse en iElecet
-                    </div>
+                    @if($agente == true)
+                        <div class="uk-text-muted">
+                            Este código deberá ser proporcionado a los brigadistas para que
+                            puedan registrarse en iElecet
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

@@ -112,13 +112,11 @@ Route::patch('/seccion/{id}', 'SeccionesController@updCampana')->name('actualiza
 
 /****** BRIGADISTAS ******/
 //Brigadistas
-Route::get('/brigadistas', function () {
-    return view('usuario.brigadistas');
-})->name('brigadistas');
+Route::get('/brigadistas', 'brigadistasInfoController@index')->name('brigadistas')->middleware(CheckCamp::class); 
 
-Route::get('/brigadistas/solicitudes', function () {
-    return view('usuario.brigadistas_solicitudes');
-})->name('brigadistas_sol');
+Route::get('/brigadistas/solicitudes', 'brigadistasInfoController@solicitudes')->name('brigadistas_sol');
+
+Route::post('/brigadistas/solicitudes/accion', 'brigadistasInfoController@accion')->name('brigadistas_accion');
 
 /****** SIMPATIZANTES ******/
 //Simpatizantes
@@ -126,7 +124,11 @@ Route::get('/simpatizantes', 'simpatizanteController@simpatizantes')->name('simp
 //Simpatizantes no aprobados
 Route::get('/simpatizantes/no_aprobados', 'simpatizanteController@simpatizantes_no_aprobados')->name('simpatizantes_no_aprobados')->middleware('auth')->middleware(CheckCamp::class);
 //aprobar simpatizantes
-Route::patch('/simpatizantes/aprobar', 'simpatizanteController@aprobarSimpatizantes')->name('aprobar-simpatizante')->middleware('auth');
+Route::patch('/simpatizantes/aprobar', 'simpatizanteController@aprobarSimpatizantes')->name('aprobar-simpatizante')->middleware('auth')->middleware(CheckCamp::class);
+//editar simpatizante (Vista)
+Route::get('/simpatizantes/editar/{id}', 'simpatizanteController@editarSimpatizantes')->name('editar-simpatizante')->middleware('auth');
+//editar simpatizante
+Route::patch('/simpatizantes/editar', 'simpatizanteController@editarSimpatizante')->name('update-simpatizante')->middleware('auth');
 //Simpatizantes
 // Route::get('/simpatizantes/solicitudes', function () {
 //     return view('usuario.simpatizantes_eliminar');
