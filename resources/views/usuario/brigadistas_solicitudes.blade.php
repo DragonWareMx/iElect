@@ -28,22 +28,24 @@ Solicitudes brigadistas
                 <p class="uk-margin-left" style="margin-top: 0 !important">Total: {{$totalSoli}} solicitude(s)</p>
             </div>
             <div class="uk-hidden@m uk-padding-small">
-                <div class="omrs-input-group">
-                    <label class="omrs-input-underlined input-outlined input-trail-icon">
-                        <input required />
-                        <span class="input-trail-icon" uk-icon="search"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
-                <div class="uk-visible@m">
+                <form action="/brigadistas/solicitudes" method="get">
                     <div class="omrs-input-group">
                         <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
+                            <input name="search" placeholder="Buscar" />
+                            <button type="submit" class="input-trail-icon" uk-icon="search"></button>
                         </label>
                     </div>
-                </div>
+                </form>
+            </div>
+            <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
+                <form action="/brigadistas/solicitudes" method="get">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined input-outlined input-trail-icon">
+                            <input name="search" placeholder="Buscar" />
+                            <button type="submit" class="input-trail-icon" uk-icon="search"></button>
+                        </label>
+                    </div>
+                </form>
             </div>
 
             @if (session()->get('status'))

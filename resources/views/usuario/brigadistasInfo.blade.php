@@ -28,25 +28,24 @@ Brigadistas
             </div>
 
             <div class="uk-hidden@m">
-                <div class="omrs-input-group">
-                    <form id="form-buscador" class="uk-modal-body" action="{{ route('brigadistas') }}"
-                        method="get" style="padding: 0">
-                        <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input name="busc" type="text" maxlength="100" />
-                            <span class="input-trail-icon" uk-icon="search"></span>
-                        </label>
-                    </form>
-                </div>
-            </div>
-            <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
-                <div class="uk-visible@m">
+                <form action="/brigadistas" method="get">
                     <div class="omrs-input-group">
                         <label class="omrs-input-underlined input-outlined input-trail-icon">
-                            <input required />
-                            <span class="input-trail-icon" uk-icon="search"></span>
+                            <input name="search" placeholder="Buscar" />
+                            <button type="submit" class="input-trail-icon" uk-icon="search"></button>
                         </label>
                     </div>
-                </div>
+                </form>
+            </div>
+            <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
+                <form action="/brigadistas" method="get">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined input-outlined input-trail-icon">
+                            <input name="search" placeholder="Buscar" />
+                            <button type="submit" class="input-trail-icon" uk-icon="search"></button>
+                        </label>
+                    </div>
+                </form>
             </div>
 
             <a class="uk-padding-small" href="{{route('brigadistas_sol')}}">Solicitudes</a>

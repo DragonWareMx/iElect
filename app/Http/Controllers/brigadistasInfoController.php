@@ -27,11 +27,23 @@ class brigadistasInfoController extends Controller
     }
 
     public function index(Request $request){
-        // if(!$request->page && !$request->busc){
-            // Obtener todas las campañas del usuario loggeado [CÓDIGO]
+        if($request->search){
+
+            $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
+                                ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
+                                ->where('role_user.role_id',3)
+                                ->where('campaign_user.campaign_id',session()->get('campana')->id)
+                                ->where('users.name','like','%'.$request->search.'%')
+                                ->orWhere('users.email','like','%'.$request->search.'%')
+                                ->orWhere('users.created_at','like','%'.$request->search.'%')
+                                ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha')
+                                ->paginate(10)->appends(request()->except('page'));
+            $campana = session()->get('campana');
+            return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana]);
+        }
+        else{
             $usuario = Auth::user();
             $campana = session()->get('campana');
-            // dd($campana);
             // Obtener todos los brigadistas de dichas campañas
             $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
                                 ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
@@ -41,74 +53,29 @@ class brigadistasInfoController extends Controller
                                 ->paginate(10);
 
             return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana]);
-        // }
-        // else{
-        //     // Obtener todas las campañas del usuario loggeado [CÓDIGO]
-        //     $usuario = Auth::user();
-        //     $campana = session()->get('campana');
-        //     // dd($campana);
-        //     // Obtener todos los brigadistas de dichas campañas
-        //     $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
-        //                         ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
-        //                         ->where('role_user.role_id',3)
-        //                         ->where('campaign_user.campaign_id',session()->get('campana')->id)
-        //                         ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha')
-        //                         ->get();
-
-        //     //si hay request de la busqueda deal se obtienen solo los simpatizantes que coinciden
-        //     if(isset($request->busc)){
-        //         $brigadistas = $brigadistas->get()->filter(function($record) use($request) {
-        //             $normalizeChars = array(
-        //                 'Š'=>'S', 'š'=>'s', 'Ð'=>'Dj','Ž'=>'Z', 'ž'=>'z', 'À'=>'A', 'Á'=>'A', 'Â'=>'A', 'Ã'=>'A', 'Ä'=>'A',
-        //                 'Å'=>'A', 'Æ'=>'A', 'Ç'=>'C', 'È'=>'E', 'É'=>'E', 'Ê'=>'E', 'Ë'=>'E', 'Ì'=>'I', 'Í'=>'I', 'Î'=>'I',
-        //                 'Ï'=>'I', 'Ñ'=>'N', 'Ń'=>'N', 'Ò'=>'O', 'Ó'=>'O', 'Ô'=>'O', 'Õ'=>'O', 'Ö'=>'O', 'Ø'=>'O', 'Ù'=>'U', 'Ú'=>'U',
-        //                 'Û'=>'U', 'Ü'=>'U', 'Ý'=>'Y', 'Þ'=>'B', 'ß'=>'Ss','à'=>'a', 'á'=>'a', 'â'=>'a', 'ã'=>'a', 'ä'=>'a',
-        //                 'å'=>'a', 'æ'=>'a', 'ç'=>'c', 'è'=>'e', 'é'=>'e', 'ê'=>'e', 'ë'=>'e', 'ì'=>'i', 'í'=>'i', 'î'=>'i',
-        //                 'ï'=>'i', 'ð'=>'o', 'ñ'=>'n', 'ń'=>'n', 'ò'=>'o', 'ó'=>'o', 'ô'=>'o', 'õ'=>'o', 'ö'=>'o', 'ø'=>'o', 'ù'=>'u',
-        //                 'ú'=>'u', 'û'=>'u', 'ü'=>'u', 'ý'=>'y', 'ý'=>'y', 'þ'=>'b', 'ÿ'=>'y', 'ƒ'=>'f',
-        //                 'ă'=>'a', 'î'=>'i', 'â'=>'a', 'ș'=>'s', 'ț'=>'t', 'Ă'=>'A', 'Î'=>'I', 'Â'=>'A', 'Ș'=>'S', 'Ț'=>'T',
-        //             );
-        //             $nombre = strtr( $record->nombre, $normalizeChars );
-        //             $nombre = strtolower ($nombre);
-        //             $busqueda = strtr( $request->busc, $normalizeChars );
-        //             $busqueda = strtolower ($busqueda);
-        //             $out = new \Symfony\Component\Console\Output\ConsoleOutput();
-        //             $out->writeln($busqueda);
-        //             if(str_contains($nombre, $busqueda)) {
-        //                 return $record;
-        //             }
-        //         });
-
-        //         //this code simulates: ->paginate(5)
-        //         $path = route('brigadistas').'?busc='.$request->busc;
-        //         $brigadistas = new LengthAwarePaginator(
-        //             $brigadistas->slice((LengthAwarePaginator::resolveCurrentPage() *
-        //             $this->perPage)-$this->perPage,
-        //             $this->perPage)->all(), count($brigadistas),
-        //             $this->perPage, null, ['path' => $path]);
-        //         /*
-        //         ->where('nombre','like','%'.Crypt::encryptString($request->busc).'%')
-        //         ->orWhere('apellido_p','like','%'.Crypt::encryptString($request->busc).'%')
-        //         ->orWhere('apellido_m','like','%'.Crypt::encryptString($request->busc).'%')
-        //         ->orWhere('edo_civil','like','%'.Crypt::encryptString($request->busc).'%')
-        //         ->orWhere('fecha_nac','like','%'.Crypt::encryptString($request->busc).'%')
-        //         ->orWhere('electors.email','like','%'.Crypt::encryptString($request->busc).'%')
-        //         ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
-        //     }
-        //     else{
-        //         $brigadistas = $brigadistas->paginate(2)->appends(request()->except('page'));
-        //     }
-        //     return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana]);
-
-        // }
+        }
     }
 
-    public function solicitudes(){
-        $campana = session()->get('campana');
-        $soli = Order::where('campaign_id', $campana->id)
+    public function solicitudes(Request $request){
+        if($request->search){
+            $campana = session()->get('campana');
+            $soli = Order::where('campaign_id', $campana->id)
+                        ->where('name','like','%'.$request->search.'%')
+                        ->orWhere('email','like','%'.$request->search.'%')
+                        ->orWhere('campaign_id','like','%'.$request->search.'%')
+                        ->orWhere('created_at','like','%'.$request->search.'%')
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(10)->appends(request()->except('page'));
+
+        return view('usuario.brigadistas_solicitudes',['solicitudes' => $soli]);
+        }
+        else{
+            $campana = session()->get('campana');
+            $soli = Order::where('campaign_id', $campana->id)
                         ->orderBy('created_at', 'desc')
                         ->paginate(10);
         return view('usuario.brigadistas_solicitudes',['solicitudes' => $soli]);
+        }
     }
 
     public function accion(Request $request){
