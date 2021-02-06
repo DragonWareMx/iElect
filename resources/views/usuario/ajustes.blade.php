@@ -89,7 +89,8 @@ Ajustes
                     <div>@foreach ($campana->section as $section){{$section->town->nombre}},
                         {{$section->town->federal_entitie->nombre}}
                         <br />
-                        @endforeach</div>
+                        @endforeach
+                    </div>
                     <br />
                     <div class="uk-text-bold uk-text-primary">Código de campaña</div>
                     <div>{{$campana->codigo}}</div>

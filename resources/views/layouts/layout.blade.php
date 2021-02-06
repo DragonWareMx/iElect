@@ -7,7 +7,7 @@
     <title>@yield("title")</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     @include('subviews.imports')
-    {{-- <link rel="icon" href="../static/img/ureflectSmall.png"> --}}
+    <link rel="icon" href="{{ asset('img/icons/iE_circle.png') }}">
     @yield("imports")
 </head>
 
@@ -200,6 +200,10 @@
     </div>
 
     @yield("body")
+    {{-- <div class="uk-flex uk-flex-center uk-position-bottom uk-margin-small-bottom"> 
+        <a href="https://dragonware.com.mx/" target="_blank"><small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
+            style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.<img src="{{asset('/img/icons/dragonGris.png')}}" style="width:20px; height:15px; margin-left:5px; margin-bottom:5px"></small></a>
+    </div> --}}
 </body>
 
 <script>
