@@ -28,14 +28,14 @@ class historicoController extends Controller
         return view('usuario.historico', ['secciones'=>$secciones]);
     }
 
-    public function seccion($id){
+    public function seccion($id, $election){
         Gate::authorize('haveaccess', 'agente.perm');
         $campana = session()->get('campana');
         $seccion = Section::find($id);
-        //$eleccion = se va a sacar la última donde hubo ese puesto, se usará un while y un contador hacia atrás si el resultado es nulo se pone la siguiente.
         $puesto = $campana->position_id; //es el id de puesto
-        $votos = Vote::where([['section_id','=', $id],['position_id', '=',$puesto],['election_id','=', 1]])->orderBy('num', 'desc')->get();
+        $votos = Vote::where([['section_id','=', $id],['position_id', '=',$puesto],['election_id','=', $election]])->orderBy('num', 'desc')->get();
         
+
         $partidos=[];
         $num = [];
         $colores =[];

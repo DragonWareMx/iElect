@@ -14,6 +14,8 @@ use App\Models\FederalEntitie;
 use App\Models\Vote;
 use App\Models\PoliticPartie;
 use App\Models\Campaigne;
+use App\Models\Campaign_Section;
+use App\Models\Elector;
 
 
 class mapaSeccionalController extends Controller
@@ -55,15 +57,17 @@ class mapaSeccionalController extends Controller
 
     }
 
-    public function seccion($id){
+    public function seccion($id,$election){
         Gate::authorize('haveaccess', 'agente.perm');
         $campana = session()->get('campana');
         $seccion = Section::find($id);
-        //$eleccion = se va a sacar la última donde hubo ese puesto, se usará un while y un contador hacia atrás si el resultado es nulo se pone la siguiente.
         $puesto = $campana->position_id; //es el id de puesto
-        $votos = Vote::where([['section_id','=', $id],['position_id', '=',$puesto],['election_id','=', 1]])->orderBy('num', 'desc')->get();
+        $votos = Vote::where([['section_id','=', $id],['position_id', '=',$puesto],['election_id','=', $election]])->orderBy('num', 'desc')->get();
+        $camp_sc = Campaign_Section::where([['section_id', '=', $id],['campaign_id', '=', $campana->id]])->get();//los datos de meta y prioridad de esa sección en esa cmpaña
+        $simpatizantes = $campana->elector()->where('section_id', $id)->get()->count(); //los simpatizantes de esa campaña en esa sección
         
-        
+        $meta = $camp_sc[0]->meta;
+        $prioridad =$camp_sc[0]->prioridad;
         $partidos=[];
         $num = [];
         $colores =[];
@@ -79,7 +83,8 @@ class mapaSeccionalController extends Controller
         }
         
         
-        return response(['seccion'=>$seccion, 'partidos'=>$partidos, 'num'=>$num, 'colores'=>$colores]);
+        return response(['seccion'=>$seccion, 'partidos'=>$partidos, 'num'=>$num, 'colores'=>$colores, 
+            'meta'=>$meta, 'prioridad'=>$prioridad, 'simpatizantes'=>$simpatizantes]);
     }
     public function secDF($id){
         Gate::authorize('haveaccess', 'agente.perm');

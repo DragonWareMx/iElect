@@ -11,8 +11,16 @@ src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDAsRsMlBifyC8uKaJMAskmREI
 defer></script>
 
 @endsection
-
+@php
+    if (session()->get('campana')->position->id == 2){
+        $anio = 1;
+    }
+    else{
+        $anio =2;
+    }
+@endphp
 @section('body')
+<body onload="setYear({{$anio}})">
 <div class="uk-margin uk-margin-left uk-margin-right">
     <!-- Card de CUENTA -->
     <div class="uk-card uk-card-default uk-margin-top uk-padding-small">
@@ -170,15 +178,15 @@ defer></script>
                 <form action="/seccion_mapa" id="form-ajax">
                     <div class="uk-flex">
                         <p class="uk-margin-small-right uk-text-bold">Meta 2021: </p>
-                        <p class="uk-margin-remove"></p>
+                        <p id="label_meta" class="uk-margin-remove"></p>
                     </div>
                     <div class="uk-flex">
                         <p class="uk-margin-small-right uk-text-bold">Avance: </p>
-                        <p class="uk-margin-remove"></p>
+                        <p id="label_avance" class="uk-margin-remove"></p>
                     </div>
                     <div class="uk-flex">
                         <p class="uk-margin-small-right uk-text-bold">Prioridad: </p>
-                        <p class="uk-text-danger uk-margin-remove"></p>
+                        <p id="label_prioridad" class="uk-text-danger uk-margin-remove"></p>
                     </div>
                     <!-- GRAFICA SEXO -->
                     <h5 class="uk-margin-remove uk-text-bold">LISTADO NOMINAL</h5>
@@ -231,9 +239,17 @@ defer></script>
                 <p class="uk-text-bold">Información histórica</p>
                 <div class="uk-margin-top uk-text-center elec_resp" style="top: -50px; position: relative;">
                     <div class=" uk-flex-inline uk-flex-middle">
-                        <a href="" uk-icon="chevron-left"></a>
+                        
+                        @if (session()->get('campana')->position->id == 2)
                         <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
-                        <a href="" uk-icon="chevron-right"></a>
+                        @elseif (session()->get('campana')->position->id == 1 || session()->get('campana')->position->id == 6)
+                        <p class="uk-margin-remove uk-text-bold">Elecciones 2018</p>
+                        @else
+                        <a id="atras" href="#" uk-icon="chevron-left" onclick="elecciones(this.id)"></a>
+                        <p id="label_elec" class="uk-margin-remove uk-text-bold">Elecciones 2018</p>
+                        <a id="adelante" href="#" uk-icon="chevron-right" onclick="elecciones(this.id)" style="display: none"></a>
+                        @endif
+
                     </div>
                     <p class="uk-margin-remove">{{session()->get('campana')->position->name}}</p>
                 </div>
@@ -270,15 +286,313 @@ defer></script>
         </div>
     </div>
 </div>
-<script>
-    let map;
-    var secOp;
-    let control; //guarda el tipo de distrito o muni de las secciones visibles
-    let idControl; //guarda el id del distrito o muni de las secciones visibles
-    let click=false;
+
+</body>
+@endsection
+
+@section('scripts')
+let map;
+var secOp;
+let control; //guarda el tipo de distrito o muni de las secciones visibles
+let idControl; //guarda el id del distrito o muni de las secciones visibles
+let click=false;
+let year; //año de la eleccion para histórico
+let nombre; //id de la sección 
+
+function setYear(anio){
     
-function callSection(nombre){//método para jalar info de sección de la bd, se llama dentro de dos funciones init map, en el evento click y en slSection
+year =anio; 
+
+}
+
+function callSection(idSection){//método para jalar info de sección de la bd, se llama dentro de dos funciones init map, en el evento click y en slSection
+
+httpRequest = false;
+if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
+    httpRequest = new XMLHttpRequest();
     
+} else {
+// Internet explorer siempre llevando la contra.
+    httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+}
+if (httpRequest == false) return false; // no se puedo crear el objeto
+
+var ide = idSection; // obtener el id de la sección
+var url = document.getElementById('form-ajax').action;
+httpRequest.open('GET', url + '/' + ide + '/' + year, true);
+
+
+httpRequest.onreadystatechange = function() {
+            
+    if (httpRequest.readyState == 4) {
+        // la peticion la recibio el servidor
+        if (httpRequest.status == 200) {
+            // convertimos la respuesta del servidor a un objeto JSON
+            respuesta = JSON.parse(httpRequest.responseText);
+
+            selectedSc = respuesta.seccion;
+            total =  selectedSc.hombres + selectedSc.mujeres;
+            avance = respuesta.simpatizantes;
+            
+            document.getElementById('label_meta').innerHTML = respuesta.meta;
+            document.getElementById('label_prioridad').innerHTML = respuesta.prioridad;
+            document.getElementById('label_avance').innerHTML = avance;
+            
+            //Grafica de pastel 
+            var simpCanvas = document.getElementById("simpChart");
+            Chart.defaults.global.defaultFontFamily = "Lato";
+            Chart.defaults.global.defaultFontSize = 18;
+            Chart.defaults.global.legend.display = false;
+
+            simpData = {
+            labels: ["Hombres", "Mujeres"],
+            datasets: [
+            {
+            data: [selectedSc.hombres,selectedSc.mujeres],
+            backgroundColor: ["#9B51E0", "#FB8832"],
+            },
+            ],
+            };
+
+            let pieChart = new Chart(simpCanvas, {
+            type: "pie",
+            data: simpData,
+            });
+            
+            document.getElementById("totalLN").innerHTML = total;
+            porcentajeH = parseInt((selectedSc.hombres*100)/total);
+            porcentajeM = parseInt((selectedSc.mujeres*100)/total);
+            document.getElementById('men').innerHTML = 'H '+porcentajeH +'%';
+            document.getElementById('women').innerHTML = 'M '+porcentajeM +'%';
+
+            //Grafica de barras
+            var ctx = document.getElementById("barChart").getContext("2d");
+            var barChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+            labels: [
+            "18",
+            "19",
+            "20-24",
+            "25-29",
+            "30-34",
+            "35-39",
+            "40-44",
+            "45-49",
+            "50-54",
+            "55-59",
+            "60-64",
+            "65 o más",
+            ],
+            datasets: [
+            {
+            label: "Electores",
+            data: [selectedSc['0'],selectedSc['1'],selectedSc['20_24'],selectedSc['25_29'],selectedSc['30_34'],
+                    selectedSc['35_39'],selectedSc['40_44'], selectedSc['45_49'],selectedSc['50_54'],selectedSc['55_59'],
+                    selectedSc['60_64'], selectedSc['65_mas']],
+            backgroundColor: "rgba(0,122,255,1)",
+            },
+            ],
+            },
+            options: {
+            maintainAspectRatio: false,
+            },
+            });
+            //Grafica de barras
+            Chart.defaults.global.legend.display = false;
+            var ctx = document.getElementById("barHistoric").getContext("2d");
+            var barHistoric = new Chart(ctx, {
+            type: "bar",
+            data: {
+            labels: respuesta.partidos,
+            datasets: [
+            {
+            label: "Votos",
+            data: respuesta.num,
+            backgroundColor: respuesta.colores,
+            },
+            ],
+            },
+            options: {
+            maintainAspectRatio: false,
+            },
+            });
+            //borro resultados anteriores de tabla
+            tabla = document.getElementById('tableVotes');
+            tabla.innerHTML='';
+
+            //lleno tabla de resultados
+            
+            for (i in respuesta.partidos) {
+                if (respuesta.num[i]==0) break;
+                place = parseInt(i)+1;
+                tabla.innerHTML+='<tr> <td>' + respuesta.partidos[i] + '</td> <td>' + respuesta.num[i] + '</td> <td>' + place + '</td> </tr>';
+            }
+
+        } else {
+            alert("Error de la consulta a la Base de datos"); //poner el error correcto 
+            // error 404, 500 etc.
+        }   
+    }
+}
+httpRequest.send();  
+}
+
+function elecciones(direccion){
+if (direccion == 'atras'){
+    document.getElementById('atras').style.display = 'none';
+    document.getElementById('adelante').style.display ='block';
+    document.getElementById('label_elec').innerHTML = 'Elecciones 2015';
+    year-=1;
+    callSection(nombre);
+}
+else{
+    document.getElementById('adelante').style.display = 'none';
+    document.getElementById('atras').style.display ='block';
+    document.getElementById('label_elec').innerHTML = 'Elecciones 2018';
+    year+=1;
+    callSection(nombre);
+}
+}
+function initMap() {
+map = new google.maps.Map(document.getElementById("mapa"), {
+    center:
+    { lat: 19.7036519, lng: -101.2411436 },
+    zoom: 9,
+});
+
+map.data.loadGeoJson('js/MICHOACAN_SECCION.geojson');
+
+map.data.setStyle({
+    visible: false,
+});
+
+
+map.data.addListener('click', function(event) {
+    document.getElementById('porcentajes').style.display = 'block';
+    document.getElementById('moreInfo').style.display = 'block';
+
+    if(!click){
+        document.getElementById("simpChart").remove();
+        var canvas = document.createElement("canvas");
+        canvas.id = "simpChart"; 
+        canvas.style.height='200';
+        canvas.style.width='auto';
+        canvas.style.maxHeight='250px';
+        document.getElementById('div_pie').appendChild(canvas);//creo y elimino elementos html de los canvas para que no se superpongan al actualizar
+
+        document.getElementById("barChart").remove();
+        var canvas = document.createElement("canvas");
+        canvas.id = "barChart"; 
+        canvas.style.height='200';
+        canvas.style.width='auto';
+        canvas.style.maxHeight='250px';
+        before_me =document.getElementById("before_me");
+        document.getElementById('div_graphics').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
+
+        document.getElementById("barHistoric").remove();
+        var canvas = document.createElement("canvas");
+        canvas.id = "barHistoric"; 
+        canvas.style.height='200';
+        canvas.style.width='auto';
+        canvas.style.maxHeight='200px';
+        before_me =document.getElementById("before_me2");
+        document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de votos
+
+        nombre = event.feature.getProperty('Name');
+        document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
+        map.data.setStyle(function(feature) {//le pongo el color a la seccion del mapa cliqueada
+            var ide = feature.getProperty('Name');
+            var ver = ide == nombre ? true : false; 
+            
+            return {
+            strokeWeight: 1,
+            fillOpacity: 0.3,
+            visible: ver,
+            };
+        });
+        //map.data.overrideStyle(event.feature, {fillColor: 'green', strokeColor:'white'});
+        callSection(nombre);  
+        click=true;
+    }
+    else{
+        map.data.setStyle(function(feature) {
+            var distrito = feature.getProperty(control);
+            var ver = distrito == idControl ? true : false; 
+            return {
+            strokeWeight: 1,
+            fillOpacity: 0.3,
+            visible: ver,
+            };
+        });
+        click=false;
+    }
+    // coordinates = event.feature.getGeometry();
+    // var Latlng = new google.maps.LatLng(coordinates[[0]]);
+
+    // var infoWindow = new google.maps.InfoWindow({
+    //     content: description,
+    //     position: Latlng,
+    // });
+            
+    // infoWindow.open(map);
+});
+
+map.data.addListener('mouseover', function(event) {
+    var nombre = event.feature.getProperty('Name');
+    document.getElementById("section").innerHTML = "Sección "+nombre;
+
+    map.data.revertStyle();
+    map.data.overrideStyle(event.feature, {fillColor: 'blue', strokeColor:'white'});
+});
+
+}
+
+function opciones(tipo){
+switch(tipo){
+    case "federal":
+        document.getElementById("federal").style.display ='block';
+        document.getElementById("local").style.display ='none';
+        document.getElementById("municipio").style.display ='none';
+    break;
+    case "local":
+        document.getElementById("local").style.display ='block';
+        document.getElementById("federal").style.display ='none';
+        document.getElementById("municipio").style.display ='none';
+    break;
+    case "municipio":
+        document.getElementById("municipio").style.display ='block';
+        document.getElementById("local").style.display ='none';
+        document.getElementById("federal").style.display ='none';
+    break;
+}    
+}
+
+function drawSections(vars, caso){
+paquete =vars.split('&');
+ident =paquete[0];
+coord =paquete[1].split(',');
+mylat =parseFloat(coord[0]);
+mylng =parseFloat(coord[1]);
+idControl=ident;
+click=false;
+map.setCenter({ lat: mylat, lng: mylng });
+
+switch (caso){
+    case "federal":
+    control='DISTRITO'; 
+    //dibujo las secciones del mapa
+    secOp="";
+    map.data.setStyle(function(feature) {
+        var distrito = feature.getProperty('DISTRITO');
+        var ver = distrito == ident ? true : false; 
+        return {
+        strokeWeight: 1,
+        fillOpacity: 0.3,
+        visible: ver,
+        };
+    });
+    //llamo las secciones correspondientes al distrito de la bd
     httpRequest = false;
     if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
         httpRequest = new XMLHttpRequest();
@@ -289,442 +603,171 @@ function callSection(nombre){//método para jalar info de sección de la bd, se 
     }
     if (httpRequest == false) return false; // no se puedo crear el objeto
     
-    var ide = nombre; // obtener el id de la sección
-    var url = document.getElementById('form-ajax').action;
-    httpRequest.open('GET', url + '/' + ide, true);
-    
-    
+    var url = "/dF_mapa"
+    httpRequest.open('GET', url + '/' + ident, true);
+      
     httpRequest.onreadystatechange = function() {
-                
         if (httpRequest.readyState == 4) {
             // la peticion la recibio el servidor
             if (httpRequest.status == 200) {
                 // convertimos la respuesta del servidor a un objeto JSON
                 respuesta = JSON.parse(httpRequest.responseText);
-                selectedSc = respuesta.seccion;
-                total =  selectedSc.hombres + selectedSc.mujeres;
-                
-                //Grafica de pastel 
-                var simpCanvas = document.getElementById("simpChart");
-                Chart.defaults.global.defaultFontFamily = "Lato";
-                Chart.defaults.global.defaultFontSize = 18;
-                Chart.defaults.global.legend.display = false;
-
-                simpData = {
-                labels: ["Hombres", "Mujeres"],
-                datasets: [
-                {
-                data: [selectedSc.hombres,selectedSc.mujeres],
-                backgroundColor: ["#9B51E0", "#FB8832"],
-                },
-                ],
-                };
-
-                let pieChart = new Chart(simpCanvas, {
-                type: "pie",
-                data: simpData,
-                });
-                
-                document.getElementById("totalLN").innerHTML = total;
-                porcentajeH = parseInt((selectedSc.hombres*100)/total);
-                porcentajeM = parseInt((selectedSc.mujeres*100)/total);
-                document.getElementById('men').innerHTML = 'H '+porcentajeH +'%';
-                document.getElementById('women').innerHTML = 'M '+porcentajeM +'%';
-
-                //Grafica de barras
-                var ctx = document.getElementById("barChart").getContext("2d");
-                var barChart = new Chart(ctx, {
-                type: "bar",
-                data: {
-                labels: [
-                "18",
-                "19",
-                "20-24",
-                "25-29",
-                "30-34",
-                "35-39",
-                "40-44",
-                "45-49",
-                "50-54",
-                "55-59",
-                "60-64",
-                "65 o más",
-                ],
-                datasets: [
-                {
-                label: "Electores",
-                data: [selectedSc['0'],selectedSc['1'],selectedSc['20_24'],selectedSc['25_29'],selectedSc['30_34'],
-                        selectedSc['35_39'],selectedSc['40_44'], selectedSc['45_49'],selectedSc['50_54'],selectedSc['55_59'],
-                        selectedSc['60_64'], selectedSc['65_mas']],
-                backgroundColor: "rgba(0,122,255,1)",
-                },
-                ],
-                },
-                options: {
-                maintainAspectRatio: false,
-                },
-                });
-                //Grafica de barras
-                Chart.defaults.global.legend.display = false;
-                var ctx = document.getElementById("barHistoric").getContext("2d");
-                var barHistoric = new Chart(ctx, {
-                type: "bar",
-                data: {
-                labels: respuesta.partidos,
-                datasets: [
-                {
-                label: "Votos",
-                data: respuesta.num,
-                backgroundColor: respuesta.colores,
-                },
-                ],
-                },
-                options: {
-                maintainAspectRatio: false,
-                },
-                });
-                //borro resultados anteriores de tabla
-                tabla = document.getElementById('tableVotes');
-                tabla.innerHTML='';
-
-                //lleno tabla de resultados
-                
-                for (i in respuesta.partidos) {
-                    if (respuesta.num[i]==0) break;
-                    place = parseInt(i)+1;
-                    tabla.innerHTML+='<tr> <td>' + respuesta.partidos[i] + '</td> <td>' + respuesta.num[i] + '</td> <td>' + place + '</td> </tr>';
+                // obtenemos secciones
+                secciones =respuesta.secciones;
+                for (i in secciones) {
+                secOp += '<option value="' + secciones[i].id + '">'+ secciones[i].id + '</option>';
                 }
-
+                document.getElementById('form-stacked-select-sc').innerHTML=secOp;
             } else {
-                alert("Error de la consulta a la Base de datos"); //poner el error correcto 
+                alert("Error"); //poner el error correcto 
                 // error 404, 500 etc.
-            }   
+            }       
         }
     }
-    httpRequest.send();  
-}
-
-function initMap() {
-    map = new google.maps.Map(document.getElementById("mapa"), {
-        center:
-        { lat: 19.7036519, lng: -101.2411436 },
-        zoom: 9,
-    });
- 
-    map.data.loadGeoJson('js/MICHOACAN_SECCION.geojson');
-  
-    map.data.setStyle({
-        visible: false,
-    });
-
-
-    map.data.addListener('click', function(event) {
-        document.getElementById('porcentajes').style.display = 'block';
-        document.getElementById('moreInfo').style.display = 'block';
-
-        if(!click){
-            document.getElementById("simpChart").remove();
-            var canvas = document.createElement("canvas");
-            canvas.id = "simpChart"; 
-            canvas.style.height='200';
-            canvas.style.width='auto';
-            canvas.style.maxHeight='250px';
-            document.getElementById('div_pie').appendChild(canvas);//creo y elimino elementos html de los canvas para que no se superpongan al actualizar
-
-            document.getElementById("barChart").remove();
-            var canvas = document.createElement("canvas");
-            canvas.id = "barChart"; 
-            canvas.style.height='200';
-            canvas.style.width='auto';
-            canvas.style.maxHeight='250px';
-            before_me =document.getElementById("before_me");
-            document.getElementById('div_graphics').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
-
-            document.getElementById("barHistoric").remove();
-            var canvas = document.createElement("canvas");
-            canvas.id = "barHistoric"; 
-            canvas.style.height='200';
-            canvas.style.width='auto';
-            canvas.style.maxHeight='200px';
-            before_me =document.getElementById("before_me2");
-            document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de votos
-
-            var nombre = event.feature.getProperty('Name');
-            document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
-            map.data.setStyle(function(feature) {//le pongo el color a la seccion del mapa cliqueada
-                var ide = feature.getProperty('Name');
-                var ver = ide == nombre ? true : false; 
-                
-                return {
-                strokeWeight: 1,
-                fillOpacity: 0.3,
-                visible: ver,
-                };
-            });
-            //map.data.overrideStyle(event.feature, {fillColor: 'green', strokeColor:'white'});
-            callSection(nombre);  
-            click=true;
-        }
-        else{
-            map.data.setStyle(function(feature) {
-                var distrito = feature.getProperty(control);
-                var ver = distrito == idControl ? true : false; 
-                return {
-                strokeWeight: 1,
-                fillOpacity: 0.3,
-                visible: ver,
-                };
-            });
-            click=false;
-        }
-        // coordinates = event.feature.getGeometry();
-        // var Latlng = new google.maps.LatLng(coordinates[[0]]);
-
-        // var infoWindow = new google.maps.InfoWindow({
-        //     content: description,
-        //     position: Latlng,
-        // });
-                
-        // infoWindow.open(map);
-    });
-    
-    map.data.addListener('mouseover', function(event) {
-        var nombre = event.feature.getProperty('Name');
-        document.getElementById("section").innerHTML = "Sección "+nombre;
-
-        map.data.revertStyle();
-        map.data.overrideStyle(event.feature, {fillColor: 'blue', strokeColor:'white'});
-    });
-
-}
-
-function opciones(tipo){
-    switch(tipo){
-        case "federal":
-            document.getElementById("federal").style.display ='block';
-            document.getElementById("local").style.display ='none';
-            document.getElementById("municipio").style.display ='none';
-        break;
-        case "local":
-            document.getElementById("local").style.display ='block';
-            document.getElementById("federal").style.display ='none';
-            document.getElementById("municipio").style.display ='none';
-        break;
-        case "municipio":
-            document.getElementById("municipio").style.display ='block';
-            document.getElementById("local").style.display ='none';
-            document.getElementById("federal").style.display ='none';
-        break;
-    }    
-}
-
-function drawSections(vars, caso){
-    paquete =vars.split('&');
-    ident =paquete[0];
-    coord =paquete[1].split(',');
-    mylat =parseFloat(coord[0]);
-    mylng =parseFloat(coord[1]);
-    idControl=ident;
-    click=false;
-    map.setCenter({ lat: mylat, lng: mylng });
-
-    switch (caso){
-        case "federal":
-        control='DISTRITO'; 
-        //dibujo las secciones del mapa
-        secOp="";
-        map.data.setStyle(function(feature) {
-            var distrito = feature.getProperty('DISTRITO');
-            var ver = distrito == ident ? true : false; 
-            return {
-            strokeWeight: 1,
-            fillOpacity: 0.3,
-            visible: ver,
-            };
-        });
-        //llamo las secciones correspondientes al distrito de la bd
-        httpRequest = false;
-        if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
-            httpRequest = new XMLHttpRequest();
-            
-        } else {
-        // Internet explorer siempre llevando la contra.
-            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        if (httpRequest == false) return false; // no se puedo crear el objeto
-        
-        var url = "/dF_mapa"
-        httpRequest.open('GET', url + '/' + ident, true);
-          
-        httpRequest.onreadystatechange = function() {
-            if (httpRequest.readyState == 4) {
-                // la peticion la recibio el servidor
-                if (httpRequest.status == 200) {
-                    // convertimos la respuesta del servidor a un objeto JSON
-                    respuesta = JSON.parse(httpRequest.responseText);
-                    // obtenemos secciones
-                    secciones =respuesta.secciones;
-                    for (i in secciones) {
-                    secOp += '<option value="' + secciones[i].id + '">'+ secciones[i].id + '</option>';
-                    }
-                    document.getElementById('form-stacked-select-sc').innerHTML=secOp;
-                } else {
-                    alert("Error"); //poner el error correcto 
-                    // error 404, 500 etc.
-                }       
-            }
-        }
-        httpRequest.send();
-        break;
-        case "local": 
-        control='DISTRITO_L';
-        secOp="";
-        map.data.setStyle(function(feature) {
-            var distrito = feature.getProperty('DISTRITO_L');
-            var ver = distrito == ident ? true : false; 
-            return {
-            strokeWeight: 1,
-            fillOpacity: 0.3,
-            visible: ver,
-            };
-        });
-        //llamo las secciones correspondientes al distrito de la bd
-        httpRequest = false;
-        if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
-            httpRequest = new XMLHttpRequest();
-            
-        } else {
-        // Internet explorer siempre llevando la contra.
-            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        if (httpRequest == false) return false; // no se puedo crear el objeto
-        
-        var url = "/dL_mapa"
-        httpRequest.open('GET', url + '/' + ident, true);
-          
-        httpRequest.onreadystatechange = function() {
-            if (httpRequest.readyState == 4) {
-                // la peticion la recibio el servidor
-                if (httpRequest.status == 200) {
-                    // convertimos la respuesta del servidor a un objeto JSON
-                    respuesta = JSON.parse(httpRequest.responseText);
-                    // obtenemos secciones
-                    secciones =respuesta.secciones;
-                    for (i in secciones) {
-                    secOp += '<option value="' + secciones[i].id + '">'+ secciones[i].id + '</option>';
-                    }
-                    document.getElementById('form-stacked-select-sc').innerHTML=secOp;
-                } else {
-                    alert("Error"); //poner el error correcto 
-                    // error 404, 500 etc.
-                }       
-            }
-        }
-        httpRequest.send();
-        break;
-        
-        case "municipio": 
-        control='MUNICIPIO';
-        secOp="";
-        map.data.setStyle(function(feature) {
-            var municipio = feature.getProperty('MUNICIPIO');
-            var ver = municipio == ident ? true : false; 
-            return {
-            strokeWeight: 1,
-            fillOpacity: 0.3,
-            visible: ver,
-            };
-        });
-        //llamo las secciones correspondientes al distrito de la bd
-        httpRequest = false;
-        if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
-            httpRequest = new XMLHttpRequest();
-            
-        } else {
-        // Internet explorer siempre llevando la contra.
-            httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
-        }
-        if (httpRequest == false) return false; // no se puedo crear el objeto
-        
-        var url = "/mN_mapa"
-        httpRequest.open('GET', url + '/' + ident, true);
-          
-        httpRequest.onreadystatechange = function() {
-            if (httpRequest.readyState == 4) {
-                // la peticion la recibio el servidor
-                if (httpRequest.status == 200) {
-                    // convertimos la respuesta del servidor a un objeto JSON
-                    respuesta = JSON.parse(httpRequest.responseText);
-                    // obtenemos secciones
-                    secciones =respuesta.secciones;
-                    for (i in secciones) {
-                    secOp += '<option value="' + secciones[i].id + '">'+ secciones[i].id + '</option>';
-                    }
-                    document.getElementById('form-stacked-select-sc').innerHTML=secOp;
-                } else {
-                    alert("Error"); //poner el error correcto 
-                    // error 404, 500 etc.
-                }       
-            }
-        }
-        httpRequest.send();
-        break;
-    } 
-}
-
-function slSection(sc){
-    document.getElementById("section").innerHTML = "Sección "+ sc;
-    document.getElementById('porcentajes').style.display = 'block';
-    document.getElementById('moreInfo').style.display = 'block';
-
-    document.getElementById("simpChart").remove();
-    var canvas = document.createElement("canvas");
-    canvas.id = "simpChart"; 
-    canvas.style.height='200';
-    canvas.style.width='auto';
-    canvas.style.maxHeight='250px';
-    document.getElementById('div_pie').appendChild(canvas);//creo y elimino elementos html de los canvas para que no se superpongan al actualizar
-
-    document.getElementById("barChart").remove();
-    var canvas = document.createElement("canvas");
-    canvas.id = "barChart"; 
-    canvas.style.height='200';
-    canvas.style.width='auto';
-    canvas.style.maxHeight='250px';
-    before_me =document.getElementById("before_me");
-    document.getElementById('div_graphics').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
-
-    document.getElementById("barHistoric").remove();
-    var canvas = document.createElement("canvas");
-    canvas.id = "barHistoric"; 
-    canvas.style.height='200';
-    canvas.style.width='auto';
-    canvas.style.maxHeight='200px';
-    before_me =document.getElementById("before_me2");
-    document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de votos
-
-    var nombre = sc;
-    document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
-    map.data.setStyle(function(feature) {//le pongo el color a la seccion del mapa cliqueada y oculto las demás
-        var ide = feature.getProperty('Name');
-        var ver = ide == nombre ? true : false; 
-        var color = ide == nombre ? 'blue': 'none';
+    httpRequest.send();
+    break;
+    case "local": 
+    control='DISTRITO_L';
+    secOp="";
+    map.data.setStyle(function(feature) {
+        var distrito = feature.getProperty('DISTRITO_L');
+        var ver = distrito == ident ? true : false; 
         return {
         strokeWeight: 1,
         fillOpacity: 0.3,
         visible: ver,
-        fillColor: color,
         };
     });
+    //llamo las secciones correspondientes al distrito de la bd
+    httpRequest = false;
+    if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
+        httpRequest = new XMLHttpRequest();
+        
+    } else {
+    // Internet explorer siempre llevando la contra.
+        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if (httpRequest == false) return false; // no se puedo crear el objeto
     
-    callSection(nombre); //esta función jala la info de la bd     
-    click=true;  
+    var url = "/dL_mapa"
+    httpRequest.open('GET', url + '/' + ident, true);
+      
+    httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState == 4) {
+            // la peticion la recibio el servidor
+            if (httpRequest.status == 200) {
+                // convertimos la respuesta del servidor a un objeto JSON
+                respuesta = JSON.parse(httpRequest.responseText);
+                // obtenemos secciones
+                secciones =respuesta.secciones;
+                for (i in secciones) {
+                secOp += '<option value="' + secciones[i].id + '">'+ secciones[i].id + '</option>';
+                }
+                document.getElementById('form-stacked-select-sc').innerHTML=secOp;
+            } else {
+                alert("Error"); //poner el error correcto 
+                // error 404, 500 etc.
+            }       
+        }
+    }
+    httpRequest.send();
+    break;
+    
+    case "municipio": 
+    control='MUNICIPIO';
+    secOp="";
+    map.data.setStyle(function(feature) {
+        var municipio = feature.getProperty('MUNICIPIO');
+        var ver = municipio == ident ? true : false; 
+        return {
+        strokeWeight: 1,
+        fillOpacity: 0.3,
+        visible: ver,
+        };
+    });
+    //llamo las secciones correspondientes al distrito de la bd
+    httpRequest = false;
+    if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
+        httpRequest = new XMLHttpRequest();
+        
+    } else {
+    // Internet explorer siempre llevando la contra.
+        httpRequest = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    if (httpRequest == false) return false; // no se puedo crear el objeto
+    
+    var url = "/mN_mapa"
+    httpRequest.open('GET', url + '/' + ident, true);
+      
+    httpRequest.onreadystatechange = function() {
+        if (httpRequest.readyState == 4) {
+            // la peticion la recibio el servidor
+            if (httpRequest.status == 200) {
+                // convertimos la respuesta del servidor a un objeto JSON
+                respuesta = JSON.parse(httpRequest.responseText);
+                // obtenemos secciones
+                secciones =respuesta.secciones;
+                for (i in secciones) {
+                secOp += '<option value="' + secciones[i].id + '">'+ secciones[i].id + '</option>';
+                }
+                document.getElementById('form-stacked-select-sc').innerHTML=secOp;
+            } else {
+                alert("Error"); //poner el error correcto 
+                // error 404, 500 etc.
+            }       
+        }
+    }
+    httpRequest.send();
+    break;
+} 
 }
-</script>
-@endsection
 
-@section('scripts')
+function slSection(sc){
+document.getElementById("section").innerHTML = "Sección "+ sc;
+document.getElementById('porcentajes').style.display = 'block';
+document.getElementById('moreInfo').style.display = 'block';
 
+document.getElementById("simpChart").remove();
+var canvas = document.createElement("canvas");
+canvas.id = "simpChart"; 
+canvas.style.height='200';
+canvas.style.width='auto';
+canvas.style.maxHeight='250px';
+document.getElementById('div_pie').appendChild(canvas);//creo y elimino elementos html de los canvas para que no se superpongan al actualizar
 
+document.getElementById("barChart").remove();
+var canvas = document.createElement("canvas");
+canvas.id = "barChart"; 
+canvas.style.height='200';
+canvas.style.width='auto';
+canvas.style.maxHeight='250px';
+before_me =document.getElementById("before_me");
+document.getElementById('div_graphics').insertBefore(canvas, before_me );//creo y elimino divs grafica de edad
 
+document.getElementById("barHistoric").remove();
+var canvas = document.createElement("canvas");
+canvas.id = "barHistoric"; 
+canvas.style.height='200';
+canvas.style.width='auto';
+canvas.style.maxHeight='200px';
+before_me =document.getElementById("before_me2");
+document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de votos
+
+nombre = sc;
+document.getElementById('seccionName').innerHTML = 'Sección ' + nombre;
+map.data.setStyle(function(feature) {//le pongo el color a la seccion del mapa cliqueada y oculto las demás
+    var ide = feature.getProperty('Name');
+    var ver = ide == nombre ? true : false; 
+    var color = ide == nombre ? 'blue': 'none';
+    return {
+    strokeWeight: 1,
+    fillOpacity: 0.3,
+    visible: ver,
+    fillColor: color,
+    };
+});
+
+callSection(nombre); //esta función jala la info de la bd     
+click=true;  
+}
 @endsection

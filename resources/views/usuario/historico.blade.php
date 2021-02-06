@@ -8,9 +8,16 @@ Histórico
 @extends('subviews.chartjs')
 <link rel="stylesheet" href="{{asset('css/usuario/historico.css')}}" />
 @endsection
-
+@php
+    if (session()->get('campana')->position->id == 2){
+        $anio = 1;
+    }
+    else{
+        $anio =2;
+    }
+@endphp
 @section('body')
-<body onload="callSection({{$secciones[0]->id}})">
+<body onload="firstLoad({{$secciones[0]->id}},{{$anio}})">
 <div class="uk-margin uk-margin-left uk-margin-right" >
     <!-- CARD HISTORICO -->
     <div class="uk-card uk-card-default uk-padding-small">
@@ -33,9 +40,15 @@ Histórico
             <!-- SELECCION ELECCIONES -->
             <div class="uk-margin-top uk-text-center elec_resp" style="top: -70px; position: relative;">
                 <div class="uk-flex-inline uk-vertical-align-middle">
-                    <a href="" uk-icon="chevron-left"></a>
-                    <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
-                    <a href="" uk-icon="chevron-right"></a>
+                    @if (session()->get('campana')->position->id == 2)
+                        <p class="uk-margin-remove uk-text-bold">Elecciones 2015</p>
+                        @elseif (session()->get('campana')->position->id == 1 || session()->get('campana')->position->id == 6)
+                        <p class="uk-margin-remove uk-text-bold">Elecciones 2018</p>
+                        @else
+                        <a id="atras" href="#" uk-icon="chevron-left" onclick="elecciones(this.id)"></a>
+                        <p id="label_elec" class="uk-margin-remove uk-text-bold">Elecciones 2018</p>
+                        <a id="adelante" href="#" uk-icon="chevron-right" onclick="elecciones(this.id)" style="display: none"></a>
+                    @endif
                 </div>
                 <p class="uk-margin-remove">{{session()->get('campana')->position->name}}</p>
             </div>
@@ -118,8 +131,34 @@ Histórico
 </body>
 @endsection
 <script>
-    function callSection(ide){
+    let year; //año de elección
+    let nombre;//id de la sección seleccionada
 
+    function firstLoad(sc,anio){
+        year = anio;
+        nombre = sc;
+        callSection(sc);
+    }
+
+    function elecciones(direccion){
+        if (direccion == 'atras'){
+            document.getElementById('atras').style.display = 'none';
+            document.getElementById('adelante').style.display ='block';
+            document.getElementById('label_elec').innerHTML = 'Elecciones 2015';
+            year-=1;
+            callSection(nombre);
+        }
+        else{
+            document.getElementById('adelante').style.display = 'none';
+            document.getElementById('atras').style.display ='block';
+            document.getElementById('label_elec').innerHTML = 'Elecciones 2018';
+            year+=1;
+            callSection(nombre);
+        }
+    }
+    
+    function callSection(ide){
+        nombre = ide;
         httpRequest = false;
         if (window.XMLHttpRequest) { // Mozilla, Safari, Chrome etc.
             httpRequest = new XMLHttpRequest();
@@ -130,7 +169,7 @@ Histórico
         }
         if (httpRequest == false) return false; // no se puedo crear el objeto
         
-        httpRequest.open('GET', '/historico_seccion/' + ide, true);
+        httpRequest.open('GET', '/historico_seccion/' + ide +'/'+ year, true);
         
         
         httpRequest.onreadystatechange = function() {
