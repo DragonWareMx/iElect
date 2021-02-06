@@ -109,12 +109,14 @@ Campañas
                 </button>
             </div>
             <div class="uk-hidden@m">
-                <div class="omrs-input-group">
-                    <label class="omrs-input-underlined input-outlined input-trail-icon">
-                        <input required />
-                        <span class="input-trail-icon" uk-icon="search"></span>
-                    </label>
-                </div>
+                <form action="/admin/campanas" method="get">
+                    <div class="omrs-input-group">
+                        <label class="omrs-input-underlined input-outlined input-trail-icon">
+                            <input name="search" />
+                            <button type="submit" class="input-trail-icon" uk-icon="search"></button>
+                        </label>
+                    </div>
+                </form>
             </div>
             <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
                 <button class="uk-button uk-button-default uk-background-muted uk-margin-right" style="
