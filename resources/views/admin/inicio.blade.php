@@ -318,7 +318,7 @@ Inicio
         <div class="uk-modal-dialog">
             <button class="uk-modal-close-default" type="button" uk-close></button>
             <div class="uk-modal-header">
-                <h2 class="uk-modal-title">Agregar campana</h2>
+                <h2 class="uk-modal-title">Agregar campaña</h2>
             </div>
             <div id="errors-campana" class="uk-alert-danger" uk-alert style="display:none;">
             </div>
