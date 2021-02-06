@@ -217,15 +217,15 @@ class SeccionesController extends Controller
                     $electores = $this->paginate($electores)->appends(request()->except('page'));
                 }
 
-                $ganador = Vote::where('section_id', '=', $id)->where('election_id', '=', 1)->get();
-                //dd($ganador->pluck('politic_partie_id'));
+                $ganador = Vote::where('section_id', '=', $id)->where('position_id', '=', $campana->position_id)->orderBy('num', 'DESC')->first();
+                //dd($electores);
             } else {
                 $electores = null;
                 $rangos = null;
             }
 
             $seccion = Section::find($id);
-            return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores, 'rangos' => $rangos, 'id' => $id]);
+            return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores, 'rangos' => $rangos, 'id' => $id, 'ganador' => $ganador]);
         } else {
             abort(403);
         }
