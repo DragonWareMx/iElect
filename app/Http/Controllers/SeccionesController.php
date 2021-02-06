@@ -7,6 +7,7 @@ use App\Models\Section;
 use App\Models\Elector;
 use App\Models\Campaign;
 use App\Models\Campaign_Section;
+use App\Models\Vote;
 use Carbon\Carbon;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Collection;
@@ -215,13 +216,16 @@ class SeccionesController extends Controller
                 } else {
                     $electores = $this->paginate($electores)->appends(request()->except('page'));
                 }
+
+                $ganador = Vote::where('section_id', '=', $id)->where('position_id', '=', $campana->position_id)->orderBy('num', 'DESC')->first();
+                //dd($electores);
             } else {
                 $electores = null;
                 $rangos = null;
             }
 
             $seccion = Section::find($id);
-            return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores, 'rangos' => $rangos, 'id' => $id]);
+            return view('usuario.seccion', ['datosSec' => $seccion, 'electores' => $electores, 'rangos' => $rangos, 'id' => $id, 'ganador' => $ganador]);
         } else {
             abort(403);
         }

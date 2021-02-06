@@ -37,17 +37,17 @@ class HomeController extends Controller
             //Recibe todas las secciones
 
             $total = Elector::select('users.name', 'electors.*')
-                            ->join('users', 'users.id', '=', 'electors.user_id')
-                            ->where('campaign_id', '=', $campana->id)
-                            ->where('electors.user_id', '=', Auth::user()->id)->get()->count();
+                ->join('users', 'users.id', '=', 'electors.user_id')
+                ->where('campaign_id', '=', $campana->id)
+                ->where('electors.user_id', '=', Auth::user()->id)->get()->count();
 
             $totalNA = Elector::select('users.name', 'electors.*')
-                            ->join('users', 'users.id', '=', 'electors.user_id')
-                            ->where('campaign_id', '=', $campana->id)
-                            ->where('electors.user_id', '=', Auth::user()->id)
-                            ->where('aprobado',0)
-                            ->get()
-                            ->count();
+                ->join('users', 'users.id', '=', 'electors.user_id')
+                ->where('campaign_id', '=', $campana->id)
+                ->where('electors.user_id', '=', Auth::user()->id)
+                ->where('aprobado', 0)
+                ->get()
+                ->count();
 
 
             $ocupaciones = Job::all();
@@ -60,11 +60,10 @@ class HomeController extends Controller
                 $secciones = null;
             }
 
-            return view('usuario.simpatizantes', ['secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total,'totalNA' => $totalNA]);
+            return view('usuario.simpatizantes', ['secciones' => $secciones, 'ocupaciones' => $ocupaciones, 'total' => $total, 'totalNA' => $totalNA]);
         } else if (Auth::user()->roles[0]->name == 'Agente') {
             $user = Auth::user();
-            //$campana = session()->get('campana');
-            $campana = Campaign::find(1);
+            $campana = session()->get('campana');
             if (!is_null($campana)) {
                 $electors = Elector::where('campaign_id', $campana->id)->get();
             } else {

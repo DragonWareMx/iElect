@@ -236,16 +236,14 @@ $g65 = 0;
                         {{$datosSec->num_seccion}}
                     </h3>
                 </div>
-                <div class="uk-hidden@m">
-                    <div class="omrs-input-group">
-                        <form id="form-buscador" class="uk-modal-body" action="{{route('seccion', ['id'=>$id])}}"
-                            method="get" style="padding: 0">
-                            <label class="omrs-input-underlined input-outlined input-trail-icon">
-                                <input name="busc" type="text" maxlength="100" />
-                                <span class="input-trail-icon" uk-icon="search"></span>
-                            </label>
-                        </form>
-                    </div>
+                <div class="omrs-input-group uk-hidden@m">
+                    <form id="form-buscador" class="uk-modal-body" action="{{route('seccion', ['id'=>$id])}}"
+                        method="get" style="padding: 0">
+                        <label class="omrs-input-underlined input-outlined input-trail-icon">
+                            <input name="busc" type="text" maxlength="100" />
+                            <span class="input-trail-icon" uk-icon="search"></span>
+                        </label>
+                    </form>
                 </div>
                 <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
                     <div class="uk-visible@m">
@@ -393,9 +391,14 @@ $g65 = 0;
                     <br />
                     <div class="uk-text-bold">Ganador elecciones 2018</div>
                     <div class="uk-text-middle">
-                        <img class="uk-border-circle" src="{{asset('img/test/avatar.jpg')}}" width="50" height="50"
+                        @if (!is_null($ganador))
+                        <img class="uk-border-circle" src="{{$ganador->politic_partie->logo}}" width="50" height="50"
                             alt="Border circle" />
-                        <span class="uk-text-middle">Nombre del partido NDP</span>
+                        <span class="uk-text-middle">{{$ganador->politic_partie->name}}
+                            {{$ganador->politic_partie->siglas}}</span>
+                        @else
+                        No hay votos registrados
+                        @endif
                     </div>
                 </div>
             </div>
@@ -458,77 +461,77 @@ $g65 = 0;
 
 <script>
     function _calculateAge(birthday) { // birthday is a date
-        var ageDifMs = Date.now() - birthday.getTime();
-        var ageDate = new Date(ageDifMs); // miliseconds from epoch
-        return Math.abs(ageDate.getUTCFullYear() - 1970);
-    }
+            var ageDifMs = Date.now() - birthday.getTime();
+            var ageDate = new Date(ageDifMs); // miliseconds from epoch
+            return Math.abs(ageDate.getUTCFullYear() - 1970);
+        }
 
-    $(document).ready(function () {
-        var simps={!! json_encode($electores); !!};
-        var simps=simps['data'];
+        $(document).ready(function () {
+            var simps={!! json_encode($electores); !!};
+            var simps=simps['data'];
 
-        $('#tabla-simps tr').click(function(){
-            var id = $(this).data('id');
-            for(var key in simps){
-                var obj=simps[key];
-                if(obj["id"] == id){
-                    break;
+            $('#tabla-simps tr').click(function(){
+                var id = $(this).data('id');
+                for(var key in simps){
+                    var obj=simps[key];
+                    if(obj["id"] == id){
+                        break;
+                    }
                 }
-            }
-            //console.log(obj);
-            //falta la foto principal
-            $('#simp_edit_id').html('Simpatizante ' + obj['id']);
-            $('#simp_edit_nombre').html(obj['nombre']+ " " + obj['apellido_p']+ " " + obj['apellido_m']);
-            $('#simp_edit_domicilio').html(obj['calle']+ " " + obj['ext_num']+ " " + obj['int_num']+ " " + obj['colonia']+ " " + obj['cp']);
-            var d = new Date(obj['fecha_nac']);
-            $('#simp_edit_edad').html(_calculateAge(d));
-            $('#simp_edit_job').html(obj['job']['nombre']);
-            $('#simp_edit_email').html(obj['email']);
-            $('#simp_edit_section').html(obj['section']['num_seccion']);
-            $('#simp_edit_celector').html(obj['clave_elector']);
-            $('#simp_edit_genero').html(obj['sexo'] == 'h' ? "Masculino" : "Femenino" );
-            $('#simp_edit_tel').html(obj['telefono']);
-            $('#simp_edit_face').html(obj['facebook']);
-            $('#simp_edit_tw').html(obj['twitter']);
-            //aqui falta lo del brigadista
-            $('#simp_edit_brigadista').html(obj['name']);
+                //console.log(obj);
+                //falta la foto principal
+                $('#simp_edit_id').html('Simpatizante ' + obj['id']);
+                $('#simp_edit_nombre').html(obj['nombre']+ " " + obj['apellido_p']+ " " + obj['apellido_m']);
+                $('#simp_edit_domicilio').html(obj['calle']+ " " + obj['ext_num']+ " " + obj['int_num']+ " " + obj['colonia']+ " " + obj['cp']);
+                var d = new Date(obj['fecha_nac']);
+                $('#simp_edit_edad').html(_calculateAge(d));
+                $('#simp_edit_job').html(obj['job']['nombre']);
+                $('#simp_edit_email').html(obj['email']);
+                $('#simp_edit_section').html(obj['section']['num_seccion']);
+                $('#simp_edit_celector').html(obj['clave_elector']);
+                $('#simp_edit_genero').html(obj['sexo'] == 'h' ? "Masculino" : "Femenino" );
+                $('#simp_edit_tel').html(obj['telefono']);
+                $('#simp_edit_face').html(obj['facebook']);
+                $('#simp_edit_tw').html(obj['twitter']);
+                //aqui falta lo del brigadista
+                $('#simp_edit_brigadista').html(obj['name']);
 
-            //aqui empieza lo de las fotos del ine
-            if(obj['credencial_a']){
-                $("#simp_edit_front").attr("src",obj['credencial_a']);
-                $("#simp_edit_front_t").html('Foto de credencial anverso');
-            }
-            else{
-                $("#simp_edit_front").attr("src","");
-                $("#simp_edit_front_t").html('Sin foto de credencial anverso');
-            }
-            if(obj['credencial_r']){
-                $("#simp_edit_back").attr("src",obj['credencial_r']);
-                $("#simp_edit_back_t").html('Foto de credencial inverso');
-            }
-            else{
-                $("#simp_edit_back").attr("src",obj['credencial_a']);
-                $("#simp_edit_back_t").html('Sin foto de credencial inverso');
-            }
+                //aqui empieza lo de las fotos del ine
+                if(obj['credencial_a']){
+                    $("#simp_edit_front").attr("src",obj['credencial_a']);
+                    $("#simp_edit_front_t").html('Foto de credencial anverso');
+                }
+                else{
+                    $("#simp_edit_front").attr("src","");
+                    $("#simp_edit_front_t").html('Sin foto de credencial anverso');
+                }
+                if(obj['credencial_r']){
+                    $("#simp_edit_back").attr("src",obj['credencial_r']);
+                    $("#simp_edit_back_t").html('Foto de credencial inverso');
+                }
+                else{
+                    $("#simp_edit_back").attr("src",obj['credencial_a']);
+                    $("#simp_edit_back_t").html('Sin foto de credencial inverso');
+                }
 
-            //aqui empieza lo de las fotos del simp
-            if(obj['foto_elector']){
-                $("#simp_edit_foto").attr("src",obj['foto_elector']);
-            }
-            else{
-                $("#simp_edit_foto").attr("src","{{asset('img/icons/default.png')}}");
-            }
-            if(obj['documento']){
-                $("#simp_edit_firma").attr("src",obj['documento']);
-                $("#simp_edit_firma_t").html('Foto de firma');
-            }
-            else{
-                $("#simp_edit_firma").attr("src","");
-                $("#simp_edit_firma_t").html('Sin foto de firma');
-            }
-            UIkit.modal("#modal-datos-simp").toggle();
+                //aqui empieza lo de las fotos del simp
+                if(obj['foto_elector']){
+                    $("#simp_edit_foto").attr("src",obj['foto_elector']);
+                }
+                else{
+                    $("#simp_edit_foto").attr("src","{{asset('img/icons/default.png')}}");
+                }
+                if(obj['documento']){
+                    $("#simp_edit_firma").attr("src",obj['documento']);
+                    $("#simp_edit_firma_t").html('Foto de firma');
+                }
+                else{
+                    $("#simp_edit_firma").attr("src","");
+                    $("#simp_edit_firma_t").html('Sin foto de firma');
+                }
+                UIkit.modal("#modal-datos-simp").toggle();
+            });
         });
-    });
 </script>
 
 <script>
