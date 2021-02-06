@@ -907,15 +907,283 @@ class SimpatizanteController extends Controller
 
     public function editarSimpatizante(Request $request)
     {
-        $simpatizante = Elector::findOrFail($id);
+        \Gate::authorize('haveaccess', 'admin.perm');
 
-        $ocupaciones = Job::all();
+        $data = request()->validate([
+            'seccion' => 'required|exists:sections,id',
+            'nombre' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'apellido_paterno' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'apellido_materno' => ['nullable', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'correo_electronico' => 'nullable|max:320|email',
+            'fecha_de_nacimiento' => 'required|date|before:today',
+            'sexo' => ['required', Rule::in(['h', 'm']),],
+            'trabajo' => 'required|exists:jobs,nombre',
+            'telefono' => ['required_without:correo_electronico', 'regex:/^[0-9]{3}[ -]{0,1}[0-9]{3}[ -]{0,1}[0-9]{4}$/'],
+            'estado_civil' => ['nullable', Rule::in(['soltero', 'casado', 'unionl', 'separado', 'divorciado', 'viudo']),],
+            'clave_elector' => ['required', 'max:20', 'min:16', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'colonia' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'calle' => ['nullable', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'num_exterior' => ['nullable', 'max:10', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'num_interior' => ['nullable', 'max:10', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'CP' => ['required', 'regex:/^[0-9]{5}$/'],
+            'facebook' => ['nullable', 'max:50', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'twitter' => ['nullable', 'max:50', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'foto_anverso' => 'nullable|mimes:jpeg,jpg,png|image',
+            'foto_inverso' => 'nullable|mimes:jpeg,jpg,png|image',
+            'foto_de_elector' => 'nullable|mimes:jpeg,jpg,png|image',
+            'foto_de_firma' => 'nullable|mimes:jpeg,jpg,png|image',
+            'aprobado' => 'nullable|boolean',
+            'el_foto_anverso' => 'nullable|boolean',
+            'el_foto_inverso' => 'nullable|boolean',
+            'el_foto_elector' => 'nullable|boolean',
+            'el_foto_firma' => 'nullable|boolean',
+        ]);
 
-        $secciones = Section::whereHas('campaign', function (Builder $query) use ($simpatizante) {
-            $query->where('campaigns.id', '=', $simpatizante->campaign->id);
-        })->get();
+        //verifica que el elector esté en la edad permitida
+        if(intval(\Carbon\Carbon::parse($request->fecha_de_nacimiento)->diff(\Carbon\Carbon::now())->format('%y')) < 17){
+            return response()->json(['errors' => ['catch' => [0 => 'La fecha de nacimiento debe ser de una persona de 17 años o más.']]], 422);
+        }
 
-        //se manda la vista
-        return view('usuario.simpatizante_editar', ['simpatizante' => $simpatizante, 'secciones'=>$secciones,'ocupaciones'=>$ocupaciones]);
+        //variables que guardan los nombres de los archivos en caso que haya un error
+        $nfotoa = null;
+        $nfotor = null;
+        $nfotoe = null;
+        $nfotod = null;
+
+        DB::beginTransaction();
+        try {
+            //SE CREA EL ELECTOR
+            $simpatizante = new Elector();
+
+            //se obtiene la campana
+            $campana = session()->get('campana');
+            //se obtiene la seccion
+            $seccion = Section::find($request->seccion);
+            //SI NO EXISTE LA SECCION SE MANDA ERROR
+            if(is_null($seccion)){
+                DB::rollBack();
+                return response()->json(['errors' => ['catch' => [0 => 'La sección: '.$request->seccion.' no existe en la base de datos.']]], 500);
+            }
+
+            //VERIFICA QUE LA SECCION FORME PARTE DE LA CAMPAÑA
+            $existe = $seccion->campaign->contains($campana->id);
+            
+            if(!$existe){
+                DB::rollBack();
+                return response()->json(['errors' => ['catch' => [0 => 'La sección: '.$request->seccion.' no está relacionada con la campaña.']]], 500);
+            }
+
+            //VERIFICA QUE NO EXISTA UN ELECTOR CON LA MISMA CLAVE EN LA MISMA CAMPAÑA
+            $simpVal = Elector::where('campaign_id',$campana->id)->get()->filter(function($record) use($request) {
+                if($record->clave_elector == $request->clave_elector){
+                    return $record;
+                }
+            });
+            if(!is_null($simpVal) && count($simpVal) > 0){
+                //simpatizante ya registrado
+                DB::rollBack();
+                return response()->json(['errors' => ['catch' => [0 => 'El simpatizante con la clave de elector: '.$request->clave_elector.' ya ha sido registrado en esta campaña.']]], 500);
+            }
+
+            //UUID
+            $simpatizante->uuid = Uuid::generate()->string;
+
+            //DATOS PERSONALES
+            $simpatizante->nombre = $request->nombre;
+            $simpatizante->apellido_p = $request->apellido_paterno;
+            $simpatizante->apellido_m = $request->apellido_materno;
+            $simpatizante->email = $request->correo_electronico;
+            $simpatizante->sexo = $request->sexo;
+            //encuentra el trabajo
+            $trabajo = Job::where('nombre', '=', $request->trabajo)->first();
+            $simpatizante->job_id = $trabajo->id;
+            $simpatizante->telefono = $request->telefono;
+            $simpatizante->edo_civil = $request->estado_civil;
+            $simpatizante->fecha_nac = $request->fecha_de_nacimiento;
+            $simpatizante->clave_elector = $request->clave_elector;
+
+            //DATOS DOMICILIO
+            $simpatizante->colonia = $request->colonia;
+            $simpatizante->calle = $request->calle;
+            $simpatizante->ext_num = $request->num_exterior;
+            $simpatizante->int_num = $request->num_interior;
+            $simpatizante->cp = $request->CP;
+
+            $simpatizante->localidad = $seccion->local_district->numero;
+            $simpatizante->municipio = $seccion->town->numero;
+            $simpatizante->section_id = $seccion->id;
+            $simpatizante->campaign_id = $campana->id;
+            $simpatizante->user_id = auth()->user()->id;
+
+            //OTROS DATOS
+            $simpatizante->facebook = $request->facebook;
+            $simpatizante->twitter = $request->twitter;
+
+            if ($request->foto_anverso) {
+                $file = $request->file('foto_anverso');
+
+                // Get File Content
+                $fileContent = $file->get();
+
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
+
+                $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
+
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                $nfotoa = $newFileName;
+                $simpatizante->credencial_a = $newFileName;
+            }
+            if ($request->foto_inverso) {
+                $file = $request->file('foto_inverso');
+
+                // Get File Content
+                $fileContent = $file->get();
+
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
+
+                $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
+
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                $nfotor = $newFileName;
+                $simpatizante->credencial_r = $newFileName;
+            }
+            if ($request->foto_de_elector) {
+                $file = $request->file('foto_de_elector');
+
+                // Get File Content
+                $fileContent = $file->get();
+
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
+
+                $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
+
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                $nfotoe = $newFileName;
+                $simpatizante->foto_elector = $newFileName;
+            }
+            if ($request->foto_de_firma) {
+                $file = $request->file('foto_de_firma');
+
+                // Get File Content
+                $fileContent = $file->get();
+
+                // Encrypt the Content
+                $encryptedContent = encrypt($fileContent);
+
+                $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
+                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                $newFileName = $fileName . '_' . time();
+
+                // Store the encrypted Content
+                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                $nfotod = $newFileName;
+                $simpatizante->documento = $newFileName; 
+            }
+            $simpatizante->save();
+
+            Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
+
+            session()->flash('status', 'Simpatizante creado con éxito!');
+
+            DB::commit();
+            return response()->json(200);
+        } catch (QueryException $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        } catch (Exception $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        } catch (Throwable $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+        catch (Error $ex) {
+            $out = new \Symfony\Component\Console\Output\ConsoleOutput();
+            $out->writeln($ex);
+
+            //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
+            if($nfotoa){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+            }
+            if($nfotor){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+            }
+            if($nfotoe){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+            }
+            if($nfotod){
+                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+            }
+
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
     }
 }

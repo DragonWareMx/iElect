@@ -235,7 +235,7 @@ Simpatizantes
             @endif
             <div class="omrs-input-group uk-margin">
                 <label class="omrs-input-underlined input-outlined">
-                    <input required name="foto_anverso" type="file" />
+                    <input name="foto_anverso" type="file" />
                     <span class="omrs-input-label"></span>
                 </label>
                 <p>¿Desea eliminar o sustituir la imagen con la seleccionada?</p>
@@ -247,7 +247,7 @@ Simpatizantes
             @endif
             <div class="omrs-input-group uk-margin">
                 <label class="omrs-input-underlined input-outlined">
-                    <input required name="foto_inverso" type="file" />
+                    <input name="foto_inverso" type="file" />
                     <span class="omrs-input-label"></span>
                 </label>
                 <p>¿Desea eliminar o sustituir la imagen con la seleccionada?</p>
@@ -313,7 +313,7 @@ Simpatizantes
 </div>
 
 
-    @if (Auth::user()->roles[0]->name == 'Brigadista')
+    @if (Auth::user()->roles[0]->name == 'Administrador')
     {{-- SCRIPT AGREGAR --}}
     <script>
         //ajax del form de nuevo
