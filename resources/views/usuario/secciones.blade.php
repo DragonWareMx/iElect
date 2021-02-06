@@ -5,6 +5,7 @@ Secciones
 @endsection
 
 @section('imports')
+<link rel="stylesheet" href="{{asset('css/usuario/seccion.css')}}" />
 @extends('subviews.chartjs')
 @endsection
 
@@ -248,6 +249,14 @@ backgroundColor: "rgba(0,122,255,1)",
 },
 options: {
 maintainAspectRatio: false,
+scales: {
+yAxes: [{
+ticks: {
+min: 0,
+stepSize: 1
+}
+}]
+}
 },
 });
 

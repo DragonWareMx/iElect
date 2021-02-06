@@ -89,7 +89,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="#">
+                    <a href="{{route('historico')}}">
                         <span class="uk-margin-small-right" uk-icon="history"></span>Histórico
                     </a>
                 </li>
