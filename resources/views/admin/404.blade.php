@@ -20,9 +20,9 @@ Error 404
         </div>
     </div>
 </div>
-<div class="uk-flex uk-flex-center uk-margin-top">
+{{-- <div class="uk-flex uk-flex-center uk-margin-top">
     <p class="uk-text-small">Desarrollado por DragonWare</p>
     <img class="uk-margin-small-left" src="{{asset('img/icons/dragonGris.png')}}" style="max-height: 18px; max-width: 26px; width: 100%;" />
-</div>
+</div> --}}
 
 @endsection

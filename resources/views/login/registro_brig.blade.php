@@ -113,8 +113,8 @@
                                     </button>
                                 </div>
                                 <div>
-                                    <small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
-                                        style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.</small>
+                                    <a href="https://dragonware.com.mx/" target="_blank"><small class="uk-align-center uk-align-right@m uk-text-center uk-text-muted"
+                                        style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.<img src="{{asset('/img/icons/dragonGris.png')}}" style="width:20px; height:15px; margin-left:5px; margin-bottom:3px"></small></a>
                                 </div>
                             </form>
                         </div>
