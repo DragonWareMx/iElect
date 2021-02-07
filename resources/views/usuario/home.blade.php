@@ -10,6 +10,7 @@ Inicio
 
 @php
 if(!is_null($electores) && !is_null($campana)){
+$count = 0;
 $simpatizantes = 0;
 $porcentaje = 0;
 $countS = array_count_values($electores->pluck('sexo')->toArray());
@@ -63,21 +64,31 @@ $porcM = 0;
                         <tbody>
                             @foreach ($campana->section as $seccion)
                             @php
-                            $simpatizantes = $electores->where('section_id', $seccion->id)->count();
-                            $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1)
-                            @endphp
-                            <tr>
-                                <td>{{$seccion->num_seccion}}</td>
-                                <td>{{$seccion->town->federal_entitie->nombre}}</td>
-                                <td>
-                                    <progress class="uk-progress" value="{{$porcentaje}}" max="100"
-                                        style="margin: 0"></progress>
-                                    <div class="uk-align-right">{{$porcentaje}}%</div>
-                                </td>
-                                <td>{{$simpatizantes}}</td>
-                                <td>{{$seccion->pivot->meta}}</td>
-                            </tr>
-                            @endforeach
+                            if ($count < 3) { $simpatizantes=$electores->where('section_id', $seccion->id)->count();
+
+                                if ($seccion->pivot->meta > 0) {
+                                $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1);
+                                }else{
+                                $porcentaje = 0;
+                                }
+                                $count++;
+                                }else {
+                                break;
+                                }
+
+                                @endphp
+                                <tr>
+                                    <td>{{$seccion->num_seccion}}</td>
+                                    <td>{{$seccion->town->federal_entitie->nombre}}</td>
+                                    <td>
+                                        <progress class="uk-progress" value="{{$porcentaje}}" max="100"
+                                            style="margin: 0"></progress>
+                                        <div class="uk-align-right">{{$porcentaje}}%</div>
+                                    </td>
+                                    <td>{{$simpatizantes}}</td>
+                                    <td>{{$seccion->pivot->meta}}</td>
+                                </tr>
+                                @endforeach
                         </tbody>
                     </table>
                     <p class="uk-text-right">
@@ -158,10 +169,20 @@ $porcM = 0;
                 <div>{{$campana->candidato}}</div>
                 <br />
                 <div class="uk-text-bold">Municipio, estado</div>
-                <div>@foreach ($campana->section as $section){{$section->town->nombre}},
-                    {{$section->town->federal_entitie->nombre}}
-                    <br />
-                    @endforeach</div>
+                <div>
+                    @php
+                    $towns = [];
+                    foreach ($campana->section as $section) {
+                    if (!in_array($section->town->id, $towns)) {
+                    echo ($section->town->nombre.', ');
+                    echo ($section->town->federal_entitie->nombre);
+                    echo "<br>";
+                    array_push($towns, $section->town->id);
+                    }
+                    }
+
+                    @endphp
+                </div>
                 <br />
                 <div class="uk-text-bold">Código de campaña</div>
                 <div>{{$campana->codigo}}</div>

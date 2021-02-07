@@ -80,11 +80,26 @@ class SeccionesController extends Controller
                         );
                         $seccion = strtr($record->num_seccion, $normalizeChars);
                         $seccion = strtolower($seccion);
+                        $municipio = strtr($record->town->nombre, $normalizeChars);
+                        $municipio = strtolower($municipio);
+                        $distlocal = strtr($record->local_district->cabecera, $normalizeChars);
+                        $distlocal = strtolower($distlocal);
+                        $distfed = strtr($record->federal_district->cabecera, $normalizeChars);
+                        $distfed = strtolower($distfed);
                         $busqueda = strtr($request->busc, $normalizeChars);
                         $busqueda = strtolower($busqueda);
                         $out = new \Symfony\Component\Console\Output\ConsoleOutput();
                         $out->writeln($busqueda);
                         if (str_contains($seccion, $busqueda)) {
+                            return $record;
+                        }
+                        if (str_contains($municipio, $busqueda)) {
+                            return $record;
+                        }
+                        if (str_contains($distlocal, $busqueda)) {
+                            return $record;
+                        }
+                        if (str_contains($distfed, $busqueda)) {
                             return $record;
                         }
                     });
