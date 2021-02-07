@@ -7,7 +7,7 @@
     <title>Log In</title>
     <link rel="stylesheet" href="{{asset('css/usuario/cuenta.css')}}" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <link rel="icon" href="{{ asset('img/icons/iE_circle.png') }}">
     @include('subviews.imports')
 
 </head>

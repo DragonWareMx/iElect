@@ -7,7 +7,7 @@
     <title>Registro brigadista</title>
     <link rel="stylesheet" href="{{asset('css/usuario/cuenta.css')}}" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <link rel="icon" href="{{ asset('img/icons/iE_circle.png') }}">
     @include('subviews.imports')
 </head>
 
@@ -29,12 +29,16 @@
             <h3 class="uk-text-center">
                 Solicitud de registro enviada correctamente
             </h3>
-            <p class="uk-text-justify">
+            {{-- <p class="uk-text-justify">
                 Su solicitud fue enviada exitosamente, y será recibida por el
                 coordinador de la campaña, usted será notificado mediante el correo
                 electrónico proporcionado para que pueda ingresar al sistema como
                 brigadista. ¡Gracias!
-            </p>
+            </p> --}}
+            <p class="uk-text-justify">
+                Su solicitud fue enviada exitosamente, y será recibida por el
+                coordinador de la campaña. ¡Gracias!
+            </p> 
         </div>
     </div>
 
