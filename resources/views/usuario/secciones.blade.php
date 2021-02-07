@@ -152,7 +152,11 @@ $g65 = $rangos['65_mas'];
                             @foreach ($datos as $seccion)
                             @php
                             $simpatizantes = $electores->where('section_id', $seccion->id)->count();
-                            $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1)
+                            if ($seccion->pivot->meta > 0) {
+                            $porcentaje = round(($simpatizantes*100)/$seccion->pivot->meta, 1);
+                            }else{
+                            $porcentaje = 0;
+                            }
                             @endphp
 
                             <tr onclick="abrirSeccion(this)" data-route="{{ route('seccion', ['id'=>$seccion->id]) }}">
