@@ -22,7 +22,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
 class SimpatizanteController extends Controller
 {
     //
-    protected $perPage = 10;
+    protected $perPage = 100;
 
     public function index($uuid)
     {
@@ -65,7 +65,7 @@ class SimpatizanteController extends Controller
                                         ->where('campaign_id','=',$campana->id)
                                         ->where('aprobado',1)
                                         ->orderBy('created_at', 'DESC')
-                                        ->paginate(10);
+                                        ->paginate(100);
 
                 //Cuenta el total de simpatizantes registrados
                 $total = Elector::select('users.name', 'electors.*')
@@ -161,7 +161,7 @@ class SimpatizanteController extends Controller
                         }
                     });
 
-                    //this code simulates: ->paginate(10)
+                    //this code simulates: ->paginate(100)
                     $path = route('simpatizantes').'?busc='.$request->busc;
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
@@ -179,7 +179,7 @@ class SimpatizanteController extends Controller
                 }
                 else{
                     //si no existe la busqueda solo se paginan
-                    $simpatizantes = $simpatizantes->paginate(10)->appends(request()->except('page'));
+                    $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
@@ -197,7 +197,7 @@ class SimpatizanteController extends Controller
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('aprobado',1)
                                         ->orderBy('created_at', 'DESC')
-                                        ->paginate(10);
+                                        ->paginate(100);
 
                 //Cuenta el total de simpatizantes registrados
                 $total = Elector::select('users.name', 'electors.*')
@@ -288,7 +288,7 @@ class SimpatizanteController extends Controller
                         }
                     });
 
-                    //this code simulates: ->paginate(10)
+                    //this code simulates: ->paginate(100)
                     $path = route('simpatizantes').'?busc='.$request->busc;
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
@@ -306,7 +306,7 @@ class SimpatizanteController extends Controller
                 }
                 else{
                     //si no existe la busqueda solo se paginan
-                    $simpatizantes = $simpatizantes->paginate(10)->appends(request()->except('page'));
+                    $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
@@ -332,7 +332,7 @@ class SimpatizanteController extends Controller
                                         ->where('campaign_id','=',$campana->id)
                                         ->where('aprobado',0)
                                         ->orderBy('created_at', 'DESC')
-                                        ->paginate(10);
+                                        ->paginate(100);
 
                 $totalNA = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
@@ -415,7 +415,7 @@ class SimpatizanteController extends Controller
                         }
                     });
 
-                    //this code simulates: ->paginate(5)
+                    //this code simulates: ->paginate(100)
                     $path = route('simpatizantes').'?busc='.$request->busc;
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
@@ -432,7 +432,7 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
-                    $simpatizantes = $simpatizantes->paginate(10)->appends(request()->except('page'));
+                    $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
@@ -449,7 +449,7 @@ class SimpatizanteController extends Controller
                                         ->join('users', 'users.id', '=', 'electors.user_id')
                                         ->where('aprobado',0)
                                         ->orderBy('created_at', 'DESC')
-                                        ->paginate(10);
+                                        ->paginate(100);
 
                 $totalNA = Elector::select('users.name', 'electors.*')
                                 ->join('users', 'users.id', '=', 'electors.user_id')
@@ -528,7 +528,7 @@ class SimpatizanteController extends Controller
                         }
                     });
 
-                    //this code simulates: ->paginate(5)
+                    //this code simulates: ->paginate(100)
                     $path = route('simpatizantes').'?busc='.$request->busc;
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
@@ -545,7 +545,7 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
-                    $simpatizantes = $simpatizantes->paginate(10)->appends(request()->except('page'));
+                    $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
@@ -905,7 +905,7 @@ class SimpatizanteController extends Controller
         return view('usuario.simpatizante_editar', ['simpatizante' => $simpatizante, 'secciones'=>$secciones,'ocupaciones'=>$ocupaciones, 'campanas'=>$campanas]);
     }
 
-    public function editarSimpatizante(Request $request)
+    public function editarSimpatizante(Request $request, $id)
     {
         \Gate::authorize('haveaccess', 'admin.perm');
 
@@ -952,13 +952,18 @@ class SimpatizanteController extends Controller
 
         DB::beginTransaction();
         try {
-            //SE CREA EL ELECTOR
-            $simpatizante = new Elector();
+            //SE ENCUENTRA EL ELECTOR
+            $simpatizante = Elector::find($id);
 
-            //se obtiene la campana
-            $campana = session()->get('campana');
+            //SI NO SE ENCONTRÓ NO EXISTE EN LA BD
+            if(!$simpatizante){
+                DB::rollBack();
+                return response()->json(['errors' => ['catch' => [0 => 'El simpatizante con el id: '.$id.' no existe en la base de datos.']]], 500);
+            }
+
             //se obtiene la seccion
             $seccion = Section::find($request->seccion);
+
             //SI NO EXISTE LA SECCION SE MANDA ERROR
             if(is_null($seccion)){
                 DB::rollBack();
@@ -966,15 +971,15 @@ class SimpatizanteController extends Controller
             }
 
             //VERIFICA QUE LA SECCION FORME PARTE DE LA CAMPAÑA
-            $existe = $seccion->campaign->contains($campana->id);
+            $existe = $seccion->campaign->contains($simpatizante->campaign->id);
             
             if(!$existe){
                 DB::rollBack();
-                return response()->json(['errors' => ['catch' => [0 => 'La sección: '.$request->seccion.' no está relacionada con la campaña.']]], 500);
+                return response()->json(['errors' => ['catch' => [0 => 'La sección: '.$request->seccion.' no está relacionada con la campaña del simpatizante.']]], 500);
             }
 
             //VERIFICA QUE NO EXISTA UN ELECTOR CON LA MISMA CLAVE EN LA MISMA CAMPAÑA
-            $simpVal = Elector::where('campaign_id',$campana->id)->get()->filter(function($record) use($request) {
+            $simpVal = Elector::where('campaign_id',$simpatizante->campaign->id)->where('id','!=',$id)->get()->filter(function($record) use($request) {
                 if($record->clave_elector == $request->clave_elector){
                     return $record;
                 }
@@ -984,10 +989,6 @@ class SimpatizanteController extends Controller
                 DB::rollBack();
                 return response()->json(['errors' => ['catch' => [0 => 'El simpatizante con la clave de elector: '.$request->clave_elector.' ya ha sido registrado en esta campaña.']]], 500);
             }
-
-            //UUID
-            $simpatizante->uuid = Uuid::generate()->string;
-
             //DATOS PERSONALES
             $simpatizante->nombre = $request->nombre;
             $simpatizante->apellido_p = $request->apellido_paterno;
@@ -1012,94 +1013,138 @@ class SimpatizanteController extends Controller
             $simpatizante->localidad = $seccion->local_district->numero;
             $simpatizante->municipio = $seccion->town->numero;
             $simpatizante->section_id = $seccion->id;
-            $simpatizante->campaign_id = $campana->id;
             $simpatizante->user_id = auth()->user()->id;
 
             //OTROS DATOS
             $simpatizante->facebook = $request->facebook;
             $simpatizante->twitter = $request->twitter;
-
-            if ($request->foto_anverso) {
-                $file = $request->file('foto_anverso');
-
-                // Get File Content
-                $fileContent = $file->get();
-
-                // Encrypt the Content
-                $encryptedContent = encrypt($fileContent);
-
-                $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
-                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                $newFileName = $fileName . '_' . time();
-
-                // Store the encrypted Content
-                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
-
-                $nfotoa = $newFileName;
-                $simpatizante->credencial_a = $newFileName;
+            
+            if($request->aprobado){
+                $simpatizante->aprobado = true;
             }
-            if ($request->foto_inverso) {
-                $file = $request->file('foto_inverso');
-
-                // Get File Content
-                $fileContent = $file->get();
-
-                // Encrypt the Content
-                $encryptedContent = encrypt($fileContent);
-
-                $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
-                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                $newFileName = $fileName . '_' . time();
-
-                // Store the encrypted Content
-                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
-
-                $nfotor = $newFileName;
-                $simpatizante->credencial_r = $newFileName;
+            else{
+                $simpatizante->aprobado = false;
             }
-            if ($request->foto_de_elector) {
-                $file = $request->file('foto_de_elector');
 
-                // Get File Content
-                $fileContent = $file->get();
 
-                // Encrypt the Content
-                $encryptedContent = encrypt($fileContent);
+            //si se seleccionó la opción de eliminar y/o reemplazar
+            if($request->el_foto_anverso){
+                if($simpatizante->getRawOriginal('credencial_a')){
+                    //se elimina el archivo del servidor
+                    \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('credencial_a') . '.dat');
+                    //se elimina el nombre del archivo en la bd
+                    $simpatizante->credencial_a = '';
+                }
+                //si se envió una foto se guarda
+                if ($request->foto_anverso) {
+                    $file = $request->file('foto_anverso');
 
-                $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
-                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                $newFileName = $fileName . '_' . time();
+                    // Get File Content
+                    $fileContent = $file->get();
 
-                // Store the encrypted Content
-                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
 
-                $nfotoe = $newFileName;
-                $simpatizante->foto_elector = $newFileName;
+                    $fileNameWithTheExtension = request('foto_anverso')->getClientOriginalName();
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                    $nfotoa = $newFileName;
+                    $simpatizante->credencial_a = $newFileName;
+                }
             }
-            if ($request->foto_de_firma) {
-                $file = $request->file('foto_de_firma');
+            if($request->el_foto_inverso){
+                if($simpatizante->getRawOriginal('credencial_r')){
+                    //se elimina el archivo del servidor
+                    \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('credencial_r') . '.dat');
+                    //se elimina el nombre del archivo en la bd
+                    $simpatizante->credencial_r = '';
+                }
+                //si se envió una foto se guarda
+                if ($request->foto_inverso) {
+                    $file = $request->file('foto_inverso');
 
-                // Get File Content
-                $fileContent = $file->get();
+                    // Get File Content
+                    $fileContent = $file->get();
 
-                // Encrypt the Content
-                $encryptedContent = encrypt($fileContent);
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
 
-                $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
-                $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
-                $newFileName = $fileName . '_' . time();
+                    $fileNameWithTheExtension = request('foto_inverso')->getClientOriginalName();
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                    $newFileName = $fileName . '_' . time();
 
-                // Store the encrypted Content
-                \Storage::put('/public/files/' . $campana->id . '/' . $newFileName . '.dat', $encryptedContent);
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
 
-                $nfotod = $newFileName;
-                $simpatizante->documento = $newFileName; 
+                    $nfotor = $newFileName;
+                    $simpatizante->credencial_r = $newFileName;
+                }
+            }
+            if($request->el_foto_elector){
+                if($simpatizante->getRawOriginal('foto_elector')){
+                    //se elimina el archivo del servidor
+                    \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('foto_elector') . '.dat');
+                    //se elimina el nombre del archivo en la bd
+                    $simpatizante->foto_elector = '';
+                }
+                //si se envió una foto se guarda
+                if ($request->foto_de_elector) {
+                    $file = $request->file('foto_de_elector');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
+                    $fileNameWithTheExtension = request('foto_de_elector')->getClientOriginalName();
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                    $nfotoe = $newFileName;
+                    $simpatizante->foto_elector = $newFileName;
+                }
+            }
+            if($request->el_foto_firma){
+                if($simpatizante->getRawOriginal('documento')){
+                    //se elimina el archivo del servidor
+                    \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('documento') . '.dat');
+                    //se elimina el nombre del archivo en la bd
+                    $simpatizante->documento = '';
+                }
+                //si se envió una foto se guarda
+                if ($request->foto_de_firma) {
+                    $file = $request->file('foto_de_firma');
+
+                    // Get File Content
+                    $fileContent = $file->get();
+
+                    // Encrypt the Content
+                    $encryptedContent = encrypt($fileContent);
+
+                    $fileNameWithTheExtension = request('foto_de_firma')->getClientOriginalName();
+                    $fileName = pathinfo($fileNameWithTheExtension, PATHINFO_FILENAME);
+                    $newFileName = $fileName . '_' . time();
+
+                    // Store the encrypted Content
+                    \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
+
+                    $nfotod = $newFileName;
+                    $simpatizante->documento = $newFileName; 
+                }
             }
             $simpatizante->save();
 
             Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
 
-            session()->flash('status', 'Simpatizante creado con éxito!');
+            session()->flash('status', 'Simpatizante actualizado con éxito!');
 
             DB::commit();
             return response()->json(200);
@@ -1109,16 +1154,16 @@ class SimpatizanteController extends Controller
 
             //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
             if($nfotoa){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoa . '.dat');
             }
             if($nfotor){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotor . '.dat');
             }
             if($nfotoe){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoe . '.dat');
             }
             if($nfotod){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotod . '.dat');
             }
 
             DB::rollBack();
@@ -1129,16 +1174,16 @@ class SimpatizanteController extends Controller
 
             //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
             if($nfotoa){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoa . '.dat');
             }
             if($nfotor){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotor . '.dat');
             }
             if($nfotoe){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoe . '.dat');
             }
             if($nfotod){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotod . '.dat');
             }
 
             DB::rollBack();
@@ -1149,16 +1194,16 @@ class SimpatizanteController extends Controller
 
             //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
             if($nfotoa){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoa . '.dat');
             }
             if($nfotor){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotor . '.dat');
             }
             if($nfotoe){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoe . '.dat');
             }
             if($nfotod){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotod . '.dat');
             }
 
             DB::rollBack();
@@ -1170,16 +1215,16 @@ class SimpatizanteController extends Controller
 
             //ELIMINA LAS FOTOS SUBIDAS AL SERVIDOR
             if($nfotoa){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoa . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoa . '.dat');
             }
             if($nfotor){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotor . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotor . '.dat');
             }
             if($nfotoe){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotoe . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotoe . '.dat');
             }
             if($nfotod){
-                \Storage::delete('/public/files/' . $campana->id . '/' . $nfotod . '.dat');
+                \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $nfotod . '.dat');
             }
 
             DB::rollBack();
