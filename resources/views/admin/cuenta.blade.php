@@ -41,7 +41,7 @@ Cuenta
                     <!-- Avatar circulo -->
                     <div class="avatar-wrapper">
                         @if(Auth::user()->avatar !=NULL)
-                                <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" width="200" height="200"
+                                <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('storage/uploads/'.Auth::user()->avatar)}}" width="200" height="200"
                                     alt="Foto" />
                         @else
                             <img class="profile-pic uk-border-circle" id="avatar-edit" src="{{asset('img/test/default.png')}}" width="200" height="200"

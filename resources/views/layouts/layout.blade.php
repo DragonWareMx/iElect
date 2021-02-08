@@ -22,8 +22,8 @@
             <a class="uk-link-toggle" href="{{route('ajustes')}}">
                 <div class="uk-grid-small uk-flex-middle" uk-grid>
                     <div class="uk-width-auto uk-margin-large-left">
-                        @if(Auth::user()->avatar !=NULL)
-                            <img class="uk-border-circle" width="40" height="40" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" />
+                        @if(Auth::user()->avatar !=NULL) 
+                            <img class="uk-border-circle" width="40" height="40" src="{{asset('storage/uploads/'.Auth::user()->avatar)}}" />
                         @else
                             <img class="uk-border-circle" width="40" height="40" src="{{asset('img/test/default.png')}}" />
                         @endif
@@ -129,7 +129,7 @@
                         <div class="uk-grid-small uk-flex-middle" uk-grid>
                             <div class="uk-width-auto">
                                 @if(Auth::user()->avatar !=NULL)
-                                    <img class="uk-border-circle" width="40" height="40" src="{{asset('storage/avatar/'.Auth::user()->avatar)}}" />
+                                    <img class="uk-border-circle" width="40" height="40" src="{{asset('storage/uploads/'.Auth::user()->avatar)}}" />
                                 @else
                                     <img class="uk-border-circle" width="40" height="40" src="{{asset('img/test/default.png')}}" />
                                 @endif

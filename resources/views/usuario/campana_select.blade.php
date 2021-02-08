@@ -13,7 +13,7 @@ Seleccionar campaña
     <!-- Card de CUENTA -->
     <div class="uk-card uk-card-default uk-card-body uk-margin-top  uk-width-1-2@m">
         <div class="uk-card-title uk-margin-medium-bottom">
-            <h3 class="uk-text-bold">Selecciona una campaña:</h3>
+            <h3 class="uk-text-bold">Selecciona una campaña:</h3> 
         </div>
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
             <form class="uk-width-expand uk-text-left uk-padding-large uk-padding-remove-top uk-padding-remove-bottom"

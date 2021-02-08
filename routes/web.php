@@ -112,13 +112,11 @@ Route::patch('/seccion/{id}', 'SeccionesController@updCampana')->name('actualiza
 
 /****** BRIGADISTAS ******/
 //Brigadistas
-Route::get('/brigadistas', function () {
-    return view('usuario.brigadistas');
-})->name('brigadistas');
+Route::get('/brigadistas', 'brigadistasInfoController@index')->name('brigadistas')->middleware(CheckCamp::class); 
 
-Route::get('/brigadistas/solicitudes', function () {
-    return view('usuario.brigadistas_solicitudes');
-})->name('brigadistas_sol');
+Route::get('/brigadistas/solicitudes', 'brigadistasInfoController@solicitudes')->name('brigadistas_sol');
+
+Route::post('/brigadistas/solicitudes/accion', 'brigadistasInfoController@accion')->name('brigadistas_accion');
 
 /****** SIMPATIZANTES ******/
 //Simpatizantes
