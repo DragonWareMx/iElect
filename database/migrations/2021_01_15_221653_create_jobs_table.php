@@ -17,7 +17,7 @@ class CreateJobsTable extends Migration
             $table->id();
             $table->timestamps();
 
-            $table->text('nombre')->unique();
+            $table->string('nombre')->unique();
         });
     }
 
