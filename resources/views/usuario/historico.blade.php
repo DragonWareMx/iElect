@@ -18,6 +18,7 @@ Histórico
 @endphp
 @section('body')
 <body onload="firstLoad({{$secciones[0]->id}},{{$anio}})">
+    
 <div class="uk-margin uk-margin-left uk-margin-right" >
     <!-- CARD HISTORICO -->
     <div class="uk-card uk-card-default uk-padding-small">
@@ -90,6 +91,7 @@ Histórico
                     <div class="">
                         <div class="uk-flex uk-flex-middle">
                             <div id="daddyChart" class="uk-margin-large-right">
+                                
                                 <canvas id="ocupChart" width="auto" height="400"></canvas>
                                 <small id="before_me" class="uk-text-center" style="width: max-content;">Promedio obtenido por partido</small>
                             </div>
@@ -170,7 +172,6 @@ Histórico
         if (httpRequest == false) return false; // no se puedo crear el objeto
         
         httpRequest.open('GET', '/historico_seccion/' + ide +'/'+ year, true);
-        
         
         httpRequest.onreadystatechange = function() {
             porcentajes = document.getElementById('porcentajes');

@@ -101,4 +101,6 @@ class mapaSeccionalController extends Controller
         $secciones = Section::where('Town_id',$id)->get();
         return response(['secciones'=>$secciones]);
     }
+
+   
 }

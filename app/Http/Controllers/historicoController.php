@@ -79,4 +79,6 @@ class historicoController extends Controller
         return response(['seccion'=>$seccion, 'partidos'=>$partidos, 'num'=>$num, 'colores'=>$colores, 'promedios'=>$promedios, 
         'ganadores'=>$ganadores, 'puestos'=>$puestos, 'voteWin'=>$voteWin]);
     }
+
+    
 }

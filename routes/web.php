@@ -82,7 +82,7 @@ Route::post('/registro/brigadista', 'OrderController@brigadista')->name('registr
 Route::get('/inicio', 'HomeController@index')->middleware(CheckCamp::class)->name('home');
 
 //Ruta Mapa Seccional
-Route::get('/mapa_seccional', 'mapaSeccionalController@index')->name('mapa_seccional');
+Route::get('/mapa_seccional', 'mapaSeccionalController@index')->middleware(CheckCamp::class)->name('mapa_seccional');
 //Ruta Obten sección seleccionada o secciones según el caso
 Route::get('/seccion_mapa/{id}/{election}', 'mapaSeccionalController@seccion')->name('seccion_mapa');
 Route::get('/dF_mapa/{id}', 'mapaSeccionalController@secDF')->name('dF_mapa');
@@ -136,7 +136,7 @@ Route::patch('/simpatizantes/editar', 'simpatizanteController@editarSimpatizante
 
 /****** HISTORICO ******/
 //Historico
-Route::get('/historico', 'historicoController@index')->name('historico');
+Route::get('/historico', 'historicoController@index')->middleware(CheckCamp::class)->name('historico');
 Route::get('/historico_seccion/{id}/{election}','historicoController@seccion')->name('historicoSc');
 
 /********************/
