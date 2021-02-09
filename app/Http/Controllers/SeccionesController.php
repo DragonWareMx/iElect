@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Middleware\CheckCamp;
 use Illuminate\Http\Request;
 use App\Models\Section;
 use App\Models\Elector;
@@ -18,6 +19,12 @@ use Illuminate\Support\Facades\Auth;
 class SeccionesController extends Controller
 {
     protected $perPage = 10;
+
+    public function __construct()
+    {
+        $this->middleware('auth');
+        $this->middleware(CheckCamp::class);
+    }
 
     function verSecciones(Request $request)
     {
