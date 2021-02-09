@@ -1,7 +1,7 @@
 @extends('layouts.layout')
 
 @section('title')
-Seccion
+Sección
 @endsection
 
 @section('imports')
@@ -232,7 +232,7 @@ $g65 = 0;
             <div class="uk-padding-small" uk-grid style="display: flex; align-items: center">
                 <div>
                     <h3 class="uk-card-title uk-text-bold">
-                        <a class="uk-margin-right" href="{{route('secciones')}}" uk-icon="arrow-left"></a>Seccion
+                        <a class="uk-margin-right" href="{{route('secciones')}}" uk-icon="arrow-left"></a>Sección
                         {{$datosSec->num_seccion}}
                     </h3>
                 </div>
