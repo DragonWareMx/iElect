@@ -149,7 +149,7 @@ $porcM = 0;
                 <div class="uk-grid uk-child-width-1">
                     @foreach ($campana->politic_partie as $pp)
                     <div class="uk-flex uk-flex-middle uk-margin-bottom">
-                        <img class="uk-border-circle" src="{{$pp->logo}}" width="80" height="80"
+                        <img class="uk-border-circle" src="{{asset('img/logoPartidos/'.$pp->logo)}}" width="80" height="80"
                             alt="{{$pp->siglas}}" />
                         <div class="uk-margin-left">
                             {{$pp->siglas}}
