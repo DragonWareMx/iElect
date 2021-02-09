@@ -201,252 +201,251 @@ Simpatizantes
                         </div>
                         --}}
 
-                    @if (!is_null($secciones) && count($secciones) > 0)
-                    <h6 class="uk-text-bold">Secciones</h6>
-                    <div class="select">
-                        <select class="select-text" required name="seccion">
-                            @foreach ($secciones as $seccion)
-                            <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option>
-                            @endforeach
-                        </select>
-                        <span class="select-highlight"></span>
-                        <span class="select-bar"></span>
-                        <label class="select-label">Sección</label>
-                    </div>
-                    @else
-                    <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
-                    @endif
+                        @if (!is_null($secciones) && count($secciones) > 0)
+                        <h6 class="uk-text-bold">Secciones</h6>
+                        <div class="select">
+                            <select class="select-text" required name="seccion">
+                                @foreach ($secciones as $seccion)
+                                <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option>
+                                @endforeach
+                            </select>
+                            <span class="select-highlight"></span>
+                            <span class="select-bar"></span>
+                            <label class="select-label">Sección</label>
+                        </div>
+                        @else
+                        <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
+                        @endif
 
-                    <h6 class="uk-text-bold">Datos personales</h6>
+                        <h6 class="uk-text-bold">Datos personales</h6>
 
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required name="nombre" type="text" maxlength="100" />
-                            <span class="omrs-input-label">Nombre completo</span>
-                        </label>
-                    </div>
-                    <!--Grid Edad, Sexo, Ocupación, Teléfono-->
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required name="apellido_paterno" type="text" maxlength="100" />
-                                    <span class="omrs-input-label">Apellido paterno</span>
-                                </label>
-                            </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="nombre" type="text" maxlength="100" />
+                                <span class="omrs-input-label">Nombre completo</span>
+                            </label>
                         </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input name="apellido_materno" type="text" maxlength="100" />
-                                    <span class="omrs-input-label">Apellido materno (opcional)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input name="correo_electronico" type="email" maxlength="320" />
-                            <span class="omrs-input-label">Correo electrónico</span>
-                        </label>
-                    </div>
-                    <div uk-grid class="uk-margin">
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input required name="fecha_de_nacimiento" type="date" min="1900-01-01" />
-                                    <span class="omrs-input-label">Fecha de nacimiento</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="select">
-                                <select class="select-text" required name="sexo">
-                                    <option value="" disabled selected></option>
-                                    <option value="h">Hombre</option>
-                                    <option value="m">Mujer</option>
-                                </select>
-                                <span class="select-highlight"></span>
-                                <span class="select-bar"></span>
-                                <label class="select-label">Sexo</label>
-                            </div>
-                        </div>
-                    </div>
-                    <div uk-grid class="uk-margin">
-                        <div class="uk-width-1-2@m">
-                            <div class="select">
-                                <select class="select-text" required name="trabajo">
-                                    @foreach ($ocupaciones as $ocupacion)
-                                    <option value="{{ $ocupacion->nombre }}">{{ $ocupacion->nombre }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="select-highlight"></span>
-                                <span class="select-bar"></span>
-                                <label class="select-label">Ocupación</label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                {{-- pattern="[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}" title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número sin espacios." --}}
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input name="telefono" type="text" maxlength="15"
-                                        pattern="[0-9]{3}[ -]{0,3}[0-9]{3}[ -]{0,3}[0-9]{4}"
-                                        title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número de 10 dígitos sin espacios." />
-                                    <span class="omrs-input-label">Teléfono</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="select">
-                        <select class="select-text" name="estado_civil">
-                            <option value="" disabled selected></option>
-                            <option value="soltero">Soltero/a</option>
-                            <option value="casado">Casado/a</option>
-                            <option value="unionl">Unión libre o unión de hecho</option>
-                            <option value="separado">Separado/a</option>
-                            <option value="divorciado">Divorciado/a</option>
-                            <option value="viudo">Viudo/a</option>
-                        </select>
-                        <span class="select-highlight"></span>
-                        <span class="select-bar"></span>
-                        <label class="select-label">Estado Civil (opcional)</label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required name="clave_elector" type="text" maxlength="20" minlength="16" />
-                            <span class="omrs-input-label">Clave de elector</span>
-                        </label>
-                    </div>
-
-                    <h6 class="uk-text-bold">Datos del domicilio</h6>
-
-
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required name="colonia" type="text" maxlength="100" />
-                            <span class="omrs-input-label">Colonia</span>
-                        </label>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input name="calle" type="text" maxlength="100" />
-                            <span class="omrs-input-label">Calle (opcional)</span>
-                        </label>
-                    </div>
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input name="num_exterior" type="text" maxlength="10" />
-                                    <span class="omrs-input-label">Número exterior (opcional)</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input name="num_interior" type="text" maxlength="10" />
-                                    <span class="omrs-input-label">Número interior (opcional)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required name="CP" type="text" maxlength="5" minlength="5" />
-                            <span class="omrs-input-label">Código postal</span>
-                        </label>
-                    </div>
-                    <div uk-grid>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input name="facebook" type="text" maxlength="50" />
-                                    <span class="omrs-input-label">Facebook (opcional)</span>
-                                </label>
-                            </div>
-                        </div>
-                        <div class="uk-width-1-2@m">
-                            <div class="omrs-input-group uk-margin">
-                                <label class="omrs-input-underlined input-outlined">
-                                    <input name="twitter" type="text" maxlength="50" />
-                                    <span class="omrs-input-label">Twitter (opcional)</span>
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Lado derecho -->
-                <div class="uk-width-1-2@m">
-                    <h6 class="uk-text-bold">Fotos</h6>
-                    {{--
-                            <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                                <span class="uk-text-middle">Foto de credencial anverso</span>
-                                <span uk-icon="icon: cloud-upload"></span>
-                                <div uk-form-custom>
-                                    <input type="file" required name="foto_anverso"/>
-                                    <span class="uk-link">Selecciona una</span>
+                        <!--Grid Edad, Sexo, Ocupación, Teléfono-->
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="apellido_paterno" type="text" maxlength="100" />
+                                        <span class="omrs-input-label">Apellido paterno</span>
+                                    </label>
                                 </div>
                             </div>
-
-                            <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
-
-                            <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
-                                <span class="uk-text-middle">Foto de credencial inverso</span>
-                                <span uk-icon="icon: cloud-upload"></span>
-                                <div uk-form-custom>
-                                    <input type="file" required name="foto_inverso"/>
-                                    <span class="uk-link">Selecciona una</span>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input name="apellido_materno" type="text" maxlength="100" />
+                                        <span class="omrs-input-label">Apellido materno (opcional)</span>
+                                    </label>
                                 </div>
                             </div>
-                            --}}
-                    <p>Foto de credencial anverso</p>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required name="foto_anverso" type="file" />
-                            <span class="omrs-input-label"></span>
-                        </label>
-                    </div>
-                    <p>Foto de credencial inverso</p>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input required name="foto_inverso" type="file" />
-                            <span class="omrs-input-label"></span>
-                        </label>
-                    </div>
-                    <p>Foto de elector (opcional)</p>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input name="foto_de_elector" type="file" />
-                            <span class="omrs-input-label"></span>
-                        </label>
-                    </div>
-                    <p>Foto de firma de elector (opcional)</p>
-                    <div class="omrs-input-group uk-margin">
-                        <label class="omrs-input-underlined input-outlined">
-                            <input name="foto_de_firma" type="file" />
-                            <span class="omrs-input-label"></span>
-                        </label>
-                    </div>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input name="correo_electronico" type="email" maxlength="320" />
+                                <span class="omrs-input-label">Correo electrónico</span>
+                            </label>
+                        </div>
+                        <div uk-grid class="uk-margin">
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="fecha_de_nacimiento" type="date" min="1900-01-01" />
+                                        <span class="omrs-input-label">Fecha de nacimiento</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <div class="select">
+                                    <select class="select-text" required name="sexo">
+                                        <option value="" disabled selected></option>
+                                        <option value="h">Hombre</option>
+                                        <option value="m">Mujer</option>
+                                    </select>
+                                    <span class="select-highlight"></span>
+                                    <span class="select-bar"></span>
+                                    <label class="select-label">Sexo</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div uk-grid class="uk-margin">
+                            <div class="uk-width-1-2@m">
+                                <div class="select">
+                                    <select class="select-text" required name="trabajo">
+                                        @foreach ($ocupaciones as $ocupacion)
+                                        <option value="{{ $ocupacion->nombre }}">{{ $ocupacion->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                    <span class="select-highlight"></span>
+                                    <span class="select-bar"></span>
+                                    <label class="select-label">Ocupación</label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    {{-- pattern="[0-9]{3}[ -][0-9]{3}[ -][0-9]{4}" title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número sin espacios." --}}
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input name="telefono" type="text" maxlength="15"
+                                            pattern="[0-9]{3}[ -]{0,3}[0-9]{3}[ -]{0,3}[0-9]{4}"
+                                            title="El número de teléfono debe tener 3 dígitos, un espacio o un guión, los siguientes 3 dígitos, espacio o guión, y los últimos 3 dígitos; o puede escribir el número de 10 dígitos sin espacios." />
+                                        <span class="omrs-input-label">Teléfono</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="select">
+                            <select class="select-text" name="estado_civil">
+                                <option value="" disabled selected></option>
+                                <option value="soltero">Soltero/a</option>
+                                <option value="casado">Casado/a</option>
+                                <option value="unionl">Unión libre o unión de hecho</option>
+                                <option value="separado">Separado/a</option>
+                                <option value="divorciado">Divorciado/a</option>
+                                <option value="viudo">Viudo/a</option>
+                            </select>
+                            <span class="select-highlight"></span>
+                            <span class="select-bar"></span>
+                            <label class="select-label">Estado Civil (opcional)</label>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="clave_elector" type="text" maxlength="20" minlength="16" />
+                                <span class="omrs-input-label">Clave de elector</span>
+                            </label>
+                        </div>
 
+                        <h6 class="uk-text-bold">Datos del domicilio</h6>
+
+
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="colonia" type="text" maxlength="100" />
+                                <span class="omrs-input-label">Colonia</span>
+                            </label>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input name="calle" type="text" maxlength="100" />
+                                <span class="omrs-input-label">Calle (opcional)</span>
+                            </label>
+                        </div>
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input name="num_exterior" type="text" maxlength="10" />
+                                        <span class="omrs-input-label">Número exterior (opcional)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input name="num_interior" type="text" maxlength="10" />
+                                        <span class="omrs-input-label">Número interior (opcional)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="CP" type="text" maxlength="5" minlength="5" />
+                                <span class="omrs-input-label">Código postal</span>
+                            </label>
+                        </div>
+                        <div uk-grid>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input name="facebook" type="text" maxlength="50" />
+                                        <span class="omrs-input-label">Facebook (opcional)</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="uk-width-1-2@m">
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input name="twitter" type="text" maxlength="50" />
+                                        <span class="omrs-input-label">Twitter (opcional)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Lado derecho -->
+                    <div class="uk-width-1-2@m">
+                        <h6 class="uk-text-bold">Fotos</h6>
+                        {{--
+                                <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
+                                    <span class="uk-text-middle">Foto de credencial anverso</span>
+                                    <span uk-icon="icon: cloud-upload"></span>
+                                    <div uk-form-custom>
+                                        <input type="file" required name="foto_anverso"/>
+                                        <span class="uk-link">Selecciona una</span>
+                                    </div>
+                                </div>
+
+                                <progress id="js-progressbar" class="uk-progress" value="0" max="100" hidden></progress>
+
+                                <div class="js-upload uk-placeholder uk-text-center" style="height: 150px">
+                                    <span class="uk-text-middle">Foto de credencial inverso</span>
+                                    <span uk-icon="icon: cloud-upload"></span>
+                                    <div uk-form-custom>
+                                        <input type="file" required name="foto_inverso"/>
+                                        <span class="uk-link">Selecciona una</span>
+                                    </div>
+                                </div>
+                                --}}
+                        <p>Foto de credencial anverso</p>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="foto_anverso" type="file" />
+                                <span class="omrs-input-label"></span>
+                            </label>
+                        </div>
+                        <p>Foto de credencial inverso</p>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required name="foto_inverso" type="file" />
+                                <span class="omrs-input-label"></span>
+                            </label>
+                        </div>
+                        <p>Foto de elector (opcional)</p>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input name="foto_de_elector" type="file" />
+                                <span class="omrs-input-label"></span>
+                            </label>
+                        </div>
+                        <p>Foto de firma de elector (opcional)</p>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input name="foto_de_firma" type="file" />
+                                <span class="omrs-input-label"></span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
             </div>
+            <p class="uk-text-muted">
+                El ciudadano involucrado será notificado sobre la carga de su
+                información personal al sistema iElect brindandole transparencia
+                total y la posibilidad de solicitud de eliminación de la misma.
+            </p>
+            <p class="uk-text-right">
+                <button class="uk-button uk-button-default uk-modal-close" type="button">
+                    Cancelar
+                </button>
+                <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
+                    Enviar
+                </button>
+            </p>
+        </form>
     </div>
-    <p class="uk-text-muted">
-        El ciudadano involucrado será notificado sobre la carga de su
-        información personal al sistema iElect brindandole transparencia
-        total y la posibilidad de solicitud de eliminación de la misma.
-    </p>
-    <p class="uk-text-right">
-        <button class="uk-button uk-button-default uk-modal-close" type="button">
-            Cancelar
-        </button>
-        <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
-            Enviar
-        </button>
-    </p>
-    </form>
-</div>
 </div>
 @endif
 
@@ -460,6 +459,9 @@ Simpatizantes
                 <h3 class="uk-text-bold">Simpatizantes</h3>
                 <p class="uk-margin-left" style="margin-top: 0">Total: {{ $total }} simpatizantes</p>
                 <p class="uk-margin-left" style="margin-top: 0">Total: {{ $totalNA }} simpatizantes no aprobados</p>
+                @if(isset($totalb))
+                <p class="uk-margin-left" style="margin-top: 0">Total búsqueda: {{ $totalb }} simpatizantes</p>
+                @endif
             </div>
 
             <div>
@@ -494,6 +496,7 @@ Simpatizantes
                     <span uk-icon="icon: plus" class="uk-margin-left"></span>
                 </button>
                 @endif
+
                 @if (Auth::user()->roles[0]->name == 'Agente' || Auth::user()->roles[0]->name == 'Administrador')
                 <div class="uk-visible@m">
                     <div class="omrs-input-group">
@@ -515,34 +518,52 @@ Simpatizantes
                 <h5 class="uk-text-bold uk-padding-small" style="margin: 0">Información por sección</h5>
                 <!-- Tabla -->
                 <div class="uk-overflow-auto uk-padding-small">
-                    <table class="uk-table uk-table-small uk-table-divider">
-                        <thead class="uk-background-muted">
-                            <tr>
-                                <th>#</th>
-                                <th>Nombre</th>
-                                <th>Sexo</th>
-                                <th>Edad</th>
-                                <th>Ocupación</th>
-                                <th>Sección electoral</th>
-                                <th>Clave de elecetor</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-simps">
-                            @foreach ($simpatizantes as $simpatizante)
-                            <tr data-id="{{$simpatizante->id}}">
-                                <td>#{{ $simpatizante->id }}</td>
-                                <td>{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
-                                </td>
-                                <td>{{ $simpatizante->sexo }}</td>
-                                <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años') }}
-                                </td>
-                                <td>{{ $simpatizante->job->nombre }}</td>
-                                <td>{{ $simpatizante->section->num_seccion }}</td>
-                                <td>{{ $simpatizante->clave_elector }}</td>
-                            </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
+                    <form id="form-aprobar" class="uk-modal-body" action="{{ route('aprobar-simpatizante') }}" method="post">
+                        @csrf
+                        <table class="uk-table uk-table-small uk-table-divider">
+                            <thead class="uk-background-muted">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Nombre</th>
+                                    <th>Sexo</th>
+                                    <th>Edad</th>
+                                    <th>Ocupación</th>
+                                    <th>Sección electoral</th>
+                                    <th>Clave de elecetor</th>
+                                    <th>Selección</th>
+                                </tr>
+                            </thead>
+                            <tbody id="tabla-simps">
+                                @foreach ($simpatizantes as $simpatizante)
+                                <tr data-id="{{$simpatizante->id}}">
+                                    <td>#{{ $simpatizante->id }}</td>
+                                    <td>{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
+                                    </td>
+                                    <td>{{ $simpatizante->sexo }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años') }}
+                                    </td>
+                                    <td>{{ $simpatizante->job->nombre }}</td>
+                                    <td>{{ $simpatizante->section->num_seccion }}</td>
+                                    <td>{{ $simpatizante->clave_elector }}</td>
+                                    <td><input type="checkbox" name="seleccion[]" value="{{ $simpatizante->id }}"></td>
+                                </tr>
+                                @endforeach
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td><input type="checkbox" onClick="toggle(this)"> Seleccionar todos</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
+                            Mandar mensaje a simpatizantes seleccionados
+                        </button>
+                    </form>
                     {!! $simpatizantes->links() !!}
                 </div>
                 @else
@@ -697,11 +718,21 @@ Simpatizantes
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         }
 
+        function toggle(source) {
+            checkboxes = document.getElementsByName('seleccion[]');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
         $(document).ready(function () {
             var simps={!! json_encode($simpatizantes); !!};
             var simps=simps['data'];
 
-            $('#tabla-simps tr').click(function(){
+            $('#tabla-simps tr').click(function(e){
+                if(e.target.cellIndex === 7 || e.target.tagName == 'INPUT'){
+                    return;
+                }
                 var id = $(this).data('id');
                 for(var key in simps){
                     var obj=simps[key];

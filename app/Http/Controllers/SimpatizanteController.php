@@ -178,6 +178,7 @@ class SimpatizanteController extends Controller
                     });
 
                     //this code simulates: ->paginate(100)
+                    $totalbusc = $simpatizantes->count();
                     $path = route('simpatizantes').'?busc='.$request->busc;
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
@@ -194,20 +195,20 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
+                    $totalbusc = null;
                     //si no existe la busqueda solo se paginan
                     $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
                 //se manda la vista
-                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA, 'busqueda'=>$busc]);
+                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA, 'busqueda'=>$busc, 'totalb' => $totalbusc]);
             }
         }
         elseif(Auth::user()->roles[0]->name == 'Administrador'){
             \Gate::authorize('haveaccess', 'admin.perm');
             //si no hay request se muestran todos los simpatizantes
             if(!$request->page && !$request->busc){
-
                 //Obtiene todos los simpatizantes aprobados
                 $simpatizantes = Elector::select('users.name', 'electors.*')
                                         ->join('users', 'users.id', '=', 'electors.user_id')
@@ -322,6 +323,7 @@ class SimpatizanteController extends Controller
 
                     //this code simulates: ->paginate(100)
                     $path = route('simpatizantes').'?busc='.$request->busc;
+                    $totalbusc = $simpatizantes->count();
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
                         $this->perPage)-$this->perPage,
@@ -337,13 +339,14 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
+                    $totalbusc = null;
                     //si no existe la busqueda solo se paginan
                     $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
                 //se manda la vista
-                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA, 'busqueda'=>$busc]);
+                return view('usuario.simpatizantes', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA, 'busqueda'=>$busc, 'totalb' => $totalbusc]);
             }
         }
         else{
@@ -465,6 +468,7 @@ class SimpatizanteController extends Controller
 
                     //this code simulates: ->paginate(100)
                     $path = route('simpatizantes').'?busc='.$request->busc;
+                    $totalbusc = $simpatizantes->count();
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
                         $this->perPage)-$this->perPage,
@@ -480,13 +484,14 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
+                    $totalbusc = null;
                     $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
 
                 //se manda la vista
-                return view('usuario.simpatizantes_no_aprobados', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA,'busqueda'=>$busc]);
+                return view('usuario.simpatizantes_no_aprobados', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA,'busqueda'=>$busc, 'totalb' => $totalbusc]);
             }
         }
         elseif(Auth::user()->roles[0]->name == 'Administrador'){
@@ -594,6 +599,7 @@ class SimpatizanteController extends Controller
 
                     //this code simulates: ->paginate(100)
                     $path = route('simpatizantes').'?busc='.$request->busc;
+                    $totalbusc = $simpatizantes->count();
                     $simpatizantes = new LengthAwarePaginator(
                         $simpatizantes->slice((LengthAwarePaginator::resolveCurrentPage() *
                         $this->perPage)-$this->perPage,
@@ -609,13 +615,14 @@ class SimpatizanteController extends Controller
                     ->orWhere('telefono','like','%'.Crypt::encryptString($request->busc).'%');*/
                 }
                 else{
+                    $totalbusc = null;
                     $simpatizantes = $simpatizantes->paginate(100)->appends(request()->except('page'));
                 }
 
                 $busc = $request->busc;
 
                 //se manda la vista
-                return view('usuario.simpatizantes_no_aprobados', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA,'busqueda'=>$busc]);
+                return view('usuario.simpatizantes_no_aprobados', ['simpatizantes' => $simpatizantes, 'total' => $total,'totalNA' => $totalNA,'busqueda'=>$busc, 'totalb' => $totalbusc]);
             }
         }
         else{
