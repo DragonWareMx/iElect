@@ -529,7 +529,7 @@ Simpatizantes
                                     <th>Edad</th>
                                     <th>Ocupación</th>
                                     <th>Sección electoral</th>
-                                    <th>Clave de elecetor</th>
+                                    <th>Clave de elector</th>
                                     <th>Selección</th>
                                 </tr>
                             </thead>
