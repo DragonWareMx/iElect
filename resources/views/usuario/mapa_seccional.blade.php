@@ -460,6 +460,15 @@ else{
     document.getElementById('adelante').style.display = 'none';
     document.getElementById('atras').style.display ='block';
     document.getElementById('label_elec').innerHTML = 'Elecciones 2018';
+
+    document.getElementById("barHistoric").remove();
+    var canvas = document.createElement("canvas");
+    canvas.id = "barHistoric"; 
+    canvas.style.height='200';
+    canvas.style.width='auto';
+    canvas.style.maxHeight='200px';
+    before_me =document.getElementById("before_me2");
+    document.getElementById('div_barHistoric').insertBefore(canvas, before_me );//creo y elimino divs grafica de votos
     year+=1;
     callSection(nombre);
 }
