@@ -392,7 +392,7 @@ $g65 = 0;
                     <div class="uk-text-bold">Ganador elecciones 2018</div>
                     <div class="uk-text-middle">
                         @if (!is_null($ganador))
-                        <img class="uk-border-circle" src="{{$ganador->politic_partie->logo}}" width="50" height="50"
+                        <img class="uk-border-circle" src="{{asset('img/logoPartidos/'.$ganador->politic_partie->logo)}}" width="50" height="50"
                             alt="Border circle" />
                         <span class="uk-text-middle">{{$ganador->politic_partie->name}}
                             {{$ganador->politic_partie->siglas}}</span>

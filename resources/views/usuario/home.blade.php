@@ -188,7 +188,7 @@ $porcM = 0;
                 <div>{{$campana->codigo}}</div>
                 <div class="uk-text-muted">
                     Este código deberá ser proporcionado a los brigadistas para que
-                    puedan registrarse en iElecet
+                    puedan registrarse en iElect
                 </div>
             </div>
         </div>

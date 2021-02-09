@@ -33,7 +33,11 @@
                             {{Auth::user()->name}}
                         </h3>
                         <p class="uk-text-meta uk-margin-remove-top">
-                            Nombre del partido NDP
+                            @if (session()->get('campana')!=null)
+                                {{session()->get('campana')->name}}
+                            @else
+                                Selecciona una campaña
+                            @endif
                         </p>
                     </div>
                 </div>
