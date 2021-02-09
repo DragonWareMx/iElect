@@ -159,6 +159,22 @@ class SimpatizanteController extends Controller
                         if(str_contains($telefono, $busqueda)) {
                             return $record;
                         }
+                        if(str_contains($record->section->num_seccion, $busqueda)) {
+                            return $record;
+                        }
+                        if(str_contains($record->job->nombre, $busqueda)) {
+                            return $record;
+                        }
+                        if($busqueda == 'hombres'){
+                            if($record->sexo == 'h'){
+                                return $record;
+                            }
+                        }
+                        elseif($busqueda == 'mujeres'){
+                            if($record->sexo == 'm'){
+                                return $record;
+                            }
+                        }
                     });
 
                     //this code simulates: ->paginate(100)
@@ -285,6 +301,22 @@ class SimpatizanteController extends Controller
                         }
                         if(str_contains($telefono, $busqueda)) {
                             return $record;
+                        }
+                        if(str_contains($record->section->num_seccion, $busqueda)) {
+                            return $record;
+                        }
+                        if(str_contains($record->job->nombre, $busqueda)) {
+                            return $record;
+                        }
+                        if($busqueda == 'hombres'){
+                            if($record->sexo == 'h'){
+                                return $record;
+                            }
+                        }
+                        elseif($busqueda == 'mujeres'){
+                            if($record->sexo == 'm'){
+                                return $record;
+                            }
                         }
                     });
 
@@ -413,6 +445,22 @@ class SimpatizanteController extends Controller
                         if(str_contains($telefono, $busqueda)) {
                             return $record;
                         }
+                        if(str_contains($record->section->num_seccion, $busqueda)) {
+                            return $record;
+                        }
+                        if(str_contains($record->job->nombre, $busqueda)) {
+                            return $record;
+                        }
+                        if($busqueda == 'hombres'){
+                            if($record->sexo == 'h'){
+                                return $record;
+                            }
+                        }
+                        elseif($busqueda == 'mujeres'){
+                            if($record->sexo == 'm'){
+                                return $record;
+                            }
+                        }
                     });
 
                     //this code simulates: ->paginate(100)
@@ -525,6 +573,22 @@ class SimpatizanteController extends Controller
                         }
                         if(str_contains($telefono, $busqueda)) {
                             return $record;
+                        }
+                        if(str_contains($record->section->num_seccion, $busqueda)) {
+                            return $record;
+                        }
+                        if(str_contains($record->job->nombre, $busqueda)) {
+                            return $record;
+                        }
+                        if($busqueda == 'hombres'){
+                            if($record->sexo == 'h'){
+                                return $record;
+                            }
+                        }
+                        elseif($busqueda == 'mujeres'){
+                            if($record->sexo == 'm'){
+                                return $record;
+                            }
                         }
                     });
 
