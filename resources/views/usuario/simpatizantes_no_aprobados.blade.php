@@ -181,6 +181,9 @@ Simpatizantes
             <div class="uk-padding-small uk-flex uk-flex-middle">
                 <h3 class="uk-text-bold">Simpatizantes</h3>
                 <p class="uk-margin-left" style="margin-top: 0">Total: {{ $totalNA }} simpatizantes no aprobados</p>
+                @if(isset($totalb))
+                <p class="uk-margin-left" style="margin-top: 0">Total búsqueda: {{ $totalb }} simpatizantes</p>
+                @endif
             </div>
 
             <div>
@@ -239,13 +242,14 @@ Simpatizantes
                                         <th>Ocupación</th>
                                         <th>Sección</th>
                                         <th>Clave de elecetor</th>
+                                        <th>Selección</th>
                                     </tr>
                                 </thead>
                                 <tbody id="tabla-simps">
                                     @foreach ($simpatizantes as $simpatizante)
                                     <tr data-id="{{$simpatizante->id}}">
                                         <td>#{{ $simpatizante->id }}</td>
-                                        <td class="uk-text-truncate" uk-tooltip="{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}">{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
+                                        <td>{{ $simpatizante->nombre." ".$simpatizante->apellido_p." ".$simpatizante->apellido_m }}
                                         </td>
                                         <td>{{ $simpatizante->sexo }}</td>
                                         <td>{{ \Carbon\Carbon::parse($simpatizante->fecha_nac)->diff(\Carbon\Carbon::now())->format('%y años') }}
@@ -253,22 +257,19 @@ Simpatizantes
                                         <td>{{ $simpatizante->job->nombre }}</td>
                                         <td>{{ $simpatizante->section->num_seccion }}</td>
                                         <td>{{ $simpatizante->clave_elector }}</td>
-                                    </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                            <table class="uk-table uk-table-small uk-table-divider uk-width-1-5 uk-margin-remove">
-                                <thead class="uk-background-muted">
-                                    <tr>
-                                        <th>Selección</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($simpatizantes as $simpatizante)
-                                    <tr>
                                         <td><input type="checkbox" name="seleccion[]" value="{{ $simpatizante->id }}"></td>
                                     </tr>
                                     @endforeach
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td><input type="checkbox" onClick="toggle(this)"> Seleccionar todos</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
@@ -342,11 +343,21 @@ Simpatizantes
             return Math.abs(ageDate.getUTCFullYear() - 1970);
         }
 
+        function toggle(source) {
+            checkboxes = document.getElementsByName('seleccion[]');
+            for(var i=0, n=checkboxes.length;i<n;i++) {
+                checkboxes[i].checked = source.checked;
+            }
+        }
+
         $(document).ready(function () {
             var simps={!! json_encode($simpatizantes); !!};
             var simps=simps['data'];
 
-            $('#tabla-simps tr').click(function(){
+            $('#tabla-simps tr').click(function(e){
+                if(e.target.cellIndex === 7 || e.target.tagName == 'INPUT'){
+                    return;
+                }
                 var id = $(this).data('id');
                 for(var key in simps){
                     var obj=simps[key];

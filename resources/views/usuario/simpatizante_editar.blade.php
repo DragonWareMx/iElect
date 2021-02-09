@@ -21,7 +21,7 @@ Simpatizantes
     <h2 class="uk-modal-title">Editar simpatizante</h2>
 </div>
 {{-- enctype="multipart/form-data" --}}
-<form id="form-editar-simp" class="uk-modal-body" action="{{ route('update-simpatizante') }}" method="POST"
+<form id="form-editar-simp" class="uk-modal-body" action="{{ route('update-simpatizante',['id'=>$simpatizante->id]) }}" method="POST"
     enctype="multipart/form-data">
     @csrf
     @method('PATCH')
@@ -358,7 +358,7 @@ Simpatizantes
                     setTimeout(
                     function()
                     {
-                        window.location.reload(true);
+                        window.location.href = '/simpatizantes';
                     }, 2000);
                 },
                 error: function(data){

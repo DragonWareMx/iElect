@@ -128,7 +128,7 @@ Route::patch('/simpatizantes/aprobar', 'SimpatizanteController@aprobarSimpatizan
 //editar simpatizante (Vista)
 Route::get('/simpatizantes/editar/{id}', 'SimpatizanteController@editarSimpatizantes')->name('editar-simpatizante')->middleware('auth');
 //editar simpatizante
-Route::patch('/simpatizantes/editar', 'SimpatizanteController@editarSimpatizante')->name('update-simpatizante')->middleware('auth');
+Route::patch('/simpatizantes/editar/{id}', 'SimpatizanteController@editarSimpatizante')->name('update-simpatizante')->middleware('auth');
 //Simpatizantes
 // Route::get('/simpatizantes/solicitudes', function () {
 //     return view('usuario.simpatizantes_eliminar');
