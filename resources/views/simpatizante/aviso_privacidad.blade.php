@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <title>Aviso de privacidad</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
+    <link rel="icon" href="{{ asset('img/icons/iE_circle.png') }}">
     @extends('subviews.imports')
 
     <!-- CSS Avatar -->
