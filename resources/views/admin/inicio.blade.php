@@ -292,11 +292,32 @@ Inicio
                             <div class="uk-width-1-2@m">
                                 <h6 class="uk-margin-remove uk-text-bold">TIPO</h6>
                                 <div class="uk-form-controls omrs-input-group uk-margin">
-                                    <select class="uk-select" required name="type">
+                                    <select class="uk-select" required name="type" id="select_type" style="height:56px;">
+                                        <option value="admin" selected>Administrador</option>
                                         <option value="agente">Agente</option> 
-                                        <option value="admin">Administrador</option>
                                     </select>
                                 </div>
+                            </div>
+                            {{-- INPUT DE CAMPAÑAS --}}
+                            <div class="uk-width-1-2@m uk-margin-medium-top" id="div_agregar_campanas" style="display:none" >
+                                <h6 class="uk-margin-remove uk-text-bold">CAMPAÑAS (Opcional)</h6>
+                                <div id="agregar_campana" class="uk-flex uk-flex-middle uk-flex-right" style="cursor:pointer; margin-top:-15px;">
+                                    <img src="{{asset('/img/icons/add.png')}}" width="10px" style="margin-right:5px;di"/>
+                                    <div class="uk-text-primary" style="font-size: 12px;line-height: 15px;"> Agregar</div>
+                                </div>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input id="campana" list="campanas"type="text" name="campanas"/>
+                                        <datalist id="campanas">
+                                            @foreach ($campanasT as $campana)
+                                                <option value="{{$campana->name}}"></option>
+                                            @endforeach
+                                        </datalist>
+                                    </label>
+                                </div>
+                                <div id="lista_campanas" class="uk-child-width-1-3@m uk-child-width-1-4 uk-flex uk-flex-wrap">
+                                </div>
+                                <input type="hidden" id="input_campanas" name="input_campanas" value="" />
                             </div>
                         </div>
                     </div>
@@ -477,6 +498,19 @@ Inicio
 
     var arrPartidos=[];
     var arrAgentes=[];
+    var arrCampanas=[];
+
+    $('#select_type').on('change',function(){
+        if(this.value=="agente"){
+            $('#div_agregar_campanas').show('normal');
+        }
+        else{
+            $('#div_agregar_campanas').hide('normal');
+            $('#input_campanas').val("");
+            $('#lista_campanas').empty();
+            arrCampanas=[];
+        }
+    });
 
     //Script para manejar las secciones
     $('#secciones').on('change', function() {
@@ -509,6 +543,40 @@ Inicio
             $('#position').val('2');
             break;
         }
+    });
+
+    //AGREGAR CAMPAÑAS MODAL NUEVO USUARIO
+    $('#agregar_campana').click(function(){
+        var input=$('#campana');
+        var campanas = JSON.parse('<?php echo empty($campanasT) ? '{}' : json_encode($campanasT) ?>');
+        for(var key in campanas){
+            var obj=campanas[key];
+            if(obj["name"] == input.val()){
+                input.val("").change();
+                if($.inArray(obj["id"],arrCampanas)==-1){
+                    $('#lista_campanas').append('<div id="'+obj['id']+'c" class="uk-flex uk-flex-middle"><img class="delete_campana" uk-tooltip="title: Eliminar; pos: left" data-id="'+obj["id"]+'" src="/img/icons/less.png" width="10px" style="cursor:pointer"><div class="uk-margin-small-left uk-text-small uk-text-truncate">'+obj["name"]+'</div></div>');
+                    $('#'+obj["id"]+'c').hide().show('normal');
+                    arrCampanas.push(obj["id"]);
+                    $('#input_campanas').val(arrCampanas);
+                }
+                break;
+            }
+        }
+    });
+    $(document.body).on('click','.delete_campana', function(e) {
+        var id=$(this).data('id');
+        arrCampanas = jQuery.grep(arrCampanas, function(value) {
+            return value != id;
+        });
+        $('#'+id+'c').hide('normal');
+        setTimeout(
+            function()
+            {
+                var div = document.getElementById(id+'c');
+                div.remove();
+            },
+        500);
+        $('#input_campanas').val(arrCampanas);
     });
     
     //AGREGAR PARTIDOS

@@ -22,7 +22,7 @@ Usuario
                     Administrador
                 @endif
             </h3>
-            <div class="uk-position-right uk-padding" uk-toggle="target: #modal-editar-user" uk-icon="cog" style="cursor: pointer;"></div>
+            <div class="uk-position-top-right uk-padding" uk-toggle="target: #modal-editar-user" uk-icon="cog" style="cursor: pointer;"></div>
         </div>
 
         <div class="uk-child-width-expand@s uk-text-center" uk-grid>
@@ -84,6 +84,7 @@ Usuario
                             <th>Puesto</th>
                             <th>Partidos</th>
                             <th># Simpatizantes</th>
+                            <th class="uk-flex uk-flex-center">Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -110,10 +111,12 @@ Usuario
                                 @endforeach
                             </a></td>
                             <td><a href="/admin/campana/{{$campana->id}}" style="text-decoration: none;" class="uk-text-muted">{{$campana->elector->count()}}</a></td>
+                            <td class=" uk-flex uk-flex-center" uk-toggle="target: #modal-eliminar-campana" onclick="cambiarId({{$campana->id,$usuario->id}})"><img src="{{asset('/img/icons/less.png')}}" style="width:15px;height:15px; cursor: pointer;"></td>
                         </tr>
                         @endforeach
                     </tbody>
                 </table>
+                <button class="uk-button-primary uk-position-bottom-right" style="margin-right:15px;margin-bottom:15px;padding:5px;cursor:pointer;" uk-toggle="target: #modal-asignar-campana">Asignar campaña</button>
             </div>
         @endif
     </div>
@@ -230,8 +233,68 @@ Usuario
             </form>
         </div>
     </div>
+
+    <!-- Modal de eliminar usuario -->
+    <div id="modal-eliminar-campana" uk-modal>
+        <div class="uk-modal-dialog uk-modal-body">
+            <h2 class="uk-modal-title">Eliminar campaña para este usuario</h2>
+            <div id="errors-delete-campana" class="uk-alert-danger" uk-alert style="display:none;">
+            </div>
+            <p>El usuario {{$usuario->name}} ya no tendrá permisos sobre la campaña seleccionada.</p>
+            <form id="form-eliminar-campana" class="uk-text-right" action="" method="post">
+                @csrf
+                @method("PATCH")
+                <button class="uk-button uk-button-default uk-modal-close" type="button">Cancelar</button>
+                <button type="submit" class="uk-button uk-button-danger" type="button" id="btnEnviar-delete-campana">Eliminar</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Editar Usuario -->
+    <div id="modal-asignar-campana" class="uk-modal-container" uk-modal>
+        <div class="uk-modal-dialog">
+            <button class="uk-modal-close-default" type="button" uk-close></button>
+            <div class="uk-modal-header">
+                <h2 class="uk-modal-title">Selecciona la campaña que deseas asignar</h2>
+            </div>
+            <div id="errors-asignar" class="uk-alert-danger" uk-alert style="display:none;">
+            </div>
+            <form id="form-asignar-campana" class="uk-modal-body" action="{{ route('editar-usuario-campana', ['id'=>$usuario->id]) }}" method="POST">
+                @csrf
+                @method('PATCH')
+                <div uk-grid>
+                    <div class="uk-width-1">
+                        @if ($campanas->count()>0)
+                        <select id="campana" class="uk-select" required name="campana">
+                            @foreach ($campanas as $campana)
+                                <option value="" selected disabled hidden>Seleccionar campaña</option>
+                                <option value="{{$campana->id}}">{{$campana->name}}</option> 
+                            @endforeach
+                        </select>
+                        @else
+                            No quedan campañas por asignar a este usuario.
+                        @endif
+                    </div>
+                </div>
+                <p class="uk-text-right">
+                    <button class="uk-button uk-button-default uk-modal-close" type="button">
+                        Cancelar
+                    </button>
+                    <button id="btnEnviar-asignar" class="uk-button uk-button-primary" type="submit">
+                        Asignar
+                    </button>
+                </p>
+            </form>
+        </div>
+    </div>
 </div>
 <script>
+    //Script para eliminar campaña
+    function cambiarId(idCamp) {
+        var idUser={!! json_encode($usuario->id); !!};
+       $('#form-eliminar-campana').attr('action','/admin/eliminar/campana/'+idCamp+'/usuario/'+idUser);
+    }
+
     //Abre los inputs de editar contraseña
     function editarContrasena(){
         $('.hide-password').css('display','block').change();
@@ -274,7 +337,6 @@ Usuario
             readURL(this);
         });
     });
-
 
     //ajax del form de editar
     $("#form-editar-usuario").bind("submit",function(){
@@ -407,6 +469,164 @@ Usuario
                 $('#errors-delete').css('display', 'block');
                 var errors = data.responseJSON.errors;
                 var errorsContainer = $('#errors-delete');
+                errorsContainer.innerHTML = '';
+                var errorsList = '';
+                // for (var i = 0; i < errors.length; i++) {
+                // //     //if(errors[i].redirect)
+                // //         //window.location.href = window.location.origin + '/logout'
+                    
+                //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                // }
+                for(var key in errors){
+                    var obj=errors[key];
+                    console.log(obj);
+                    for(var yek in obj){
+                        var error=obj[yek];
+                        console.log(error);
+                        errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                    }
+                }
+                errorsContainer.html(errorsList);
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                    status: 'danger',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+            }
+        });
+        // Nos permite cancelar el envio del formulario
+        return false;
+    });
+
+    //ajax del form de eliminar campaña a usuario
+    $("#form-eliminar-campana").bind("submit",function(){
+        // Capturamnos el boton de envío
+        var btnEnviar = $("#btnEnviar-delete-campana");
+
+        $.ajax({
+            type: $(this).attr("method"),
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
+            beforeSend: function(data){
+                /*
+                * Esta función se ejecuta durante el envió de la petición al
+                * servidor.
+                * */
+                // btnEnviar.text("Enviando"); Para button
+                btnEnviar.val("Enviando"); // Para input de tipo button
+                btnEnviar.attr("disabled","disabled");
+            },
+            complete:function(data){
+                /*
+                * Se ejecuta al termino de la petición
+                * */
+                btnEnviar.val("Enviar formulario");
+            },
+            success: function(data){
+                /*
+                * Se ejecuta cuando termina la petición y esta ha sido
+                * correcta
+                * */
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> Campaña removida con éxito!',
+                    status: 'success',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+                $('#errors-delete-campana').css('display', 'none');
+                setTimeout(
+                function()
+                {
+                    window.location.reload('true');
+                }, 500);
+            },
+            error: function(data){
+                console.log(data);
+                // $('#success').css('display', 'none');
+                btnEnviar.removeAttr("disabled");
+                $('#errors-delete-campana').css('display', 'block');
+                var errors = data.responseJSON.errors;
+                var errorsContainer = $('#errors-delete-campana');
+                errorsContainer.innerHTML = '';
+                var errorsList = '';
+                // for (var i = 0; i < errors.length; i++) {
+                // //     //if(errors[i].redirect)
+                // //         //window.location.href = window.location.origin + '/logout'
+                    
+                //     errorsList += '<div class="uk-alert-danger" uk-alert><a class="uk-alert-close" uk-close></a><p>'+ errors[i].errors +'</p></div>';
+                // }
+                for(var key in errors){
+                    var obj=errors[key];
+                    console.log(obj);
+                    for(var yek in obj){
+                        var error=obj[yek];
+                        console.log(error);
+                        errorsList += '<div><a></a><p>'+ error +'</p></div>';
+                    }
+                }
+                errorsContainer.html(errorsList);
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: close\'></span>Problemas al tratar de enviar el formulario, inténtelo más tarde.',
+                    status: 'danger',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+            }
+        });
+        // Nos permite cancelar el envio del formulario
+        return false;
+    });
+
+    //ajax del form de eliminar campaña a usuario
+    $("#form-asignar-campana").bind("submit",function(){
+        // Capturamnos el boton de envío
+        var btnEnviar = $("#btnEnviar-asignar");
+
+        $.ajax({
+            type: $(this).attr("method"),
+            url: $(this).attr("action"),
+            data: $(this).serialize(),
+            beforeSend: function(data){
+                /*
+                * Esta función se ejecuta durante el envió de la petición al
+                * servidor.
+                * */
+                // btnEnviar.text("Enviando"); Para button
+                btnEnviar.val("Enviando"); // Para input de tipo button
+                btnEnviar.attr("disabled","disabled");
+            },
+            complete:function(data){
+                /*
+                * Se ejecuta al termino de la petición
+                * */
+                btnEnviar.val("Enviar formulario");
+            },
+            success: function(data){
+                /*
+                * Se ejecuta cuando termina la petición y esta ha sido
+                * correcta
+                * */
+                UIkit.notification({
+                    message: '<span uk-icon=\'icon: check\'></span> Campaña asignada con éxito!',
+                    status: 'success',
+                    pos: 'top-center',
+                    timeout: 2000
+                });
+                $('#errors-asignar').css('display', 'none');
+                setTimeout(
+                function()
+                {
+                    window.location.reload('true');
+                }, 500);
+            },
+            error: function(data){
+                console.log(data);
+                // $('#success').css('display', 'none');
+                btnEnviar.removeAttr("disabled");
+                $('#errors-asignar').css('display', 'block');
+                var errors = data.responseJSON.errors;
+                var errorsContainer = $('#errors-asignar');
                 errorsContainer.innerHTML = '';
                 var errorsList = '';
                 // for (var i = 0; i < errors.length; i++) {
