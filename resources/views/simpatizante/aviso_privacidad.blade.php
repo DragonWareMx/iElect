@@ -58,9 +58,8 @@
                 <small style="color: white"> Desarrollado por DragonWare. </small>
             </div>
             <div class="uk-position-small uk-position-bottom-right uk-visible@s">
-                <small class="uk-align-right@m uk-text-center" style="color: white">
-                    Desarrollado por DragonWare.
-                </small>
+                <a href="https://dragonware.com.mx/" style="color:white !important" target="_blank"><small class="uk-align-center uk-align-right@m uk-text-center"
+                    style="margin: 0px; padding-top: 50px">Desarrollado por DragonWare.<img src="{{asset('/img/icons/dragonBlanco.png')}}" style="width:20px; height:15px; margin-left:5px;"></small></a>
             </div>
         </div>
     </footer>
