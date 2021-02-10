@@ -26,37 +26,93 @@ class brigadistasInfoController extends Controller
         $this->middleware('auth'); 
     }
 
-    public function index(Request $request){
-        if($request->search){
+    public function index(Request $request){ 
+        $user = Auth::user();
+        $Agents=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('role_user.role_id',2)->get();
+        $Admins=User::join('role_user', 'users.id', '=', 'role_user.user_id')->where('role_user.role_id',1)->get();
+        $userAgente=false;
+        $userAdmin=false;
 
-            $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
+        foreach ($Agents as $Agente){
+            if($user->id == $Agente->user_id){
+                $userAgente = true;
+            }
+        }
+
+        foreach ($Admins as $admin){
+            if($user->id == $admin->user_id){
+                $userAdmin = true;
+            }
+        }
+        
+        
+        if($request->search){
+            if($userAgente == true){
+                $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
                                 ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
                                 ->where('role_user.role_id',3)
                                 ->where('campaign_user.campaign_id',session()->get('campana')->id)
                                 ->where('users.name','like','%'.$request->search.'%')
                                 ->orWhere('users.email','like','%'.$request->search.'%')
                                 ->orWhere('users.created_at','like','%'.$request->search.'%')
-                                ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha')
+                                ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha', 'campaign_user.campaign_id as id_campaign')
                                 ->paginate(10)->appends(request()->except('page'));
-            $campana = session()->get('campana');
-            return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana]);
+                $campana = session()->get('campana');
+                return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana, 'agente' => $userAgente, 'admin' => $userAdmin]);
+            }
+            else if($userAdmin == true){
+                $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
+                                ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
+                                ->where('role_user.role_id',3)
+                                // ->where('campaign_user.campaign_id',session()->get('campana')->id)
+                                ->where('users.name','like','%'.$request->search.'%')
+                                ->orWhere('users.email','like','%'.$request->search.'%')
+                                ->orWhere('users.created_at','like','%'.$request->search.'%')
+                                ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha', 'campaign_user.campaign_id as id_campaign')
+                                ->paginate(10)->appends(request()->except('page'));
+                $campana = Campaign::find(1);
+                return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana, 'agente' => $userAgente, 'admin' => $userAdmin]);
+            }
+            // Si el usuario es brigadista no puede entrar
+            else{
+                abort(404);
+            }
+            
         }
         else{
             $usuario = Auth::user();
-            $campana = session()->get('campana');
-            // Obtener todos los brigadistas de dichas campañas
-            $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
-                                ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
-                                ->where('role_user.role_id',3)
-                                ->where('campaign_user.campaign_id',session()->get('campana')->id)
-                                ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha')
-                                ->paginate(10);
-
-            return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana]);
+            if($userAgente == true){
+                
+                $campana = session()->get('campana');
+                // Obtener todos los brigadistas de dichas campañas
+                $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
+                                    ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
+                                    ->where('role_user.role_id',3)
+                                    ->where('campaign_user.campaign_id',session()->get('campana')->id)
+                                    ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha', 'campaign_user.campaign_id as id_campaign')
+                                    ->paginate(10);
+                                    return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana, 'agente' => $userAgente, 'admin' => $userAdmin]);
+            }
+            else if($userAdmin == true){
+                $brigadistas =  User::join('role_user', 'users.id', '=', 'role_user.user_id')
+                                    ->join('campaign_user', 'users.id', '=', 'campaign_user.user_id')
+                                    ->where('role_user.role_id',3)
+                                    // ->where('campaign_user.campaign_id',session()->get('campana')->id)
+                                    ->select('users.id as id', 'users.name as bName', 'users.email as bEmail', 'users.created_at as bFecha', 'campaign_user.campaign_id as id_campaign')
+                                    ->paginate(10);
+                $campana = Campaign::find(1);
+                return view('usuario.brigadistasInfo',['brigadistas' => $brigadistas, 'campana' => $campana, 'agente' => $userAgente, 'admin' => $userAdmin]);
+            }
+            // Si el usuario es brigadista no puede entrar
+            else{
+                abort(404);
+            }
+            
         }
     }
 
     public function solicitudes(Request $request){
+        \Gate::authorize('haveaccess', 'agente.perm');
         if($request->search){
             $campana = session()->get('campana');
             $soli = Order::where('campaign_id', $campana->id)
@@ -79,6 +135,7 @@ class brigadistasInfoController extends Controller
     }
 
     public function accion(Request $request){
+        \Gate::authorize('haveaccess', 'agente.perm');
         // dd($request);
         if(!$request->b){
             return redirect('brigadistas/solicitudes')->withErrors(['Selecciona al menos un brigadista.']);
