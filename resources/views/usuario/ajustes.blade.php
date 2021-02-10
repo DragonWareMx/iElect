@@ -86,10 +86,20 @@ Ajustes
                     <div>{{$campana->candidato}}</div>
                     <br />
                     <div class="uk-text-bold">Municipio, estado</div>
-                    <div>@foreach ($campana->section as $section){{$section->town->nombre}},
-                        {{$section->town->federal_entitie->nombre}}
-                        <br />
-                        @endforeach</div>
+                    <div>
+                        @php
+                        $towns = [];
+                        foreach ($campana->section as $section) {
+                        if (!in_array($section->town->id, $towns)) {
+                        echo ($section->town->nombre.', ');
+                        echo ($section->town->federal_entitie->nombre);
+                        echo "<br>";
+                        array_push($towns, $section->town->id);
+                        }
+                        }
+    
+                        @endphp
+                    </div>
                     <br />
                     <div class="uk-text-bold uk-text-primary">Código de campaña</div>
                     <div>{{$campana->codigo}}</div>

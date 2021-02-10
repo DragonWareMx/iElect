@@ -8,7 +8,7 @@ Brigadistas
 <link rel="stylesheet" href="{{asset('css/usuario/cuenta.css')}}" /> 
 @endsection
 
-@section('body')
+@section('body') 
 @php
     $totalBrigadistas=0;
     foreach($brigadistas as $b) {
@@ -47,8 +47,9 @@ Brigadistas
                     </div>
                 </form>
             </div>
-
-            <a class="uk-padding-small" href="{{route('brigadistas_sol')}}">Solicitudes</a>
+            @if($agente == true)
+                <a class="uk-padding-small" href="{{route('brigadistas_sol')}}">Solicitudes</a>
+            @endif
             <div class="uk-padding-small" uk-grid>
                 <div class="uk-width-expand@m">
                     <!-- Tabla -->
@@ -61,8 +62,11 @@ Brigadistas
                                     <th>Correo electrónico</th>
                                     <th>Simpatizantes</th>
                                     <th>Fecha de registro</th>
+                                    @if($agente == false)
+                                        <th>Id Campaña </th>
+                                    @endif
                                 </tr>
-                            </thead>
+                            </thead> 
                             <tbody>
                                 @foreach($brigadistas as $b) 
                                     <tr>
@@ -71,6 +75,9 @@ Brigadistas
                                         <td>{{$b->bEmail}}</td>
                                         <td>{{$b->elector->count()}}</td>
                                         <td>{{$b->bFecha}}</td>
+                                        @if($agente == false)
+                                            <td><a href="/admin/campana/{{$campana->id}}"> {{$b->id_campaign}} </a></td>
+                                        @endif
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -78,19 +85,21 @@ Brigadistas
                         {!! $brigadistas->links() !!}
                     </div>
                 </div>
-                <div class="uk-width-1-4@m">
-                    <div class="uk-text-center uk-padding-small"
-                        style="border: 1px solid #007aff !important; border-radius: 4px">
-                        <h3 class="uk-text-bold uk-text-primary uk-margin" style="margin: 0 !important; color:#007aff !important">
-                            Código de campaña
-                        </h3>
-                        <h4 class="uk-margin" style="margin: 0 !important; color:black !important">{{$campana->codigo}}</h4>
-                        <p style="margin: 0 !important; font-size:14px; color:#666666 !important">
-                            Este código deberá ser proporcionado a los brigadistas para que
-                            puedan registrarse en iElect
-                        </p>
+                @if($agente == true)
+                    <div class="uk-width-1-4@m">
+                        <div class="uk-text-center uk-padding-small"
+                            style="border: 1px solid #007aff !important; border-radius: 4px">
+                            <h3 class="uk-text-bold uk-text-primary uk-margin" style="margin: 0 !important; color:#007aff !important">
+                                Código de campaña
+                            </h3>
+                            <h4 class="uk-margin" style="margin: 0 !important; color:black !important">{{$campana->codigo}}</h4>
+                            <p style="margin: 0 !important; font-size:14px; color:#666666 !important">
+                                Este código deberá ser proporcionado a los brigadistas para que
+                                puedan registrarse en iElect
+                            </p>
+                        </div>
                     </div>
-                </div>
+                @endif
             </div>
         </div>
     </div>
