@@ -79,7 +79,7 @@ $porcM = 0;
                                 @endphp
                                 <tr>
                                     <td>{{$seccion->num_seccion}}</td>
-                                    <td>{{$seccion->town->federal_entitie->nombre}}</td>
+                                    <td>{{$seccion->town->nombre}}</td>
                                     <td>
                                         <progress class="uk-progress" value="{{$porcentaje}}" max="100"
                                             style="margin: 0"></progress>
