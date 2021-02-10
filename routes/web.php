@@ -165,6 +165,12 @@ Route::get('/admin/usuarios', 'adminController@verUsuarios')->name('admin-usuari
 //Admin | agregar campaña
 Route::post('/admin/agregar/campana', 'adminController@agregarCampana')->name('agregar-campana'); ///////////////////////////////////////////////
 
+//Admin | eliminar campaña a usuario
+Route::patch('/admin/eliminar/campana/{idCampana}/usuario/{idUser}', 'adminController@eliminarCampanaUsuario')->name('eliminar-campanaUsuario');
+
+//Admin | asignar campaña a usuario
+Route::patch('/admin/asignar/campana/usuario/{id}', 'adminController@asignarCampana')->name('editar-usuario-campana');
+
 //Admin | Cuenta
 Route::get('/admin/cuenta', 'CuentaController@cuentaAdmin')->name('admin-cuenta');
 

@@ -96,7 +96,8 @@ class adminController extends Controller
             'email' => 'required|max:255|unique:users,email',
             'password' => 'required|max:255|min:8|required_with:password-confirm|same:password-confirm',
             'password-confirm' => 'max:255|min:8',
-            'fileField' => 'mimes:jpeg,jpg,png,gif|image'
+            'fileField' => 'mimes:jpeg,jpg,png,gif|image',
+            'input_campanas'=>'nullable'
         ]);
         try {
             DB::transaction(function () use ($request) {
@@ -115,8 +116,13 @@ class adminController extends Controller
                 $usuario->save();
                 if ($request->type == "admin")
                     $usuario->roles()->sync(1);
-                else
+                else{
                     $usuario->roles()->sync(2);
+                    if($request->input_campanas){
+                        $campanas = explode(',', $request->input_campanas);
+                        $usuario->campaign()->sync($campanas);
+                    }
+                }
             });
             if ($request->ajax()) {
                 session()->flash('status', 'Usuario creado con éxito!');
@@ -146,8 +152,13 @@ class adminController extends Controller
     {
         Gate::authorize('haveaccess', 'admin.perm');
         $usuario = User::findOrFail($id);
+        $campanasIds=[];
+        foreach($usuario->campaign as $campana){
+            $campanasIds[]=$campana->id;
+        }
+        $campanas = Campaign::whereNotIn('id',$campanasIds)->get();
         if ($usuario->roles[0]->id == 1 || $usuario->roles[0]->id == 2)
-            return view('admin.usuario', ['usuario' => $usuario]);
+            return view('admin.usuario', ['usuario' => $usuario,'campanas'=>$campanas]);
         else
             return redirect('/admin/usuarios');
     }
@@ -389,6 +400,39 @@ class adminController extends Controller
             $seccion->meta=$request->meta;
             $seccion->prioridad=$request->prioridad;
             $seccion->save();
+            DB::commit();
+            return response()->json(200);
+        }
+        catch(\Exception $ex){
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+    }
+
+    public function eliminarCampanaUsuario($idCampana,$idUsuario){
+        Gate::authorize('haveaccess', 'admin.perm');
+        DB::beginTransaction();
+        try{
+            $usuario=User::findOrFail($idUsuario);
+            $usuario->campaign()->detach($idCampana);
+            DB::commit();
+            return response()->json(200);
+        }
+        catch(\Exception $ex){
+            DB::rollBack();
+            return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+    }
+
+    public function asignarCampana(Request $request,$id){
+        Gate::authorize('haveaccess', 'admin.perm');
+        DB::beginTransaction();
+        $data = request()->validate([
+            'campana' => 'required | numeric'
+        ]);
+        try{
+            $usuario=User::findOrFail($id);
+            $usuario->campaign()->attach($request->campana);
             DB::commit();
             return response()->json(200);
         }
