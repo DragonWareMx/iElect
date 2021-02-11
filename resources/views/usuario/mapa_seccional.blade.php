@@ -176,6 +176,7 @@ defer></script>
                 </div>
                 <hr />
                 <form action="/seccion_mapa" id="form-ajax">
+                    <h3 id="section">MAPA</h3>
                     <div class="uk-flex">
                         <p class="uk-margin-small-right uk-text-bold">Meta 2021: </p>
                         <p id="label_meta" class="uk-margin-remove"></p>
@@ -219,15 +220,13 @@ defer></script>
                     </div>
                 </form>    
             </div>
-            <div class="uk-width-expand@m info">
+            <div class="uk-width-expand@m info" style="">
                 <!--MAPA SECCIONAL-->
-                <h1 id="section">MAPA</h1>
-                <div id="mapa" style="height: 100%" style=""> 
+                <div id="mapa" style="height: 100%"> 
                 </div>
                 
                 
                 {{-- Aquí cargamos el mapa --}}
-                 
             </div>
             <div id="div_graphics" class="uk-width-expand@m info" hidden>
                 <!--GRÁFICAS-->
