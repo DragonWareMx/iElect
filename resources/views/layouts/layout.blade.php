@@ -140,21 +140,32 @@
                             </div>
                             <div class="uk-width-expand">
                                 <h3 class="uk-card-title uk-margin-remove-bottom">
-                                    José Solórzano
+                                    {{Auth::user()->name}}
                                 </h3>
                                 <p class="uk-text-meta uk-margin-remove-top">
-                                    Nombre del partido NDP
+                                    @if (session()->get('campana')!=null)
+                                    {{session()->get('campana')->name}}
+                                    @else
+                                    Selecciona una campaña
+                                    @endif
                                 </p>
                             </div>
                         </div>
                     </a>
+                    @if (Auth::user()->roles[0]->name == 'Brigadista')
+                    <li class="uk-active">
+                        <a href="{{route('home')}}">
+                            <span class="uk-margin-small-right" uk-icon="home"></span>Inicio
+                        </a>
+                    </li>
+                    @elseif(Auth::user()->roles[0]->name == 'Administrador' || Auth::user()->roles[0]->name == 'Agente')
                     <li class="uk-active">
                         <a href="{{route('home')}}">
                             <span class="uk-margin-small-right" uk-icon="home"></span>Inicio
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{route('mapa_seccional')}}">
                             <span class="uk-margin-small-right" uk-icon="album"></span>Mapa
                             Seccional
                         </a>
@@ -165,13 +176,18 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{route('simpatizantes')}}">
                             <span class="uk-margin-small-right" uk-icon="users"></span>Simpatizantes
                         </a>
                     </li>
                     <li>
-                        <a href="#">
+                        <a href="{{route('historico')}}">
                             <span class="uk-margin-small-right" uk-icon="history"></span>Histórico
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{route('brigadistas')}}">
+                            <span class="uk-margin-small-right" uk-icon="lifesaver"></span>Brigadistas
                         </a>
                     </li>
                     <li>
@@ -184,6 +200,8 @@
                             <span class=" uk-margin-small-right" uk-icon="sign-out"></span>Cerrar Sesión
                         </a>
                     </li>
+                    @else
+                    @endif
                 </ul>
             </div>
         </div>

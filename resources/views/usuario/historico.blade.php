@@ -236,7 +236,7 @@ Histórico
                         }
                     }
                     //tabla de ganadores por puesto
-                    console.log(respuesta);
+                    
                     for (i in respuesta.puestos) {
                         tabla2.innerHTML+='<tr> <td>' + respuesta.ganadores[i] + '</td> <td>' 
                         + respuesta.voteWin[i] + '</td> <td>' + respuesta.puestos[i] + '</td> </tr>';
