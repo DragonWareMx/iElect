@@ -651,24 +651,24 @@ class SimpatizanteController extends Controller
         \Gate::authorize('haveaccess', 'brig.perm');
 
         $data = request()->validate([
-            'seccion' => 'required|exists:sections,id',
-            'nombre' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'apellido_paterno' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'apellido_materno' => ['nullable', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'seccion' => 'required|exists:sections,num_seccion',
+            'nombre' => ['required', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'apellido_paterno' => ['required', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'apellido_materno' => ['nullable', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
             'correo_electronico' => 'nullable|max:320|email',
             'fecha_de_nacimiento' => 'required|date|before:today',
             'sexo' => ['required', Rule::in(['h', 'm']),],
             'trabajo' => 'required|exists:jobs,nombre',
             'telefono' => ['required_without:correo_electronico', 'regex:/^[0-9]{3}[ -]{0,1}[0-9]{3}[ -]{0,1}[0-9]{4}$/'],
             'estado_civil' => ['nullable', Rule::in(['soltero', 'casado', 'unionl', 'separado', 'divorciado', 'viudo']),],
-            'clave_elector' => ['required', 'max:20', 'min:16', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'colonia' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'calle' => ['nullable', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'num_exterior' => ['nullable', 'max:10', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'num_interior' => ['nullable', 'max:10', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'clave_elector' => ['required', 'max:20', 'min:16', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'colonia' => ['required', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'calle' => ['nullable', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'num_exterior' => ['nullable', 'max:10', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'num_interior' => ['nullable', 'max:10', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
             'CP' => ['required', 'regex:/^[0-9]{5}$/'],
-            'facebook' => ['nullable', 'max:50', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'twitter' => ['nullable', 'max:50', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'facebook' => ['nullable', 'max:50', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'twitter' => ['nullable', 'max:50', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
             'foto_anverso' => 'required|mimes:jpeg,jpg,png|image',
             'foto_inverso' => 'required|mimes:jpeg,jpg,png|image',
             'foto_de_elector' => 'nullable|mimes:jpeg,jpg,png|image',
@@ -691,7 +691,8 @@ class SimpatizanteController extends Controller
             //se obtiene la campana
             $campana = session()->get('campana');
             //se obtiene la seccion
-            $seccion = Section::find($request->seccion);
+            $seccion = Section::where('num_seccion',$request->seccion)->first();
+
             //SI NO EXISTE LA SECCION SE MANDA ERROR
             if (is_null($seccion)) {
                 DB::rollBack();
@@ -995,24 +996,24 @@ class SimpatizanteController extends Controller
         \Gate::authorize('haveaccess', 'admin.perm');
 
         $data = request()->validate([
-            'seccion' => 'required|exists:sections,id',
-            'nombre' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'apellido_paterno' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'apellido_materno' => ['nullable', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'seccion' => 'required|exists:sections,num_seccion',
+            'nombre' => ['required', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'apellido_paterno' => ['required', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'apellido_materno' => ['nullable', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
             'correo_electronico' => 'nullable|max:320|email',
             'fecha_de_nacimiento' => 'required|date|before:today',
             'sexo' => ['required', Rule::in(['h', 'm']),],
             'trabajo' => 'required|exists:jobs,nombre',
             'telefono' => ['required_without:correo_electronico', 'regex:/^[0-9]{3}[ -]{0,1}[0-9]{3}[ -]{0,1}[0-9]{4}$/'],
             'estado_civil' => ['nullable', Rule::in(['soltero', 'casado', 'unionl', 'separado', 'divorciado', 'viudo']),],
-            'clave_elector' => ['required', 'max:20', 'min:16', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'colonia' => ['required', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'calle' => ['nullable', 'max:100', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'num_exterior' => ['nullable', 'max:10', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'num_interior' => ['nullable', 'max:10', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'clave_elector' => ['required', 'max:20', 'min:16', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'colonia' => ['required', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'calle' => ['nullable', 'max:100', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'num_exterior' => ['nullable', 'max:10', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'num_interior' => ['nullable', 'max:10', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
             'CP' => ['required', 'regex:/^[0-9]{5}$/'],
-            'facebook' => ['nullable', 'max:50', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
-            'twitter' => ['nullable', 'max:50', 'regex:/^([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-])+((\s*)+([0-9a-zA-ZñÑáéíóúÁÉÍÓÚ_-]*)*)+$/'],
+            'facebook' => ['nullable', 'max:50', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
+            'twitter' => ['nullable', 'max:50', 'regex:/^[A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+(?:[_&%$*#@!-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ. ]+)*$/'],
             'foto_anverso' => 'nullable|mimes:jpeg,jpg,png|image',
             'foto_inverso' => 'nullable|mimes:jpeg,jpg,png|image',
             'foto_de_elector' => 'nullable|mimes:jpeg,jpg,png|image',
@@ -1047,7 +1048,7 @@ class SimpatizanteController extends Controller
             }
 
             //se obtiene la seccion
-            $seccion = Section::find($request->seccion);
+            $seccion = Section::where('num_seccion',$request->seccion)->first();
 
             //SI NO EXISTE LA SECCION SE MANDA ERROR
             if (is_null($seccion)) {

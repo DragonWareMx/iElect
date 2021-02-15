@@ -30,16 +30,16 @@ Simpatizantes
         <!-- Lado izquierdo -->
         <div class="uk-width-1-2@m">
             @if (!is_null($secciones) && count($secciones) > 0)
-            <h6 class="uk-text-bold">Secciones</h6>
-            <div class="select">
-                <select class="select-text" required name="seccion">
-                    @foreach ($secciones as $seccion)
-                    <option value="{{ $seccion->id }}" @if($simpatizante->section_id == $seccion->id) selected @endif>Sección {{ $seccion->num_seccion }}</option>
-                    @endforeach
-                </select>
-                <span class="select-highlight"></span>
-                <span class="select-bar"></span>
-                <label class="select-label">Sección</label>
+            <h6 class="uk-text-bold">Sección</h6>
+            <div class="omrs-input-group uk-margin">
+                <label class="omrs-input-underlined input-outlined">
+                    <input required list="secciones" name="seccion" value="{{ $simpatizante->section->num_seccion }}"/>
+                    <datalist class="select-text" required id="secciones">
+                        @foreach ($secciones as $seccion)
+                            <option value="{{ $seccion->num_seccion }}">
+                        @endforeach
+                    </datalist>
+                </label>
             </div>
             @else
             <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
@@ -102,15 +102,16 @@ Simpatizantes
             </div>
             <div uk-grid class="uk-margin">
                 <div class="uk-width-1-2@m">
-                    <div class="select">
-                        <select class="select-text" required name="trabajo">
-                            @foreach ($ocupaciones as $ocupacion)
-                            <option value="{{ $ocupacion->nombre }}" @if($simpatizante->job_id == $ocupacion->id) selected @endif>{{ $ocupacion->nombre }}</option>
-                            @endforeach
-                        </select>
-                        <span class="select-highlight"></span>
-                        <span class="select-bar"></span>
-                        <label class="select-label">Ocupación</label>
+                    <div class="omrs-input-group uk-margin">
+                        <label class="omrs-input-underlined input-outlined">
+                            <input required name="trabajo" list="trabajos" value="{{ $simpatizante->job->nombre }}"/>
+                            <span class="omrs-input-label">Ocupación</span>
+                            <datalist id="trabajos">
+                                @foreach ($ocupaciones as $ocupacion)
+                                    <option value="{{ $ocupacion->nombre }}">
+                                @endforeach
+                            </select>
+                        </label>
                     </div>
                 </div>
                 <div class="uk-width-1-2@m">
@@ -235,7 +236,7 @@ Simpatizantes
             @endif
             <div class="omrs-input-group uk-margin">
                 <label class="omrs-input-underlined input-outlined">
-                    <input name="foto_anverso" type="file" />
+                    <input name="foto_anverso" type="file" accept="image/*"/>
                     <span class="omrs-input-label"></span>
                 </label>
                 <p>¿Desea eliminar o sustituir la imagen con la seleccionada?</p>
@@ -247,7 +248,7 @@ Simpatizantes
             @endif
             <div class="omrs-input-group uk-margin">
                 <label class="omrs-input-underlined input-outlined">
-                    <input name="foto_inverso" type="file" />
+                    <input name="foto_inverso" type="file" accept="image/*"/>
                     <span class="omrs-input-label"></span>
                 </label>
                 <p>¿Desea eliminar o sustituir la imagen con la seleccionada?</p>
@@ -259,7 +260,7 @@ Simpatizantes
             @endif
             <div class="omrs-input-group uk-margin">
                 <label class="omrs-input-underlined input-outlined">
-                    <input name="foto_de_elector" type="file" />
+                    <input name="foto_de_elector" type="file" accept="image/*"/>
                     <span class="omrs-input-label"></span>
                 </label>
                 <p>¿Desea eliminar o sustituir la imagen con la seleccionada?</p>
@@ -271,7 +272,7 @@ Simpatizantes
             @endif
             <div class="omrs-input-group uk-margin">
                 <label class="omrs-input-underlined input-outlined">
-                    <input name="foto_de_firma" type="file" />
+                    <input name="foto_de_firma" type="file" accept="image/*"/>
                     <span class="omrs-input-label"></span>
                 </label>
                 <p>¿Desea eliminar o sustituir la imagen con la seleccionada?</p>
