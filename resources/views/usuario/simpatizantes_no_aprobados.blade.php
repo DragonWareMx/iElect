@@ -178,41 +178,21 @@ Simpatizantes
     <div class="uk-width-expand@m">
         <div class="uk-card uk-card-default">
             <!-- HEADER -->
-            <div class="uk-padding-small uk-flex uk-flex-middle">
+            <div class="uk-padding-small uk-flex uk-flex-wrap uk-flex-middle">
                 <h3 class="uk-text-bold">Simpatizantes</h3>
                 <p class="uk-margin-left" style="margin-top: 0">Total: {{ $totalNA }} simpatizantes no aprobados</p>
+
                 @if(isset($totalb))
                 <p class="uk-margin-left" style="margin-top: 0">Total búsqueda: {{ $totalb }} simpatizantes</p>
                 @endif
-            </div>
-
-            <div>
-                <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom"
-                    style="
-                  justify-content: center;
-                  align-items: center;
-                  display: flex;
-                  max-height: 55px !important;
-                " uk-toggle="target: #modal-agregar-simp">
-                    Agregar simpatizante
-                    <span uk-icon="icon: plus" class="uk-margin-left"></span>
-                </button>
-            </div>
-            <div class="uk-hidden@m">
-                <div class="omrs-input-group">
-                    <label class="omrs-input-underlined input-outlined input-trail-icon">
-                        <input required />
-                        <span class="input-trail-icon" uk-icon="search"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
+                
                 @if (Auth::user()->roles[0]->name == 'Agente' || Auth::user()->roles[0]->name == 'Administrador')
-                <div class="uk-visible@m">
+                <div class="uk-flex uk-flex-wrap uk-margin-auto-left@s">
                     <div class="omrs-input-group">
-                        <form id="form-buscador" action="{{ route('simpatizantes_no_aprobados') }}" method="get">
+                        <form id="form-buscador" action="{{ route('simpatizantes_no_aprobados') }}"
+                            method="get" style="padding: 0">
                             <label class="omrs-input-underlined input-outlined input-trail-icon">
-                                <input name="busc" type="text" maxlength="100" @if(isset($busqueda)) value="{{$busqueda}}"@endif/>
+                                <input name="busc" type="text" maxlength="100" @if(isset($busqueda)) value="{{$busqueda}}" @endif/>
                                 <span class="input-trail-icon" uk-icon="search"></span>
                             </label>
                         </form>

@@ -202,16 +202,16 @@ Simpatizantes
                         --}}
 
                         @if (!is_null($secciones) && count($secciones) > 0)
-                        <h6 class="uk-text-bold">Secciones</h6>
-                        <div class="select">
-                            <select class="select-text" required name="seccion">
-                                @foreach ($secciones as $seccion)
-                                <option value="{{ $seccion->id }}">Sección {{ $seccion->num_seccion }}</option>
-                                @endforeach
-                            </select>
-                            <span class="select-highlight"></span>
-                            <span class="select-bar"></span>
-                            <label class="select-label">Sección</label>
+                        <h6 class="uk-text-bold">Sección</h6>
+                        <div class="omrs-input-group uk-margin">
+                            <label class="omrs-input-underlined input-outlined">
+                                <input required list="secciones" name="seccion" />
+                                <datalist class="select-text" required id="secciones">
+                                    @foreach ($secciones as $seccion)
+                                        <option value="{{ $seccion->num_seccion }}">
+                                    @endforeach
+                                </datalist>
+                            </label>
                         </div>
                         @else
                         <h6 class="uk-margin-remove uk-text-bold">No hay secciones disponibles</h6>
@@ -274,15 +274,16 @@ Simpatizantes
                         </div>
                         <div uk-grid class="uk-margin">
                             <div class="uk-width-1-2@m">
-                                <div class="select">
-                                    <select class="select-text" required name="trabajo">
-                                        @foreach ($ocupaciones as $ocupacion)
-                                        <option value="{{ $ocupacion->nombre }}">{{ $ocupacion->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                    <span class="select-highlight"></span>
-                                    <span class="select-bar"></span>
-                                    <label class="select-label">Ocupación</label>
+                                <div class="omrs-input-group uk-margin">
+                                    <label class="omrs-input-underlined input-outlined">
+                                        <input required name="trabajo" list="trabajos"/>
+                                        <span class="omrs-input-label">Ocupación</span>
+                                        <datalist id="trabajos">
+                                            @foreach ($ocupaciones as $ocupacion)
+                                                <option value="{{ $ocupacion->nombre }}">
+                                            @endforeach
+                                        </select>
+                                    </label>
                                 </div>
                             </div>
                             <div class="uk-width-1-2@m">
@@ -403,28 +404,28 @@ Simpatizantes
                         <p>Foto de credencial anverso</p>
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined">
-                                <input required name="foto_anverso" type="file" />
+                                <input required name="foto_anverso" type="file" accept="image/*"/>
                                 <span class="omrs-input-label"></span>
                             </label>
                         </div>
                         <p>Foto de credencial inverso</p>
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined">
-                                <input required name="foto_inverso" type="file" />
+                                <input required name="foto_inverso" type="file" accept="image/*"/>
                                 <span class="omrs-input-label"></span>
                             </label>
                         </div>
                         <p>Foto de elector (opcional)</p>
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined">
-                                <input name="foto_de_elector" type="file" />
+                                <input name="foto_de_elector" type="file" accept="image/*"/>
                                 <span class="omrs-input-label"></span>
                             </label>
                         </div>
                         <p>Foto de firma de elector (opcional)</p>
                         <div class="omrs-input-group uk-margin">
                             <label class="omrs-input-underlined input-outlined">
-                                <input name="foto_de_firma" type="file" />
+                                <input name="foto_de_firma" type="file" accept="image/*"/>
                                 <span class="omrs-input-label"></span>
                             </label>
                         </div>
@@ -455,50 +456,17 @@ Simpatizantes
     <div class="uk-width-expand@m">
         <div class="uk-card uk-card-default">
             <!-- HEADER -->
-            <div class="uk-padding-small uk-flex uk-flex-middle">
+            <div class="uk-padding-small uk-flex uk-flex-wrap uk-flex-middle">
                 <h3 class="uk-text-bold">Simpatizantes</h3>
                 <p class="uk-margin-left" style="margin-top: 0">Total: {{ $total }} simpatizantes</p>
                 <p class="uk-margin-left" style="margin-top: 0">Total: {{ $totalNA }} simpatizantes no aprobados</p>
+
                 @if(isset($totalb))
                 <p class="uk-margin-left" style="margin-top: 0">Total búsqueda: {{ $totalb }} simpatizantes</p>
                 @endif
-            </div>
-
-            <div>
-                <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom"
-                    style="
-                  justify-content: center;
-                  align-items: center;
-                  display: flex;
-                  max-height: 55px !important;
-                " uk-toggle="target: #modal-agregar-simp">
-                    Agregar simpatizante
-                    <span uk-icon="icon: plus" class="uk-margin-left"></span>
-                </button>
-            </div>
-            <div class="uk-hidden@m">
-                <div class="omrs-input-group">
-                    <label class="omrs-input-underlined input-outlined input-trail-icon">
-                        <input required />
-                        <span class="input-trail-icon" uk-icon="search"></span>
-                    </label>
-                </div>
-            </div>
-            <div class="uk-position-small uk-position-top-right uk-visible@m" style="display: flex">
-                @if (Auth::user()->roles[0]->name == 'Brigadista')
-                <button class="uk-button uk-button-default uk-background-muted uk-margin-right" style="
-                justify-content: center;
-                align-items: center;
-                display: flex;
-                max-height: 55px !important;
-              " uk-toggle="target: #modal-agregar-simp">
-                    Agregar simpatizante
-                    <span uk-icon="icon: plus" class="uk-margin-left"></span>
-                </button>
-                @endif
 
                 @if (Auth::user()->roles[0]->name == 'Agente' || Auth::user()->roles[0]->name == 'Administrador')
-                <div class="uk-visible@m">
+                <div class="uk-flex uk-flex-wrap uk-margin-auto-left@s">
                     <div class="omrs-input-group">
                         <form id="form-buscador" action="{{ route('simpatizantes') }}"
                             method="get" style="padding: 0">
@@ -510,7 +478,48 @@ Simpatizantes
                     </div>
                 </div>
                 @endif
+
+                @if (Auth::user()->roles[0]->name == 'Brigadista')
+                    <button class="uk-button uk-button-default uk-background-muted uk-margin-auto-left@s" style="
+                    justify-content: center;
+                    align-items: center;
+                    display: flex;
+                    max-height: 55px !important;
+                " uk-toggle="target: #modal-agregar-simp">
+                        Agregar simpatizante
+                        <span uk-icon="icon: plus" class="uk-margin-left"></span>
+                    </button>
+                @endif
             </div>
+
+            {{--@if (Auth::user()->roles[0]->name == 'Brigadista')
+            <div class="uk-position-small" style="display: flex">
+                <button class="uk-button uk-button-default uk-background-muted uk-hidden@m uk-margin-small-bottom"
+                    style="
+                  justify-content: center;
+                  align-items: center;
+                  display: flex;
+                  max-height: 55px !important;
+                " uk-toggle="target: #modal-agregar-simp">
+                    Agregar simpatizante
+                    <span uk-icon="icon: plus" class="uk-margin-left"></span>
+                </button>
+            </div>
+            @endif
+
+            <div class="uk-flex uk-flex-wrap" style="display: flex">
+                @if (Auth::user()->roles[0]->name == 'Brigadista')
+                    <button class="uk-visible@m uk-button uk-button-default uk-background-muted uk-margin-right" style="
+                    justify-content: center;
+                    align-items: center;
+                    display: flex;
+                    max-height: 55px !important;
+                " uk-toggle="target: #modal-agregar-simp">
+                        Agregar simpatizante
+                        <span uk-icon="icon: plus" class="uk-margin-left"></span>
+                    </button>
+                @endif
+            </div>--}}
 
             @if (Auth::user()->roles[0]->name == 'Agente')
             <a class="uk-padding-small" href="{{ route('simpatizantes_no_aprobados') }}">Ver simpatizantes no aprobados</a>
