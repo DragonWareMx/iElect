@@ -57,7 +57,7 @@ class historicoController extends Controller
             $promedios[$i]=0;
             $j=0;
             
-            $voteXpartie=Vote::where([['section_id', '=', $id],['election_id', '=', 1],['politic_partie_id', '=', $idPartie]])->get();
+            $voteXpartie=Vote::where([['section_id', '=', $id],['election_id', '=', $election],['politic_partie_id', '=', $idPartie]])->get();
             foreach ($voteXpartie as $vote){
                 $promedios[$i] += $vote->num; 
                 $puestos[$j] = $vote->position->name;
@@ -67,7 +67,7 @@ class historicoController extends Controller
             $promedios[$i]/=$j;
             $k=0;
             foreach($puestos as $p){
-                $winXpos=Vote::where([['section_id','=', $id],['position_id', '=',$idPuestos[$k]],['election_id','=', 1]])->orderBy('num', 'desc')->first();
+                $winXpos=Vote::where([['section_id','=', $id],['position_id', '=',$idPuestos[$k]],['election_id','=', $election]])->orderBy('num', 'desc')->first();
                 $ganadores[$k]=$winXpos->politic_partie->siglas; //cambiar por logo después, no?
                 $voteWin[$k]=$winXpos->num;
                 $k++;
