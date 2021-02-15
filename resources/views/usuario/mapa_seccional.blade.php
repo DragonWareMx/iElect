@@ -73,7 +73,7 @@ defer></script>
                     <div class="uk-form-controls">
                         <select class="uk-select" id="form-stacked-select-edo" disabled>
                         @foreach ($estados as $estado)
-                            @if ($estado->id == 16)
+                            @if ($estado->id == 15)
                             <option value="{{$estado->id}}" selected>{{$estado->nombre}}</option>    
                             @endif
                         @endforeach
@@ -475,11 +475,11 @@ else{
 function initMap() {
 map = new google.maps.Map(document.getElementById("mapa"), {
     center:
-    { lat: 19.7036519, lng: -101.2411436 },
-    zoom: 9,
+    { lat: 19.3584568, lng: -99.363819 },
+    zoom: 12,
 });
 
-map.data.loadGeoJson('js/MICHOACAN_SECCION.geojson');
+map.data.loadGeoJson('js/Huixquilucan_Distrito_Local_17.geojson');
 
 map.data.setStyle({
     visible: false,
@@ -534,14 +534,10 @@ map.data.addListener('click', function(event) {
         click=true;
     }
     else{
-        map.data.setStyle(function(feature) {
-            var distrito = feature.getProperty(control);
-            var ver = distrito == idControl ? true : false; 
-            return {
+        map.data.setStyle({
             strokeWeight: 1,
             fillOpacity: 0.3,
-            visible: ver,
-            };
+            visible: true,
         });
         click=false;
     }
@@ -647,14 +643,10 @@ switch (caso){
     case "local": 
     control='DISTRITO_L';
     secOp="";
-    map.data.setStyle(function(feature) {
-        var distrito = feature.getProperty('DISTRITO_L');
-        var ver = distrito == ident ? true : false; 
-        return {
+    map.data.setStyle( {
         strokeWeight: 1,
         fillOpacity: 0.3,
-        visible: ver,
-        };
+        visible: true,
     });
     //llamo las secciones correspondientes al distrito de la bd
     httpRequest = false;
