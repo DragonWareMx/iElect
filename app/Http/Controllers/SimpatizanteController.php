@@ -18,6 +18,7 @@ use App\Mail\NewSimpMail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Pagination\LengthAwarePaginator;
+use App\Mail\MailSimp;
 
 class SimpatizanteController extends Controller
 {
@@ -927,7 +928,6 @@ class SimpatizanteController extends Controller
     {
         \Gate::authorize('haveaccess', 'agente.perm');
 
-        //FALTA: VALIDAR EL ROL
         $data = request()->validate([
             'seleccion.*' => 'nullable|exists:electors,id'
         ]);
@@ -977,6 +977,8 @@ class SimpatizanteController extends Controller
 
     public function editarSimpatizantes($id)
     {
+        \Gate::authorize('haveaccess', 'admin.perm');
+
         $simpatizante = Elector::findOrFail($id);
 
         $ocupaciones = Job::all();
@@ -1314,6 +1316,30 @@ class SimpatizanteController extends Controller
 
             DB::rollBack();
             return response()->json(['errors' => ['catch' => [0 => 'Ocurrió un error inesperado, intentalo más tarde.']]], 500);
+        }
+    }
+
+    public function mandarMensaje(Request $request)
+    {
+        \Gate::authorize('haveaccess', 'agente.perm');
+
+        $data = request()->validate([
+            'seleccion.*' => 'required|exists:electors,id',
+            'mensaje' => ['required', 'max:2000', 'regex:/^[_&%$*#@¿¡(A-Za-z0-9ñÑáéíóúÁÉÍÓÚ.:;!?) ]+(?:[_&%$*#@¿¡(-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ.:;!?) ]+)*$/'],
+            'asunto' => ['required', 'max:100', 'regex:/^[_&%$*#@¿¡(A-Za-z0-9ñÑáéíóúÁÉÍÓÚ.:;!?) ]+(?:[_&%$*#@¿¡(-][A-Za-z0-9ñÑáéíóúÁÉÍÓÚ.:;!?) ]+)*$/'],
+        ]);
+
+        if(isset($request->seleccion) && count($request->seleccion) > 0){
+            foreach ($request->seleccion as $id) {
+                $elector = Elector::find($id);
+                Mail::to($elector->email)->send(new MailSimp($elector->id, $request->mensaje, $request->asunto));
+                sleep(2);
+            }
+    
+            return redirect()->route('simpatizantes');
+        }
+        else{
+            return \Redirect::back()->withInput()->withErrors(['No has seleccionado ningún simpatizante.']);
         }
     }
 }

@@ -527,7 +527,7 @@ Simpatizantes
                 <h5 class="uk-text-bold uk-padding-small" style="margin: 0">Información por sección</h5>
                 <!-- Tabla -->
                 <div class="uk-overflow-auto uk-padding-small">
-                    <form id="form-aprobar" class="uk-modal-body" action="{{ route('aprobar-simpatizante') }}" method="post">
+                    <form id="form-aprobar" class="uk-modal-body" action="{{ route('mensaje-simpatizante') }}" method="post">
                         @csrf
                         <table class="uk-table uk-table-small uk-table-divider">
                             <thead class="uk-background-muted">
@@ -554,7 +554,7 @@ Simpatizantes
                                     <td>{{ $simpatizante->job->nombre }}</td>
                                     <td>{{ $simpatizante->section->num_seccion }}</td>
                                     <td>{{ $simpatizante->clave_elector }}</td>
-                                    <td><input type="checkbox" name="seleccion[]" value="{{ $simpatizante->id }}"></td>
+                                    <td><input type="checkbox" name="seleccion[]" value="{{ $simpatizante->id }}" @if(is_array(old('seleccion')) && in_array($simpatizante->id, old('seleccion'))) checked @endif></td>
                                 </tr>
                                 @endforeach
                                 <tr>
@@ -569,6 +569,25 @@ Simpatizantes
                                 </tr>
                             </tbody>
                         </table>
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
+                        <div class="uk-width-1-2@m">
+                            <div class="omrs-input-group uk-margin">
+                                <label class="omrs-input-underlined input-outlined">
+                                    <input required name="asunto" type="text" maxlength="100" value="{{ old('asunto') }}"/>
+                                    <span class="omrs-input-label">Asunto</span>
+                                </label>
+                            </div>
+                        </div>
+                        <h6 class="uk-text-bold">Mensaje</h6>
+                        <textarea class="uk-textarea uk-margin-medium-bottom" required rows="10" name="mensaje" type="text" maxlength="2000">{{ old('mensaje') }}</textarea>
                         <button class="uk-button uk-button-primary" id="btnEnviar" type="submit">
                             Mandar mensaje a simpatizantes seleccionados
                         </button>
