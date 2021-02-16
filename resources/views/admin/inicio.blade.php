@@ -878,7 +878,7 @@ Inicio
     labels: ['PAN', 'PRI', 'PRD', 'PT', 'PVEM', 'MC', 'MORENA', 'PES', 'FPM', 'RSP', 'IND', 'NA','PH'],
     datasets: [{
         data: data,
-        backgroundColor: ["#FFD43A", "#04BE65", "#2D9B94", "#3201C8", "#C8194B", "#ADADAD","#ff1515","#2ec707","#6e01c7","#8a810b","#9ff11c","#f717a1","#573c3c"],
+        backgroundColor: ["#06318A", "#D32C21", "#F6CC00","#BE112C","#50B747", "#EE821C","#B5261E","#65248C","#E55F9B","#606266","#7F3387", "#009FA8","#9F3B77"],
     },],
     };
 
