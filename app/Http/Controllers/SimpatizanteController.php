@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\Mail\MailSimp;
+use App\Mail\SimpUpdate;
 
 class SimpatizanteController extends Controller
 {
@@ -979,7 +980,15 @@ class SimpatizanteController extends Controller
     {
         \Gate::authorize('haveaccess', 'admin.perm');
 
-        $simpatizante = Elector::findOrFail($id);
+        //decripta el id
+        try{
+            $decryptedId = Crypt::decrypt($id);
+        }
+        catch(\Exception $e){
+            abort(404);
+        }
+
+        $simpatizante = Elector::findOrFail($decryptedId);
 
         $ocupaciones = Job::all();
 
@@ -1027,6 +1036,14 @@ class SimpatizanteController extends Controller
             'el_foto_firma' => 'nullable|boolean',
         ]);
 
+        //decripta el id
+        try{
+            $decryptedId = Crypt::decrypt($id);
+        }
+        catch(\Exception $e){
+            return response()->json(['errors' => ['catch' => [0 => 'El id no pudo ser desencriptado.']]], 422);
+        }
+
         //verifica que el elector esté en la edad permitida
         if (intval(\Carbon\Carbon::parse($request->fecha_de_nacimiento)->diff(\Carbon\Carbon::now())->format('%y')) < 17) {
             return response()->json(['errors' => ['catch' => [0 => 'La fecha de nacimiento debe ser de una persona de 17 años o más.']]], 422);
@@ -1038,16 +1055,23 @@ class SimpatizanteController extends Controller
         $nfotoe = null;
         $nfotod = null;
 
+        $bfotoa = 0;
+        $bfotor = 0;
+        $bfotoe = 0;
+        $bfotod = 0;
+
         DB::beginTransaction();
         try {
             //SE ENCUENTRA EL ELECTOR
-            $simpatizante = Elector::find($id);
+            $simpatizante = Elector::find($decryptedId);
 
             //SI NO SE ENCONTRÓ NO EXISTE EN LA BD
             if(!$simpatizante){
                 DB::rollBack();
-                return response()->json(['errors' => ['catch' => [0 => 'El simpatizante con el id: '.$id.' no existe en la base de datos.']]], 500);
+                return response()->json(['errors' => ['catch' => [0 => 'El simpatizante con el id: '.$decryptedId.' no existe en la base de datos.']]], 500);
             }
+
+            $correo = $simpatizante->email;
 
             //se obtiene la seccion
             $seccion = Section::where('num_seccion',$request->seccion)->first();
@@ -1067,7 +1091,7 @@ class SimpatizanteController extends Controller
             }
 
             //VERIFICA QUE NO EXISTA UN ELECTOR CON LA MISMA CLAVE EN LA MISMA CAMPAÑA
-            $simpVal = Elector::where('campaign_id',$simpatizante->campaign->id)->where('id','!=',$id)->get()->filter(function($record) use($request) {
+            $simpVal = Elector::where('campaign_id',$simpatizante->campaign->id)->where('id','!=',$decryptedId)->get()->filter(function($record) use($request) {
                 if($record->clave_elector == $request->clave_elector){
                     return $record;
                 }
@@ -1122,6 +1146,7 @@ class SimpatizanteController extends Controller
                     \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('credencial_a') . '.dat');
                     //se elimina el nombre del archivo en la bd
                     $simpatizante->credencial_a = '';
+                    $bfotoa = 1;
                 }
                 //si se envió una foto se guarda
                 if ($request->foto_anverso) {
@@ -1141,6 +1166,7 @@ class SimpatizanteController extends Controller
                     \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
 
                     $nfotoa = $newFileName;
+                    $bfotoa = 2;
                     $simpatizante->credencial_a = $newFileName;
                 }
             }
@@ -1150,6 +1176,7 @@ class SimpatizanteController extends Controller
                     \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('credencial_r') . '.dat');
                     //se elimina el nombre del archivo en la bd
                     $simpatizante->credencial_r = '';
+                    $bfotor = 1;
                 }
                 //si se envió una foto se guarda
                 if ($request->foto_inverso) {
@@ -1169,6 +1196,7 @@ class SimpatizanteController extends Controller
                     \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
 
                     $nfotor = $newFileName;
+                    $bfotor = 2;
                     $simpatizante->credencial_r = $newFileName;
                 }
             }
@@ -1178,6 +1206,7 @@ class SimpatizanteController extends Controller
                     \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('foto_elector') . '.dat');
                     //se elimina el nombre del archivo en la bd
                     $simpatizante->foto_elector = '';
+                    $bfotoe = 1;
                 }
                 //si se envió una foto se guarda
                 if ($request->foto_de_elector) {
@@ -1197,6 +1226,7 @@ class SimpatizanteController extends Controller
                     \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
 
                     $nfotoe = $newFileName;
+                    $bfotoe = 2;
                     $simpatizante->foto_elector = $newFileName;
                 }
             }
@@ -1206,6 +1236,7 @@ class SimpatizanteController extends Controller
                     \Storage::delete('/public/files/' . $simpatizante->campaign->id . '/' . $simpatizante->getRawOriginal('documento') . '.dat');
                     //se elimina el nombre del archivo en la bd
                     $simpatizante->documento = '';
+                    $bfotod = 1;
                 }
                 //si se envió una foto se guarda
                 if ($request->foto_de_firma) {
@@ -1225,12 +1256,16 @@ class SimpatizanteController extends Controller
                     \Storage::put('/public/files/' . $simpatizante->campaign->id . '/' . $newFileName . '.dat', $encryptedContent);
 
                     $nfotod = $newFileName;
+                    $bfotod = 2;
                     $simpatizante->documento = $newFileName; 
                 }
             }
             $simpatizante->save();
 
-            Mail::to($simpatizante->email)->send(new NewSimpMail($simpatizante->id));
+            $mensaje = '';
+            $asunto = 'Datos actualizados en iElect';
+
+            Mail::to($correo)->send(new SimpUpdate($simpatizante->id, $mensaje, $asunto, false, $bfotoa, $bfotor, $bfotoe, $bfotod));
 
             session()->flash('status', 'Simpatizante actualizado con éxito!');
 

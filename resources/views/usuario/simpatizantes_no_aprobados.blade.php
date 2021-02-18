@@ -297,7 +297,7 @@ Simpatizantes
                                 <td>{{ $simpatizante->clave_elector }}</td>
                                 <td>{{ $simpatizante->campaign->name }}</td>
                                 <td><p class="">
-                                    <a href="{{ route('editar-simpatizante', ['id' =>$simpatizante->id]) }}" class="uk-button uk-button-default" type="button">
+                                    <a href="{{ route('editar-simpatizante', ['id' =>Crypt::encrypt($simpatizante->id)]) }}" class="uk-button uk-button-default" type="button">
                                         Editar
                                     </a>
                                 </p></td>

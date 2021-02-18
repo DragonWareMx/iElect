@@ -21,7 +21,7 @@ Simpatizantes
     <h2 class="uk-modal-title">Editar simpatizante</h2>
 </div>
 {{-- enctype="multipart/form-data" --}}
-<form id="form-editar-simp" class="uk-modal-body" action="{{ route('update-simpatizante',['id'=>$simpatizante->id]) }}" method="POST"
+<form id="form-editar-simp" class="uk-modal-body" action="{{ route('update-simpatizante',['id'=>Crypt::encrypt($simpatizante->id)]) }}" method="POST"
     enctype="multipart/form-data">
     @csrf
     @method('PATCH')
