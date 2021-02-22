@@ -37,11 +37,50 @@ class SimpatizanteController extends Controller
     public function delete(Request $request, $uuid)
     {
         DB::beginTransaction();
+        
+        $nfotoa = null;
+        $nfotor = null;
+        $nfotoe = null;
+        $nfotod = null;
+
+        $bfotoa = false;
+        $bfotor = false;
+        $bfotoe = false;
+        $bfotod = false;
+
         try {
             if ($uuid != $request->uuid)
                 throw new Exception();
+                
             $elector = Elector::where('uuid', '=', $uuid)->first();
+
+            //Elimina las fotos del servidor
+            if($elector->getRawOriginal('credencial_a')){
+                //se elimina el archivo del servidor
+                \Storage::delete('/public/files/' . $elector->campaign->id . '/' . $elector->getRawOriginal('credencial_a') . '.dat');
+                $bfotoa = true;
+            }
+
+            if($elector->getRawOriginal('credencial_r')){
+                //se elimina el archivo del servidor
+                \Storage::delete('/public/files/' . $elector->campaign->id . '/' . $elector->getRawOriginal('credencial_r') . '.dat');
+                $bfotor = true;
+            }
+
+            if($elector->getRawOriginal('foto_elector')){
+                //se elimina el archivo del servidor
+                \Storage::delete('/public/files/' . $elector->campaign->id . '/' . $elector->getRawOriginal('foto_elector') . '.dat');
+                $bfotoe = true;
+            }
+            
+            if($elector->getRawOriginal('documento')){
+                //se elimina el archivo del servidor
+                \Storage::delete('/public/files/' . $elector->campaign->id . '/' . $elector->getRawOriginal('documento') . '.dat');
+                $bfotod = true;
+            }
+
             $elector->delete();
+
             DB::commit();
             return response()->json(200);
         } catch (\Exception $ex) {
