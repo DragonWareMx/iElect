@@ -293,9 +293,9 @@ Simpatizantes
         total y la posibilidad de solicitud de eliminación de la misma.
     </p>
     <p class="uk-text-left">
-        <button class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button">
+        <a class="uk-button uk-button-default uk-modal-close uk-text-danger uk-text-bold" type="button" href="{{ route('simpatizante-solicitud_baja', ['uuid'=>$simpatizante->uuid]) }}">
             Eliminar
-        </button>
+        </a>
     </p>
     <p class="uk-text-right">
         <button class="uk-button uk-button-default uk-modal-close" type="button">
