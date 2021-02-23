@@ -282,7 +282,7 @@
 			padding-bottom: 20px;
 			color: #999999;
 			font-family: sans-serif;" class="footer">
-                            Recibes este correo electrónico por que tu información fue dada de alta en la plataforma web
+                            Recibes este correo electrónico porque tu información fue dada de alta en la plataforma web
                             iElect.
 
                             <!-- ANALYTICS -->
