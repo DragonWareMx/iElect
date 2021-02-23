@@ -18,6 +18,10 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Database\QueryException;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\NewSimpMail;
+use App\Mail\MailSimp;
+
 
 class brigadistasInfoController extends Controller
 { 
@@ -143,13 +147,16 @@ class brigadistasInfoController extends Controller
         else{
             $cantidad=sizeof($request->b);
             
-            if($request->action == "eliminar"){
+            if($request->action == "eliminar"){ 
                 try{
                     \DB::beginTransaction();
                     {
                         // ELIMINARLOS 
                         for($i=0 ; $i< $cantidad; $i++) {
                             DB::table('orders')->where('id',$request->b[$i] )->delete();
+
+                            // Correo de solicitud rechazada 
+                            Mail::to($newUser->email)->send(new BRechazado($newUser->id));
                         }
                         \DB::commit();
 
@@ -200,7 +207,10 @@ class brigadistasInfoController extends Controller
                             
                             // ELIMINARLO DE ORDERS
                             DB::table('orders')->where('id',$request->b[$i] )->delete();
-                            // dd('SE ELIMINO'); 
+
+
+                            // ENVIAR CORREO DE ACEPTACIÓN
+                            Mail::to($newUser->email)->send(new BAceptado($newUser->id));
                         }
                         \DB::commit();
                         return redirect('brigadistas/solicitudes')->with('status', 'Brigadistas aceptados correctamente');
